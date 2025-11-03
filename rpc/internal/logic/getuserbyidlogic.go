@@ -27,5 +27,7 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 func (l *GetUserByIdLogic) GetUserById(stream system_service.SysUsers_GetUserByIdServer) error {
 	// todo: add your logic here and delete this line
 
+	//l.svcCtx.DB.SysUser.Query()
+
 	return nil
 }
