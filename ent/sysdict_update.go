@@ -6,13 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/predicate"
-	"system-service/ent/sysdict"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 )
 
 // SysDictUpdate is the builder for updating SysDict entities.

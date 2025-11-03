@@ -4,12 +4,12 @@ package ent
 
 import (
 	"context"
-	"system-service/ent/predicate"
-	"system-service/ent/sysdictdata"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
 // SysDictDataDelete is the builder for deleting a SysDictData entity.

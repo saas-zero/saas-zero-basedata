@@ -3,17 +3,18 @@
 package ent
 
 import (
-	"system-service/ent/schema"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysconfig"
-	"system-service/ent/sysdept"
-	"system-service/ent/sysdict"
-	"system-service/ent/sysdictdata"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 	"time"
+
+	"github.com/saas-zero/saas-zero-basedata/ent/schema"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // The init function reads all schema descriptors with runtime code

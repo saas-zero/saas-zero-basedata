@@ -4,3 +4,12 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: systemservice.rpc
+
+database:
+  dbtype: "postgres"
+  host: "192.168.201.188"
+  port: 5432
+  user: "postgres"
+  password: "AM38xymTdFree4Fh"
+  dbname: "saas_zero_basedata"
+  ssl: "disable"

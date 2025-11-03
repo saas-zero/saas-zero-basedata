@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/predicate"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // SysMenuUpdate is the builder for updating SysMenu entities.

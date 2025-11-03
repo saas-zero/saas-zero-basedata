@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"system-service/rpc/apps/system-service"
-	"system-service/rpc/internal/config"
-	"system-service/rpc/internal/server"
-	"system-service/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/server"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "D:\\GolandProjects\\saas-zero\\apps\\system-service\\rpc\\etc\\systemservice.yaml", "the config file")
+var configFile = flag.String("f", "D:\\GolandProjects\\saas-zero\\apps\\saas-zero-basedata\\rpc\\etc\\systemservice.yaml", "the config file")
 
 func main() {
 	flag.Parse()

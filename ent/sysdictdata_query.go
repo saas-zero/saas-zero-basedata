@@ -6,13 +6,13 @@ import (
 	"context"
 	"fmt"
 	"math"
-	"system-service/ent/predicate"
-	"system-service/ent/sysdictdata"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
 // SysDictDataQuery is the builder for querying SysDictData entities.

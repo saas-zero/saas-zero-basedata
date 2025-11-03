@@ -5,11 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"system-service/ent/sysrole"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // role Table | 角色表

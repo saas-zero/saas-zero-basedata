@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"system-service/rpc/apps/system-service"
-	"system-service/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -7,7 +7,7 @@ package sysusers
 import (
 	"context"
 
-	"system-service/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

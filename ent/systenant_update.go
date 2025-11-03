@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/predicate"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 )
 
 // SysTenantUpdate is the builder for updating SysTenant entities.

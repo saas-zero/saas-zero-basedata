@@ -5,9 +5,9 @@
 package server
 
 import (
-	"system-service/rpc/apps/system-service"
-	"system-service/rpc/internal/logic"
-	"system-service/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/logic"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 )
 
 type SysUsersServer struct {

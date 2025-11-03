@@ -4,6 +4,7 @@
 菜单
 API
 
+go generate ./ent
 
 goctl api go -api system_service.api -dir .
 

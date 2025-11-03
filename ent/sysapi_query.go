@@ -7,14 +7,14 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"system-service/ent/predicate"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysrole"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // SysApiQuery is the builder for querying SysApi entities.

@@ -5,11 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"system-service/ent/sysuser"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // user Table | 用户表

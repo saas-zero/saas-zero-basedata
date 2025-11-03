@@ -5,12 +5,12 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"system-service/ent/sysdept"
-	"system-service/ent/sysuser"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // dept Table | 部门表

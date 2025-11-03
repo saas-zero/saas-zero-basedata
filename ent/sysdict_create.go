@@ -6,11 +6,11 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysdict"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 )
 
 // SysDictCreate is the builder for creating a SysDict entity.

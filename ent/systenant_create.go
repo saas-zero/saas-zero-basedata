@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 )
 
 // SysTenantCreate is the builder for creating a SysTenant entity.

@@ -4,12 +4,12 @@ package ent
 
 import (
 	"context"
-	"system-service/ent/predicate"
-	"system-service/ent/sysapi"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 )
 
 // SysApiDelete is the builder for deleting a SysApi entity.

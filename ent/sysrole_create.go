@@ -6,15 +6,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysRoleCreate is the builder for creating a SysRole entity.

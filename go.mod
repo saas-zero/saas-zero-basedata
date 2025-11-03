@@ -4,6 +4,8 @@ go 1.25.3
 
 require (
 	entgo.io/ent v0.14.5
+	github.com/go-sql-driver/mysql v1.9.0
+	github.com/lib/pq v1.10.9
 	github.com/saas-zero/saas-zero-common v1.0.0
 	github.com/zeromicro/go-zero v1.9.2
 	google.golang.org/grpc v1.76.0
@@ -12,6 +14,7 @@ require (
 
 require (
 	ariga.io/atlas v0.32.1-0.20250325101103-175b25e1c1b9 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
@@ -31,7 +34,6 @@ require (
 	github.com/go-openapi/jsonreference v0.20.2 // indirect
 	github.com/go-openapi/swag v0.22.4 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt/v4 v4.5.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/gnostic-models v0.6.8 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect

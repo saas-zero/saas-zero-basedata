@@ -7,17 +7,17 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"system-service/ent/predicate"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysRoleQuery is the builder for querying SysRole entities.

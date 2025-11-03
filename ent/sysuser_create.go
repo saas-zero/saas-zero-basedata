@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysrole"
-	"system-service/ent/sysuser"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysUserCreate is the builder for creating a SysUser entity.

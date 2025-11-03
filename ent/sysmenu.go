@@ -5,11 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"system-service/ent/sysmenu"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 )
 
 // menu Table | 菜单表

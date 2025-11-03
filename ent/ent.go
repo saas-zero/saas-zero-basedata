@@ -8,19 +8,19 @@ import (
 	"fmt"
 	"reflect"
 	"sync"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysconfig"
-	"system-service/ent/sysdept"
-	"system-service/ent/sysdict"
-	"system-service/ent/sysdictdata"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // ent aliases to avoid import conflicts in user's code.

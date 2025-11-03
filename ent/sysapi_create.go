@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysrole"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // SysApiCreate is the builder for creating a SysApi entity.

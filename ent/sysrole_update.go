@@ -6,17 +6,17 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/predicate"
-	"system-service/ent/sysapi"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysRoleUpdate is the builder for updating SysRole entities.

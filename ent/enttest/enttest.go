@@ -5,13 +5,12 @@ package enttest
 import (
 	"context"
 
-	"system-service/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent"
 	// required by schema hooks.
-	_ "system-service/ent/runtime"
-
-	"system-service/ent/migrate"
+	_ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/saas-zero/saas-zero-basedata/ent/migrate"
 )
 
 type (

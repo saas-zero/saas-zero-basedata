@@ -5,7 +5,8 @@ package hook
 import (
 	"context"
 	"fmt"
-	"system-service/ent"
+
+	"github.com/saas-zero/saas-zero-basedata/ent"
 )
 
 // The SysApiFunc type is an adapter to allow the use of ordinary

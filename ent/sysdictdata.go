@@ -5,11 +5,11 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"system-service/ent/sysdictdata"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
 // dict data Table | 字典数据表

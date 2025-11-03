@@ -6,13 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/predicate"
-	"system-service/ent/sysconfig"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
 )
 
 // SysConfigUpdate is the builder for updating SysConfig entities.

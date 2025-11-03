@@ -7,15 +7,15 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"system-service/ent/predicate"
-	"system-service/ent/sysdept"
-	"system-service/ent/systenant"
-	"system-service/ent/sysuser"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysDeptQuery is the builder for querying SysDept entities.

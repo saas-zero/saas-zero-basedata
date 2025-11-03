@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"system-service/ent/sysmenu"
-	"system-service/ent/sysrole"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // SysMenuCreate is the builder for creating a SysMenu entity.
