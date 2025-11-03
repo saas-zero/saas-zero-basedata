@@ -1,0 +1,13 @@
+syntax = "v1"
+
+import "base_resp.api"
+
+type Request {
+	Name string `path:"name,options=you|me"`
+}
+
+service system_api-api {
+	@handler System_apiHandler
+	get /from/:name (Request) returns (BaseResp)
+}
+

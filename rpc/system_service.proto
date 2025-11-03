@@ -1,0 +1,47 @@
+// 声明 proto 语法版本，固定值
+syntax = "proto3";
+
+// proto 包名
+package system_service;
+
+// 生成 golang 代码后的包名
+option go_package = "./apps/system-service";
+
+// 定义结构体
+message User {
+  optional int64 id = 1;
+  optional int64 created_at = 2;
+  optional int64 updated_at = 3;
+  optional int64 deleted_at = 4;
+  optional int64 tenant_id = 5;
+  optional string status = 6;
+  optional string username = 7;
+  optional string password = 8;
+  optional string nickname = 9;
+  optional string remark = 10;
+  optional string mobile = 11;
+  optional string email = 12;
+  optional string avatar = 13;
+  optional uint64 dept_id = 14;
+
+  repeated uint64 role_ids = 15;
+  repeated string role_codes = 16;
+  repeated string role_names = 17;
+
+  optional string dept_name = 18;
+  optional string denant_name = 19;
+}
+
+message UserReq {
+  uint64 id = 1;
+  string username = 2;
+}
+
+// 定义 SysApis 服务
+service SysUsers {
+  // 定义客户端流式 rpc
+  rpc getUserById(stream UserReq) returns (User);
+
+  // 定义客户端流式 rpc
+  rpc getUserByUsername(stream UserReq) returns (User);
+}
