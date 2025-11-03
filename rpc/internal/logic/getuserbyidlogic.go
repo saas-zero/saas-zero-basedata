@@ -24,10 +24,8 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 // 定义客户端流式 rpc
-func (l *GetUserByIdLogic) GetUserById(stream system_service.SysUsers_GetUserByIdServer) error {
+func (l *GetUserByIdLogic) GetUserById(in *system_service.UserReq) (*system_service.User, error) {
 	// todo: add your logic here and delete this line
 
-	//l.svcCtx.DB.SysUser.Query()
-
-	return nil
+	return &system_service.User{}, nil
 }

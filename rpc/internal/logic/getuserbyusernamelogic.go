@@ -24,8 +24,8 @@ func NewGetUserByUsernameLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 }
 
 // 定义客户端流式 rpc
-func (l *GetUserByUsernameLogic) GetUserByUsername(stream system_service.SysUsers_GetUserByUsernameServer) error {
+func (l *GetUserByUsernameLogic) GetUserByUsername(in *system_service.UserReq) (*system_service.User, error) {
 	// todo: add your logic here and delete this line
 
-	return nil
+	return &system_service.User{}, nil
 }

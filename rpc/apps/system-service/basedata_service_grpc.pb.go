@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v3.19.4
-// source: system_service.proto
+// source: basedata_service.proto
 
 // proto 包名
 
@@ -34,9 +34,9 @@ const (
 // 定义 SysApis 服务
 type SysUsersClient interface {
 	// 定义客户端流式 rpc
-	GetUserById(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UserReq, User], error)
+	GetUserById(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
 	// 定义客户端流式 rpc
-	GetUserByUsername(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UserReq, User], error)
+	GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
 }
 
 type sysUsersClient struct {
@@ -47,31 +47,25 @@ func NewSysUsersClient(cc grpc.ClientConnInterface) SysUsersClient {
 	return &sysUsersClient{cc}
 }
 
-func (c *sysUsersClient) GetUserById(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UserReq, User], error) {
+func (c *sysUsersClient) GetUserById(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &SysUsers_ServiceDesc.Streams[0], SysUsers_GetUserById_FullMethodName, cOpts...)
+	out := new(User)
+	err := c.cc.Invoke(ctx, SysUsers_GetUserById_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[UserReq, User]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type SysUsers_GetUserByIdClient = grpc.ClientStreamingClient[UserReq, User]
-
-func (c *sysUsersClient) GetUserByUsername(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[UserReq, User], error) {
+func (c *sysUsersClient) GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &SysUsers_ServiceDesc.Streams[1], SysUsers_GetUserByUsername_FullMethodName, cOpts...)
+	out := new(User)
+	err := c.cc.Invoke(ctx, SysUsers_GetUserByUsername_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[UserReq, User]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type SysUsers_GetUserByUsernameClient = grpc.ClientStreamingClient[UserReq, User]
 
 // SysUsersServer is the server API for SysUsers service.
 // All implementations must embed UnimplementedSysUsersServer
@@ -80,9 +74,9 @@ type SysUsers_GetUserByUsernameClient = grpc.ClientStreamingClient[UserReq, User
 // 定义 SysApis 服务
 type SysUsersServer interface {
 	// 定义客户端流式 rpc
-	GetUserById(grpc.ClientStreamingServer[UserReq, User]) error
+	GetUserById(context.Context, *UserReq) (*User, error)
 	// 定义客户端流式 rpc
-	GetUserByUsername(grpc.ClientStreamingServer[UserReq, User]) error
+	GetUserByUsername(context.Context, *UserReq) (*User, error)
 	mustEmbedUnimplementedSysUsersServer()
 }
 
@@ -93,11 +87,11 @@ type SysUsersServer interface {
 // pointer dereference when methods are called.
 type UnimplementedSysUsersServer struct{}
 
-func (UnimplementedSysUsersServer) GetUserById(grpc.ClientStreamingServer[UserReq, User]) error {
-	return status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+func (UnimplementedSysUsersServer) GetUserById(context.Context, *UserReq) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
 }
-func (UnimplementedSysUsersServer) GetUserByUsername(grpc.ClientStreamingServer[UserReq, User]) error {
-	return status.Errorf(codes.Unimplemented, "method GetUserByUsername not implemented")
+func (UnimplementedSysUsersServer) GetUserByUsername(context.Context, *UserReq) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByUsername not implemented")
 }
 func (UnimplementedSysUsersServer) mustEmbedUnimplementedSysUsersServer() {}
 func (UnimplementedSysUsersServer) testEmbeddedByValue()                  {}
@@ -120,19 +114,41 @@ func RegisterSysUsersServer(s grpc.ServiceRegistrar, srv SysUsersServer) {
 	s.RegisterService(&SysUsers_ServiceDesc, srv)
 }
 
-func _SysUsers_GetUserById_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(SysUsersServer).GetUserById(&grpc.GenericServerStream[UserReq, User]{ServerStream: stream})
+func _SysUsers_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysUsersServer).GetUserById(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysUsers_GetUserById_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysUsersServer).GetUserById(ctx, req.(*UserReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type SysUsers_GetUserByIdServer = grpc.ClientStreamingServer[UserReq, User]
-
-func _SysUsers_GetUserByUsername_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(SysUsersServer).GetUserByUsername(&grpc.GenericServerStream[UserReq, User]{ServerStream: stream})
+func _SysUsers_GetUserByUsername_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysUsersServer).GetUserByUsername(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysUsers_GetUserByUsername_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysUsersServer).GetUserByUsername(ctx, req.(*UserReq))
+	}
+	return interceptor(ctx, in, info, handler)
 }
-
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type SysUsers_GetUserByUsernameServer = grpc.ClientStreamingServer[UserReq, User]
 
 // SysUsers_ServiceDesc is the grpc.ServiceDesc for SysUsers service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -140,18 +156,16 @@ type SysUsers_GetUserByUsernameServer = grpc.ClientStreamingServer[UserReq, User
 var SysUsers_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "system_service.SysUsers",
 	HandlerType: (*SysUsersServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
+	Methods: []grpc.MethodDesc{
 		{
-			StreamName:    "getUserById",
-			Handler:       _SysUsers_GetUserById_Handler,
-			ClientStreams: true,
+			MethodName: "getUserById",
+			Handler:    _SysUsers_GetUserById_Handler,
 		},
 		{
-			StreamName:    "getUserByUsername",
-			Handler:       _SysUsers_GetUserByUsername_Handler,
-			ClientStreams: true,
+			MethodName: "getUserByUsername",
+			Handler:    _SysUsers_GetUserByUsername_Handler,
 		},
 	},
-	Metadata: "system_service.proto",
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "basedata_service.proto",
 }

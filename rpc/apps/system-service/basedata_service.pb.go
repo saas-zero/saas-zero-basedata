@@ -4,7 +4,7 @@
 // versions:
 // 	protoc-gen-go v1.36.10
 // 	protoc        v3.19.4
-// source: system_service.proto
+// source: basedata_service.proto
 
 // proto 包名
 
@@ -53,7 +53,7 @@ type User struct {
 
 func (x *User) Reset() {
 	*x = User{}
-	mi := &file_system_service_proto_msgTypes[0]
+	mi := &file_basedata_service_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -65,7 +65,7 @@ func (x *User) String() string {
 func (*User) ProtoMessage() {}
 
 func (x *User) ProtoReflect() protoreflect.Message {
-	mi := &file_system_service_proto_msgTypes[0]
+	mi := &file_basedata_service_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -78,7 +78,7 @@ func (x *User) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use User.ProtoReflect.Descriptor instead.
 func (*User) Descriptor() ([]byte, []int) {
-	return file_system_service_proto_rawDescGZIP(), []int{0}
+	return file_basedata_service_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *User) GetId() int64 {
@@ -224,7 +224,7 @@ type UserReq struct {
 
 func (x *UserReq) Reset() {
 	*x = UserReq{}
-	mi := &file_system_service_proto_msgTypes[1]
+	mi := &file_basedata_service_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -236,7 +236,7 @@ func (x *UserReq) String() string {
 func (*UserReq) ProtoMessage() {}
 
 func (x *UserReq) ProtoReflect() protoreflect.Message {
-	mi := &file_system_service_proto_msgTypes[1]
+	mi := &file_basedata_service_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -249,7 +249,7 @@ func (x *UserReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserReq.ProtoReflect.Descriptor instead.
 func (*UserReq) Descriptor() ([]byte, []int) {
-	return file_system_service_proto_rawDescGZIP(), []int{1}
+	return file_basedata_service_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *UserReq) GetId() uint64 {
@@ -266,11 +266,11 @@ func (x *UserReq) GetUsername() string {
 	return ""
 }
 
-var File_system_service_proto protoreflect.FileDescriptor
+var File_basedata_service_proto protoreflect.FileDescriptor
 
-const file_system_service_proto_rawDesc = "" +
+const file_basedata_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14system_service.proto\x12\x0esystem_service\"\xa3\x06\n" +
+	"\x16basedata_service.proto\x12\x0esystem_service\"\xa3\x06\n" +
 	"\x04User\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\"\n" +
 	"\n" +
@@ -320,29 +320,29 @@ const file_system_service_proto_rawDesc = "" +
 	"\f_denant_name\"5\n" +
 	"\aUserReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername2\x90\x01\n" +
-	"\bSysUsers\x12>\n" +
-	"\vgetUserById\x12\x17.system_service.UserReq\x1a\x14.system_service.User(\x01\x12D\n" +
-	"\x11getUserByUsername\x12\x17.system_service.UserReq\x1a\x14.system_service.User(\x01B\x17Z\x15./apps/system-serviceb\x06proto3"
+	"\busername\x18\x02 \x01(\tR\busername2\x8c\x01\n" +
+	"\bSysUsers\x12<\n" +
+	"\vgetUserById\x12\x17.system_service.UserReq\x1a\x14.system_service.User\x12B\n" +
+	"\x11getUserByUsername\x12\x17.system_service.UserReq\x1a\x14.system_service.UserB\x17Z\x15./apps/system-serviceb\x06proto3"
 
 var (
-	file_system_service_proto_rawDescOnce sync.Once
-	file_system_service_proto_rawDescData []byte
+	file_basedata_service_proto_rawDescOnce sync.Once
+	file_basedata_service_proto_rawDescData []byte
 )
 
-func file_system_service_proto_rawDescGZIP() []byte {
-	file_system_service_proto_rawDescOnce.Do(func() {
-		file_system_service_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_system_service_proto_rawDesc), len(file_system_service_proto_rawDesc)))
+func file_basedata_service_proto_rawDescGZIP() []byte {
+	file_basedata_service_proto_rawDescOnce.Do(func() {
+		file_basedata_service_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_basedata_service_proto_rawDesc), len(file_basedata_service_proto_rawDesc)))
 	})
-	return file_system_service_proto_rawDescData
+	return file_basedata_service_proto_rawDescData
 }
 
-var file_system_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_system_service_proto_goTypes = []any{
+var file_basedata_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_basedata_service_proto_goTypes = []any{
 	(*User)(nil),    // 0: system_service.User
 	(*UserReq)(nil), // 1: system_service.UserReq
 }
-var file_system_service_proto_depIdxs = []int32{
+var file_basedata_service_proto_depIdxs = []int32{
 	1, // 0: system_service.SysUsers.getUserById:input_type -> system_service.UserReq
 	1, // 1: system_service.SysUsers.getUserByUsername:input_type -> system_service.UserReq
 	0, // 2: system_service.SysUsers.getUserById:output_type -> system_service.User
@@ -354,27 +354,27 @@ var file_system_service_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_system_service_proto_init() }
-func file_system_service_proto_init() {
-	if File_system_service_proto != nil {
+func init() { file_basedata_service_proto_init() }
+func file_basedata_service_proto_init() {
+	if File_basedata_service_proto != nil {
 		return
 	}
-	file_system_service_proto_msgTypes[0].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[0].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_system_service_proto_rawDesc), len(file_system_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_basedata_service_proto_rawDesc), len(file_basedata_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_system_service_proto_goTypes,
-		DependencyIndexes: file_system_service_proto_depIdxs,
-		MessageInfos:      file_system_service_proto_msgTypes,
+		GoTypes:           file_basedata_service_proto_goTypes,
+		DependencyIndexes: file_basedata_service_proto_depIdxs,
+		MessageInfos:      file_basedata_service_proto_msgTypes,
 	}.Build()
-	File_system_service_proto = out.File
-	file_system_service_proto_goTypes = nil
-	file_system_service_proto_depIdxs = nil
+	File_basedata_service_proto = out.File
+	file_basedata_service_proto_goTypes = nil
+	file_basedata_service_proto_depIdxs = nil
 }

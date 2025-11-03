@@ -40,8 +40,8 @@ message UserReq {
 // 定义 SysApis 服务
 service SysUsers {
   // 定义客户端流式 rpc
-  rpc getUserById(stream UserReq) returns (User);
+  rpc getUserById(UserReq) returns (User);
 
   // 定义客户端流式 rpc
-  rpc getUserByUsername(stream UserReq) returns (User);
+  rpc getUserByUsername(UserReq) returns (User);
 }
