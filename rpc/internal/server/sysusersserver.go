@@ -7,14 +7,14 @@ package server
 import (
 	"context"
 
-	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/logic"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 )
 
 type SysUsersServer struct {
 	svcCtx *svc.ServiceContext
-	system_service.UnimplementedSysUsersServer
+	apps.UnimplementedSysUsersServer
 }
 
 func NewSysUsersServer(svcCtx *svc.ServiceContext) *SysUsersServer {
@@ -23,14 +23,14 @@ func NewSysUsersServer(svcCtx *svc.ServiceContext) *SysUsersServer {
 	}
 }
 
-// 定义客户端流式 rpc
-func (s *SysUsersServer) GetUserById(ctx context.Context, in *system_service.UserReq) (*system_service.User, error) {
+// 根据ID获取用户信息
+func (s *SysUsersServer) GetUserById(ctx context.Context, in *apps.UserReq) (*apps.User, error) {
 	l := logic.NewGetUserByIdLogic(ctx, s.svcCtx)
 	return l.GetUserById(in)
 }
 
-// 定义客户端流式 rpc
-func (s *SysUsersServer) GetUserByUsername(ctx context.Context, in *system_service.UserReq) (*system_service.User, error) {
+// 根据用户名获取用户信息
+func (s *SysUsersServer) GetUserByUsername(ctx context.Context, in *apps.UserReq) (*apps.User, error) {
 	l := logic.NewGetUserByUsernameLogic(ctx, s.svcCtx)
 	return l.GetUserByUsername(in)
 }

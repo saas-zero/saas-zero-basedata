@@ -8,7 +8,7 @@
 
 // proto 包名
 
-package system_service
+package apps
 
 import (
 	context "context"
@@ -23,8 +23,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SysUsers_GetUserById_FullMethodName       = "/system_service.SysUsers/getUserById"
-	SysUsers_GetUserByUsername_FullMethodName = "/system_service.SysUsers/getUserByUsername"
+	SysUsers_GetUserById_FullMethodName       = "/basedata_service.SysUsers/GetUserById"
+	SysUsers_GetUserByUsername_FullMethodName = "/basedata_service.SysUsers/GetUserByUsername"
 )
 
 // SysUsersClient is the client API for SysUsers service.
@@ -33,9 +33,9 @@ const (
 //
 // 定义 SysApis 服务
 type SysUsersClient interface {
-	// 定义客户端流式 rpc
+	// 根据ID获取用户信息
 	GetUserById(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
-	// 定义客户端流式 rpc
+	// 根据用户名获取用户信息
 	GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
 }
 
@@ -73,9 +73,9 @@ func (c *sysUsersClient) GetUserByUsername(ctx context.Context, in *UserReq, opt
 //
 // 定义 SysApis 服务
 type SysUsersServer interface {
-	// 定义客户端流式 rpc
+	// 根据ID获取用户信息
 	GetUserById(context.Context, *UserReq) (*User, error)
-	// 定义客户端流式 rpc
+	// 根据用户名获取用户信息
 	GetUserByUsername(context.Context, *UserReq) (*User, error)
 	mustEmbedUnimplementedSysUsersServer()
 }
@@ -154,15 +154,15 @@ func _SysUsers_GetUserByUsername_Handler(srv interface{}, ctx context.Context, d
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var SysUsers_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "system_service.SysUsers",
+	ServiceName: "basedata_service.SysUsers",
 	HandlerType: (*SysUsersServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "getUserById",
+			MethodName: "GetUserById",
 			Handler:    _SysUsers_GetUserById_Handler,
 		},
 		{
-			MethodName: "getUserByUsername",
+			MethodName: "GetUserByUsername",
 			Handler:    _SysUsers_GetUserByUsername_Handler,
 		},
 	},

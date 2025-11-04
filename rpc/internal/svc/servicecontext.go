@@ -3,10 +3,8 @@ package svc
 import (
 	"context"
 	"fmt"
-
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
-
 	"github.com/zeromicro/go-zero/core/logx"
 
 	_ "github.com/go-sql-driver/mysql"

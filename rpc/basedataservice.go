@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/server"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "D:\\GolandProjects\\saas-zero\\apps\\saas-zero-basedata\\rpc\\etc\\basedataservice.yaml", "the config file")
+var configFile = flag.String("f", "etc/basedataservice.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		system_service.RegisterSysUsersServer(grpcServer, server.NewSysUsersServer(ctx))
+		apps.RegisterSysUsersServer(grpcServer, server.NewSysUsersServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

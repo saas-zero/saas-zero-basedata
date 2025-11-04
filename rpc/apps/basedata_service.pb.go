@@ -8,7 +8,7 @@
 
 // proto 包名
 
-package system_service
+package apps
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -270,7 +270,7 @@ var File_basedata_service_proto protoreflect.FileDescriptor
 
 const file_basedata_service_proto_rawDesc = "" +
 	"\n" +
-	"\x16basedata_service.proto\x12\x0esystem_service\"\xa3\x06\n" +
+	"\x16basedata_service.proto\x12\x10basedata_service\"\xa3\x06\n" +
 	"\x04User\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\"\n" +
 	"\n" +
@@ -320,10 +320,10 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\f_denant_name\"5\n" +
 	"\aUserReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x1a\n" +
-	"\busername\x18\x02 \x01(\tR\busername2\x8c\x01\n" +
-	"\bSysUsers\x12<\n" +
-	"\vgetUserById\x12\x17.system_service.UserReq\x1a\x14.system_service.User\x12B\n" +
-	"\x11getUserByUsername\x12\x17.system_service.UserReq\x1a\x14.system_service.UserB\x17Z\x15./apps/system-serviceb\x06proto3"
+	"\busername\x18\x02 \x01(\tR\busername2\x94\x01\n" +
+	"\bSysUsers\x12@\n" +
+	"\vGetUserById\x12\x19.basedata_service.UserReq\x1a\x16.basedata_service.User\x12F\n" +
+	"\x11GetUserByUsername\x12\x19.basedata_service.UserReq\x1a\x16.basedata_service.UserB\bZ\x06./appsb\x06proto3"
 
 var (
 	file_basedata_service_proto_rawDescOnce sync.Once
@@ -339,14 +339,14 @@ func file_basedata_service_proto_rawDescGZIP() []byte {
 
 var file_basedata_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_basedata_service_proto_goTypes = []any{
-	(*User)(nil),    // 0: system_service.User
-	(*UserReq)(nil), // 1: system_service.UserReq
+	(*User)(nil),    // 0: basedata_service.User
+	(*UserReq)(nil), // 1: basedata_service.UserReq
 }
 var file_basedata_service_proto_depIdxs = []int32{
-	1, // 0: system_service.SysUsers.getUserById:input_type -> system_service.UserReq
-	1, // 1: system_service.SysUsers.getUserByUsername:input_type -> system_service.UserReq
-	0, // 2: system_service.SysUsers.getUserById:output_type -> system_service.User
-	0, // 3: system_service.SysUsers.getUserByUsername:output_type -> system_service.User
+	1, // 0: basedata_service.SysUsers.GetUserById:input_type -> basedata_service.UserReq
+	1, // 1: basedata_service.SysUsers.GetUserByUsername:input_type -> basedata_service.UserReq
+	0, // 2: basedata_service.SysUsers.GetUserById:output_type -> basedata_service.User
+	0, // 3: basedata_service.SysUsers.GetUserByUsername:output_type -> basedata_service.User
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name

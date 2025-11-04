@@ -2,13 +2,10 @@
 syntax = "proto3";
 
 // proto 包名
-package system_service;
+package basedata_service;
 
 // 生成 golang 代码后的包名
-option go_package = "./apps/system-service";
-
-// 添加 google api 注解
-import "google/api/annotations.proto";
+option go_package = "./apps";
 
 // 定义结构体
 message User {
@@ -43,16 +40,8 @@ message UserReq {
 // 定义 SysApis 服务
 service SysUsers {
   // 根据ID获取用户信息
-  rpc GetUserById(UserReq) returns (User) {
-    option (google.api.http) = {
-      get: "/user/{id}"
-    };
-  }
+  rpc GetUserById(UserReq) returns (User);
 
   // 根据用户名获取用户信息
-  rpc GetUserByUsername(UserReq) returns (User) {
-    option (google.api.http) = {
-      get: "/user/name/{username}"
-    };
-  }
+  rpc GetUserByUsername(UserReq) returns (User);
 }

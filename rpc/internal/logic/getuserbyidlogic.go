@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 
-	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -23,9 +23,9 @@ func NewGetUserByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-// 定义客户端流式 rpc
-func (l *GetUserByIdLogic) GetUserById(in *system_service.UserReq) (*system_service.User, error) {
+// 根据ID获取用户信息
+func (l *GetUserByIdLogic) GetUserById(in *apps.UserReq) (*apps.User, error) {
 	// todo: add your logic here and delete this line
 
-	return &system_service.User{}, nil
+	return &apps.User{}, nil
 }

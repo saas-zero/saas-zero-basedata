@@ -3,7 +3,7 @@ ListenOn: 0.0.0.0:18082
 Mode: dev
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+    - 127.0.0.1:2379
   Key: basedataservice.rpc
 
 database:
