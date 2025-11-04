@@ -7,6 +7,9 @@ package system_service;
 // 生成 golang 代码后的包名
 option go_package = "./apps/system-service";
 
+// 添加 google api 注解
+import "google/api/annotations.proto";
+
 // 定义结构体
 message User {
   optional int64 id = 1;
@@ -39,9 +42,17 @@ message UserReq {
 
 // 定义 SysApis 服务
 service SysUsers {
-  // 定义客户端流式 rpc
-  rpc getUserById(UserReq) returns (User);
+  // 根据ID获取用户信息
+  rpc GetUserById(UserReq) returns (User) {
+    option (google.api.http) = {
+      get: "/user/{id}"
+    };
+  }
 
-  // 定义客户端流式 rpc
-  rpc getUserByUsername(UserReq) returns (User);
+  // 根据用户名获取用户信息
+  rpc GetUserByUsername(UserReq) returns (User) {
+    option (google.api.http) = {
+      get: "/user/name/{username}"
+    };
+  }
 }

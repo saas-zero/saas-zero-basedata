@@ -7,7 +7,7 @@ package sysusers
 import (
 	"context"
 
-	"github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
+	system_service "github.com/saas-zero/saas-zero-basedata/rpc/apps/system-service"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
@@ -18,9 +18,9 @@ type (
 	UserReq = system_service.UserReq
 
 	SysUsers interface {
-		// 定义客户端流式 rpc
+		// 根据ID获取用户信息
 		GetUserById(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
-		// 定义客户端流式 rpc
+		// 根据用户名获取用户信息
 		GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error)
 	}
 
@@ -35,13 +35,13 @@ func NewSysUsers(cli zrpc.Client) SysUsers {
 	}
 }
 
-// 定义客户端流式 rpc
+// 根据ID获取用户信息
 func (m *defaultSysUsers) GetUserById(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error) {
 	client := system_service.NewSysUsersClient(m.cli.Conn())
 	return client.GetUserById(ctx, in, opts...)
 }
 
-// 定义客户端流式 rpc
+// 根据用户名获取用户信息
 func (m *defaultSysUsers) GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*User, error) {
 	client := system_service.NewSysUsersClient(m.cli.Conn())
 	return client.GetUserByUsername(ctx, in, opts...)
