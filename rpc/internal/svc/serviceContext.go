@@ -2,13 +2,12 @@ package svc
 
 import (
 	"context"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
 	"log"
 
 	"entgo.io/ent/dialect"
 	_ "github.com/lib/pq"
-	"github.com/saas-zero/
 	"github.com/saas-zero/saas-zero-basedata/ent"
-	_ "github.com/lib/pq"
 )
 
 type ServiceContext struct {

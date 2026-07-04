@@ -7,4 +7,4 @@ Etcd:
   Key: basedataservice.rpc
 
 Postgres:
-  DataSource: host=192.168.201.58 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable
+  DataSource: host=192.168.201.188 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable

@@ -2,4 +2,6 @@
 
 package ent
 
+import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
+
 // The schema-stitching logic is generated in github.com/saas-zero/saas-zero-basedata/ent/runtime/runtime.go

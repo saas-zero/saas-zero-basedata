@@ -1,8 +1,10 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
+	"strconv"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
@@ -17,13 +19,34 @@ import (
 	systenantsServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/systenants"
 	sysusersServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysusers"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/reflection"
 )
+
+func authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
+	if md, ok := metadata.FromIncomingContext(ctx); ok {
+		if uid := md.Get("x-user-id"); len(uid) > 0 {
+			if id, err := strconv.ParseInt(uid[0], 10, 64); err == nil {
+				ctx = mixins.SetCurrentUserId(ctx, id)
+			}
+		}
+		if uname := md.Get("x-user-name"); len(uname) > 0 {
+			ctx = mixins.SetCurrentUserName(ctx, uname[0])
+		}
+		if tid := md.Get("x-tenant-id"); len(tid) > 0 {
+			if id, err := strconv.ParseInt(tid[0], 10, 64); err == nil {
+				ctx = mixins.SetCurrentTenantId(ctx, id)
+			}
+		}
+	}
+	return handler(ctx, req)
+}
 
 var configFile = flag.String("f", "etc/basedataService.yaml", "the config file")
 
@@ -50,6 +73,7 @@ func main() {
 			reflection.Register(grpcServer)
 		}
 	})
+	s.AddUnaryInterceptors(authInterceptor)
 	defer s.Stop()
 
 	fmt.Printf("Starting rpc server at %s...\n", c.ListenOn)

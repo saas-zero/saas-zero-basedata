@@ -2,6 +2,7 @@ package systenantslogic
 
 import (
 	"context"
+	"google.golang.org/protobuf/encoding/prototext"
 	"strconv"
 	"time"
 
@@ -51,6 +52,8 @@ func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 	if in.GetRemark() != "" {
 		create.SetRemark(in.GetRemark())
 	}
+
+	logx.Infof("CreateTenant req:\n%s", prototext.Format(in))
 
 	result, err := create.Save(ctx)
 	if err != nil {
