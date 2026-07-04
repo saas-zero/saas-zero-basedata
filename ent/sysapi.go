@@ -28,16 +28,14 @@ type SysApi struct {
 	Status sysapi.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// api名称，type是api时不能为空
+	// API名称 | API Name
 	APIName string `json:"api_name,omitempty"`
-	// api类型：group分组，api接口，不能为空
+	// 类型：group-分组 api-接口 | API Type
 	APIType sysapi.APIType `json:"api_type,omitempty"`
-	// api路径，type是api时不能为空
+	// API路径 | API Path
 	APIPath string `json:"api_path,omitempty"`
-	// 微服务名称，type是api时不能为空
-	ServiceName string `json:"service_name,omitempty"`
-	// api接口请求类型，type是api时不能为空
-	Method sysapi.Method `json:"method,omitempty"`
+	// 请求方法 | HTTP Method
+	APIMethod sysapi.APIMethod `json:"api_method,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysApiQuery when eager-loading is set.
 	Edges        SysApiEdges `json:"edges"`
@@ -46,20 +44,20 @@ type SysApi struct {
 
 // SysApiEdges holds the relations/edges for other nodes in the graph.
 type SysApiEdges struct {
-	// Roles holds the value of the roles edge.
-	Roles []*SysRole `json:"roles,omitempty"`
+	// Packages holds the value of the packages edge.
+	Packages []*SysPackage `json:"packages,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
 }
 
-// RolesOrErr returns the Roles value or an error if the edge
+// PackagesOrErr returns the Packages value or an error if the edge
 // was not loaded in eager-loading.
-func (e SysApiEdges) RolesOrErr() ([]*SysRole, error) {
+func (e SysApiEdges) PackagesOrErr() ([]*SysPackage, error) {
 	if e.loadedTypes[0] {
-		return e.Roles, nil
+		return e.Packages, nil
 	}
-	return nil, &NotLoadedError{edge: "roles"}
+	return nil, &NotLoadedError{edge: "packages"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -69,7 +67,7 @@ func (*SysApi) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sysapi.FieldID, sysapi.FieldCreatedID:
 			values[i] = new(sql.NullInt64)
-		case sysapi.FieldCreatedBy, sysapi.FieldStatus, sysapi.FieldRemark, sysapi.FieldAPIName, sysapi.FieldAPIType, sysapi.FieldAPIPath, sysapi.FieldServiceName, sysapi.FieldMethod:
+		case sysapi.FieldCreatedBy, sysapi.FieldStatus, sysapi.FieldRemark, sysapi.FieldAPIName, sysapi.FieldAPIType, sysapi.FieldAPIPath, sysapi.FieldAPIMethod:
 			values[i] = new(sql.NullString)
 		case sysapi.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -142,17 +140,11 @@ func (_m *SysApi) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.APIPath = value.String
 			}
-		case sysapi.FieldServiceName:
+		case sysapi.FieldAPIMethod:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field service_name", values[i])
+				return fmt.Errorf("unexpected type %T for field api_method", values[i])
 			} else if value.Valid {
-				_m.ServiceName = value.String
-			}
-		case sysapi.FieldMethod:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field method", values[i])
-			} else if value.Valid {
-				_m.Method = sysapi.Method(value.String)
+				_m.APIMethod = sysapi.APIMethod(value.String)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -167,9 +159,9 @@ func (_m *SysApi) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryRoles queries the "roles" edge of the SysApi entity.
-func (_m *SysApi) QueryRoles() *SysRoleQuery {
-	return NewSysApiClient(_m.config).QueryRoles(_m)
+// QueryPackages queries the "packages" edge of the SysApi entity.
+func (_m *SysApi) QueryPackages() *SysPackageQuery {
+	return NewSysApiClient(_m.config).QueryPackages(_m)
 }
 
 // Update returns a builder for updating this SysApi.
@@ -219,11 +211,8 @@ func (_m *SysApi) String() string {
 	builder.WriteString("api_path=")
 	builder.WriteString(_m.APIPath)
 	builder.WriteString(", ")
-	builder.WriteString("service_name=")
-	builder.WriteString(_m.ServiceName)
-	builder.WriteString(", ")
-	builder.WriteString("method=")
-	builder.WriteString(fmt.Sprintf("%v", _m.Method))
+	builder.WriteString("api_method=")
+	builder.WriteString(fmt.Sprintf("%v", _m.APIMethod))
 	builder.WriteByte(')')
 	return builder.String()
 }

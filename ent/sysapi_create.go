@@ -11,7 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 )
 
 // SysApiCreate is the builder for creating a SysApi entity.
@@ -117,23 +117,17 @@ func (_c *SysApiCreate) SetNillableAPIPath(v *string) *SysApiCreate {
 	return _c
 }
 
-// SetServiceName sets the "service_name" field.
-func (_c *SysApiCreate) SetServiceName(v string) *SysApiCreate {
-	_c.mutation.SetServiceName(v)
+// SetAPIMethod sets the "api_method" field.
+func (_c *SysApiCreate) SetAPIMethod(v sysapi.APIMethod) *SysApiCreate {
+	_c.mutation.SetAPIMethod(v)
 	return _c
 }
 
-// SetNillableServiceName sets the "service_name" field if the given value is not nil.
-func (_c *SysApiCreate) SetNillableServiceName(v *string) *SysApiCreate {
+// SetNillableAPIMethod sets the "api_method" field if the given value is not nil.
+func (_c *SysApiCreate) SetNillableAPIMethod(v *sysapi.APIMethod) *SysApiCreate {
 	if v != nil {
-		_c.SetServiceName(*v)
+		_c.SetAPIMethod(*v)
 	}
-	return _c
-}
-
-// SetMethod sets the "method" field.
-func (_c *SysApiCreate) SetMethod(v sysapi.Method) *SysApiCreate {
-	_c.mutation.SetMethod(v)
 	return _c
 }
 
@@ -143,19 +137,19 @@ func (_c *SysApiCreate) SetID(v int64) *SysApiCreate {
 	return _c
 }
 
-// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
-func (_c *SysApiCreate) AddRoleIDs(ids ...int64) *SysApiCreate {
-	_c.mutation.AddRoleIDs(ids...)
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_c *SysApiCreate) AddPackageIDs(ids ...int64) *SysApiCreate {
+	_c.mutation.AddPackageIDs(ids...)
 	return _c
 }
 
-// AddRoles adds the "roles" edges to the SysRole entity.
-func (_c *SysApiCreate) AddRoles(v ...*SysRole) *SysApiCreate {
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_c *SysApiCreate) AddPackages(v ...*SysPackage) *SysApiCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddRoleIDs(ids...)
+	return _c.AddPackageIDs(ids...)
 }
 
 // Mutation returns the SysApiMutation object of the builder.
@@ -165,7 +159,9 @@ func (_c *SysApiCreate) Mutation() *SysApiMutation {
 
 // Save creates the SysApi in the database.
 func (_c *SysApiCreate) Save(ctx context.Context) (*SysApi, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -192,8 +188,11 @@ func (_c *SysApiCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysApiCreate) defaults() {
+func (_c *SysApiCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysapi.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysapi.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysapi.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
@@ -213,10 +212,7 @@ func (_c *SysApiCreate) defaults() {
 		v := sysapi.DefaultAPIPath
 		_c.mutation.SetAPIPath(v)
 	}
-	if _, ok := _c.mutation.ServiceName(); !ok {
-		v := sysapi.DefaultServiceName
-		_c.mutation.SetServiceName(v)
-	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -277,20 +273,9 @@ func (_c *SysApiCreate) check() error {
 			return &ValidationError{Name: "api_path", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_path": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ServiceName(); !ok {
-		return &ValidationError{Name: "service_name", err: errors.New(`ent: missing required field "SysApi.service_name"`)}
-	}
-	if v, ok := _c.mutation.ServiceName(); ok {
-		if err := sysapi.ServiceNameValidator(v); err != nil {
-			return &ValidationError{Name: "service_name", err: fmt.Errorf(`ent: validator failed for field "SysApi.service_name": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.Method(); !ok {
-		return &ValidationError{Name: "method", err: errors.New(`ent: missing required field "SysApi.method"`)}
-	}
-	if v, ok := _c.mutation.Method(); ok {
-		if err := sysapi.MethodValidator(v); err != nil {
-			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "SysApi.method": %w`, err)}
+	if v, ok := _c.mutation.APIMethod(); ok {
+		if err := sysapi.APIMethodValidator(v); err != nil {
+			return &ValidationError{Name: "api_method", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_method": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
@@ -362,23 +347,19 @@ func (_c *SysApiCreate) createSpec() (*SysApi, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysapi.FieldAPIPath, field.TypeString, value)
 		_node.APIPath = value
 	}
-	if value, ok := _c.mutation.ServiceName(); ok {
-		_spec.SetField(sysapi.FieldServiceName, field.TypeString, value)
-		_node.ServiceName = value
+	if value, ok := _c.mutation.APIMethod(); ok {
+		_spec.SetField(sysapi.FieldAPIMethod, field.TypeEnum, value)
+		_node.APIMethod = value
 	}
-	if value, ok := _c.mutation.Method(); ok {
-		_spec.SetField(sysapi.FieldMethod, field.TypeEnum, value)
-		_node.Method = value
-	}
-	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PackagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

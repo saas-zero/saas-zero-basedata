@@ -10,10 +10,8 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
-	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
@@ -22,6 +20,12 @@ type SysRoleCreate struct {
 	config
 	mutation *SysRoleMutation
 	hooks    []Hook
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_c *SysRoleCreate) SetTenantID(v int64) *SysRoleCreate {
+	_c.mutation.SetTenantID(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -193,21 +197,6 @@ func (_c *SysRoleCreate) AddMenus(v ...*SysMenu) *SysRoleCreate {
 	return _c.AddMenuIDs(ids...)
 }
 
-// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
-func (_c *SysRoleCreate) AddAPIIDs(ids ...int64) *SysRoleCreate {
-	_c.mutation.AddAPIIDs(ids...)
-	return _c
-}
-
-// AddApis adds the "apis" edges to the SysApi entity.
-func (_c *SysRoleCreate) AddApis(v ...*SysApi) *SysRoleCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddAPIIDs(ids...)
-}
-
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
 func (_c *SysRoleCreate) AddUserIDs(ids ...int64) *SysRoleCreate {
 	_c.mutation.AddUserIDs(ids...)
@@ -223,21 +212,6 @@ func (_c *SysRoleCreate) AddUsers(v ...*SysUser) *SysRoleCreate {
 	return _c.AddUserIDs(ids...)
 }
 
-// AddTenantIDs adds the "tenants" edge to the SysTenant entity by IDs.
-func (_c *SysRoleCreate) AddTenantIDs(ids ...int64) *SysRoleCreate {
-	_c.mutation.AddTenantIDs(ids...)
-	return _c
-}
-
-// AddTenants adds the "tenants" edges to the SysTenant entity.
-func (_c *SysRoleCreate) AddTenants(v ...*SysTenant) *SysRoleCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddTenantIDs(ids...)
-}
-
 // Mutation returns the SysRoleMutation object of the builder.
 func (_c *SysRoleCreate) Mutation() *SysRoleMutation {
 	return _c.mutation
@@ -245,7 +219,9 @@ func (_c *SysRoleCreate) Mutation() *SysRoleMutation {
 
 // Save creates the SysRole in the database.
 func (_c *SysRoleCreate) Save(ctx context.Context) (*SysRole, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -272,12 +248,18 @@ func (_c *SysRoleCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysRoleCreate) defaults() {
+func (_c *SysRoleCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysrole.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysrole.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysrole.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysrole.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysrole.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysrole.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -289,10 +271,19 @@ func (_c *SysRoleCreate) defaults() {
 		v := sysrole.DefaultSort
 		_c.mutation.SetSort(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysRoleCreate) check() error {
+	if _, ok := _c.mutation.TenantID(); !ok {
+		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "SysRole.tenant_id"`)}
+	}
+	if v, ok := _c.mutation.TenantID(); ok {
+		if err := sysrole.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysRole.tenant_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysRole.created_at"`)}
 	}
@@ -410,6 +401,10 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 		_node.ID = id
 		_spec.ID.Value = id
 	}
+	if value, ok := _c.mutation.TenantID(); ok {
+		_spec.SetField(sysrole.FieldTenantID, field.TypeInt64, value)
+		_node.TenantID = value
+	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sysrole.FieldCreatedAt, field.TypeTime, value)
 		_node.CreatedAt = value
@@ -482,22 +477,6 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.ApisIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
 	if nodes := _c.mutation.UsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -507,22 +486,6 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := _c.mutation.TenantsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

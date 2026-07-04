@@ -10,7 +10,9 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
@@ -203,20 +205,6 @@ func (_c *SysUserCreate) SetNillableEmail(v *string) *SysUserCreate {
 	return _c
 }
 
-// SetAvatar sets the "avatar" field.
-func (_c *SysUserCreate) SetAvatar(v string) *SysUserCreate {
-	_c.mutation.SetAvatar(v)
-	return _c
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (_c *SysUserCreate) SetNillableAvatar(v *string) *SysUserCreate {
-	if v != nil {
-		_c.SetAvatar(*v)
-	}
-	return _c
-}
-
 // SetDeptID sets the "dept_id" field.
 func (_c *SysUserCreate) SetDeptID(v int64) *SysUserCreate {
 	_c.mutation.SetDeptID(v)
@@ -231,10 +219,110 @@ func (_c *SysUserCreate) SetNillableDeptID(v *int64) *SysUserCreate {
 	return _c
 }
 
+// SetLoginIP sets the "login_ip" field.
+func (_c *SysUserCreate) SetLoginIP(v string) *SysUserCreate {
+	_c.mutation.SetLoginIP(v)
+	return _c
+}
+
+// SetNillableLoginIP sets the "login_ip" field if the given value is not nil.
+func (_c *SysUserCreate) SetNillableLoginIP(v *string) *SysUserCreate {
+	if v != nil {
+		_c.SetLoginIP(*v)
+	}
+	return _c
+}
+
+// SetLoginAt sets the "login_at" field.
+func (_c *SysUserCreate) SetLoginAt(v time.Time) *SysUserCreate {
+	_c.mutation.SetLoginAt(v)
+	return _c
+}
+
+// SetNillableLoginAt sets the "login_at" field if the given value is not nil.
+func (_c *SysUserCreate) SetNillableLoginAt(v *time.Time) *SysUserCreate {
+	if v != nil {
+		_c.SetLoginAt(*v)
+	}
+	return _c
+}
+
+// SetLoginErrorCount sets the "login_error_count" field.
+func (_c *SysUserCreate) SetLoginErrorCount(v int32) *SysUserCreate {
+	_c.mutation.SetLoginErrorCount(v)
+	return _c
+}
+
+// SetNillableLoginErrorCount sets the "login_error_count" field if the given value is not nil.
+func (_c *SysUserCreate) SetNillableLoginErrorCount(v *int32) *SysUserCreate {
+	if v != nil {
+		_c.SetLoginErrorCount(*v)
+	}
+	return _c
+}
+
+// SetLockoutUntil sets the "lockout_until" field.
+func (_c *SysUserCreate) SetLockoutUntil(v time.Time) *SysUserCreate {
+	_c.mutation.SetLockoutUntil(v)
+	return _c
+}
+
+// SetNillableLockoutUntil sets the "lockout_until" field if the given value is not nil.
+func (_c *SysUserCreate) SetNillableLockoutUntil(v *time.Time) *SysUserCreate {
+	if v != nil {
+		_c.SetLockoutUntil(*v)
+	}
+	return _c
+}
+
+// SetPosition sets the "position" field.
+func (_c *SysUserCreate) SetPosition(v string) *SysUserCreate {
+	_c.mutation.SetPosition(v)
+	return _c
+}
+
+// SetNillablePosition sets the "position" field if the given value is not nil.
+func (_c *SysUserCreate) SetNillablePosition(v *string) *SysUserCreate {
+	if v != nil {
+		_c.SetPosition(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysUserCreate) SetID(v int64) *SysUserCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_c *SysUserCreate) SetSysTenantID(id int64) *SysUserCreate {
+	_c.mutation.SetSysTenantID(id)
+	return _c
+}
+
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_c *SysUserCreate) SetSysTenant(v *SysTenant) *SysUserCreate {
+	return _c.SetSysTenantID(v.ID)
+}
+
+// SetSysDeptID sets the "sys_dept" edge to the SysDept entity by ID.
+func (_c *SysUserCreate) SetSysDeptID(id int64) *SysUserCreate {
+	_c.mutation.SetSysDeptID(id)
+	return _c
+}
+
+// SetNillableSysDeptID sets the "sys_dept" edge to the SysDept entity by ID if the given value is not nil.
+func (_c *SysUserCreate) SetNillableSysDeptID(id *int64) *SysUserCreate {
+	if id != nil {
+		_c = _c.SetSysDeptID(*id)
+	}
+	return _c
+}
+
+// SetSysDept sets the "sys_dept" edge to the SysDept entity.
+func (_c *SysUserCreate) SetSysDept(v *SysDept) *SysUserCreate {
+	return _c.SetSysDeptID(v.ID)
 }
 
 // AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
@@ -259,7 +347,9 @@ func (_c *SysUserCreate) Mutation() *SysUserMutation {
 
 // Save creates the SysUser in the database.
 func (_c *SysUserCreate) Save(ctx context.Context) (*SysUser, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -286,12 +376,18 @@ func (_c *SysUserCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysUserCreate) defaults() {
+func (_c *SysUserCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysuser.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysuser.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysuser.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysuser.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysuser.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysuser.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -311,14 +407,23 @@ func (_c *SysUserCreate) defaults() {
 		v := sysuser.DefaultEmail
 		_c.mutation.SetEmail(v)
 	}
-	if _, ok := _c.mutation.Avatar(); !ok {
-		v := sysuser.DefaultAvatar
-		_c.mutation.SetAvatar(v)
-	}
 	if _, ok := _c.mutation.DeptID(); !ok {
 		v := sysuser.DefaultDeptID
 		_c.mutation.SetDeptID(v)
 	}
+	if _, ok := _c.mutation.LoginIP(); !ok {
+		v := sysuser.DefaultLoginIP
+		_c.mutation.SetLoginIP(v)
+	}
+	if _, ok := _c.mutation.LoginErrorCount(); !ok {
+		v := sysuser.DefaultLoginErrorCount
+		_c.mutation.SetLoginErrorCount(v)
+	}
+	if _, ok := _c.mutation.Position(); !ok {
+		v := sysuser.DefaultPosition
+		_c.mutation.SetPosition(v)
+	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -427,21 +532,32 @@ func (_c *SysUserCreate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysUser.email": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.Avatar(); !ok {
-		return &ValidationError{Name: "avatar", err: errors.New(`ent: missing required field "SysUser.avatar"`)}
+	if _, ok := _c.mutation.LoginIP(); !ok {
+		return &ValidationError{Name: "login_ip", err: errors.New(`ent: missing required field "SysUser.login_ip"`)}
 	}
-	if _, ok := _c.mutation.DeptID(); !ok {
-		return &ValidationError{Name: "dept_id", err: errors.New(`ent: missing required field "SysUser.dept_id"`)}
+	if v, ok := _c.mutation.LoginIP(); ok {
+		if err := sysuser.LoginIPValidator(v); err != nil {
+			return &ValidationError{Name: "login_ip", err: fmt.Errorf(`ent: validator failed for field "SysUser.login_ip": %w`, err)}
+		}
 	}
-	if v, ok := _c.mutation.DeptID(); ok {
-		if err := sysuser.DeptIDValidator(v); err != nil {
-			return &ValidationError{Name: "dept_id", err: fmt.Errorf(`ent: validator failed for field "SysUser.dept_id": %w`, err)}
+	if _, ok := _c.mutation.LoginErrorCount(); !ok {
+		return &ValidationError{Name: "login_error_count", err: errors.New(`ent: missing required field "SysUser.login_error_count"`)}
+	}
+	if _, ok := _c.mutation.Position(); !ok {
+		return &ValidationError{Name: "position", err: errors.New(`ent: missing required field "SysUser.position"`)}
+	}
+	if v, ok := _c.mutation.Position(); ok {
+		if err := sysuser.PositionValidator(v); err != nil {
+			return &ValidationError{Name: "position", err: fmt.Errorf(`ent: validator failed for field "SysUser.position": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysuser.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "SysUser.id": %w`, err)}
 		}
+	}
+	if len(_c.mutation.SysTenantIDs()) == 0 {
+		return &ValidationError{Name: "sys_tenant", err: errors.New(`ent: missing required edge "SysUser.sys_tenant"`)}
 	}
 	return nil
 }
@@ -474,10 +590,6 @@ func (_c *SysUserCreate) createSpec() (*SysUser, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(sysuser.FieldTenantID, field.TypeInt64, value)
-		_node.TenantID = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sysuser.FieldCreatedAt, field.TypeTime, value)
@@ -543,13 +655,59 @@ func (_c *SysUserCreate) createSpec() (*SysUser, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysuser.FieldEmail, field.TypeString, value)
 		_node.Email = value
 	}
-	if value, ok := _c.mutation.Avatar(); ok {
-		_spec.SetField(sysuser.FieldAvatar, field.TypeString, value)
-		_node.Avatar = value
+	if value, ok := _c.mutation.LoginIP(); ok {
+		_spec.SetField(sysuser.FieldLoginIP, field.TypeString, value)
+		_node.LoginIP = value
 	}
-	if value, ok := _c.mutation.DeptID(); ok {
-		_spec.SetField(sysuser.FieldDeptID, field.TypeInt64, value)
-		_node.DeptID = value
+	if value, ok := _c.mutation.LoginAt(); ok {
+		_spec.SetField(sysuser.FieldLoginAt, field.TypeTime, value)
+		_node.LoginAt = value
+	}
+	if value, ok := _c.mutation.LoginErrorCount(); ok {
+		_spec.SetField(sysuser.FieldLoginErrorCount, field.TypeInt32, value)
+		_node.LoginErrorCount = value
+	}
+	if value, ok := _c.mutation.LockoutUntil(); ok {
+		_spec.SetField(sysuser.FieldLockoutUntil, field.TypeTime, value)
+		_node.LockoutUntil = value
+	}
+	if value, ok := _c.mutation.Position(); ok {
+		_spec.SetField(sysuser.FieldPosition, field.TypeString, value)
+		_node.Position = value
+	}
+	if nodes := _c.mutation.SysTenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysTenantTable,
+			Columns: []string{sysuser.SysTenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.TenantID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.SysDeptIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysDeptTable,
+			Columns: []string{sysuser.SysDeptColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DeptID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

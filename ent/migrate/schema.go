@@ -17,11 +17,10 @@ var (
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "api_name", Type: field.TypeString, Size: 128, Comment: "api名称，type是api时不能为空", Default: ""},
-		{Name: "api_type", Type: field.TypeEnum, Comment: "api类型：group分组，api接口，不能为空", Enums: []string{"group", "api"}, Default: "group"},
-		{Name: "api_path", Type: field.TypeString, Size: 128, Comment: "api路径，type是api时不能为空", Default: ""},
-		{Name: "service_name", Type: field.TypeString, Size: 128, Comment: "微服务名称，type是api时不能为空", Default: ""},
-		{Name: "method", Type: field.TypeEnum, Comment: "api接口请求类型，type是api时不能为空", Enums: []string{"get", "post", "put", "delete"}},
+		{Name: "api_name", Type: field.TypeString, Size: 128, Comment: "API名称 | API Name", Default: ""},
+		{Name: "api_type", Type: field.TypeEnum, Comment: "类型：group-分组 api-接口 | API Type", Enums: []string{"group", "api"}, Default: "group"},
+		{Name: "api_path", Type: field.TypeString, Size: 128, Comment: "API路径 | API Path", Default: ""},
+		{Name: "api_method", Type: field.TypeEnum, Nullable: true, Comment: "请求方法 | HTTP Method", Enums: []string{"get", "post", "put", "delete"}},
 	}
 	// SysApisTable holds the schema information for the "sys_apis" table.
 	SysApisTable = &schema.Table{
@@ -31,13 +30,8 @@ var (
 		PrimaryKey: []*schema.Column{SysApisColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "sysapi_service_name_method_status",
-				Unique:  false,
-				Columns: []*schema.Column{SysApisColumns[9], SysApisColumns[10], SysApisColumns[4]},
-			},
-			{
-				Name:    "sysapi_api_path_service_name",
-				Unique:  false,
+				Name:    "idx_api_path_method_unique",
+				Unique:  true,
 				Columns: []*schema.Column{SysApisColumns[8], SysApisColumns[9]},
 			},
 			{
@@ -50,51 +44,11 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{SysApisColumns[4]},
 			},
-			{
-				Name:    "idx_service_path_method_unique",
-				Unique:  true,
-				Columns: []*schema.Column{SysApisColumns[9], SysApisColumns[8], SysApisColumns[10]},
-			},
-			{
-				Name:    "sysapi_service_name_status",
-				Unique:  false,
-				Columns: []*schema.Column{SysApisColumns[9], SysApisColumns[4]},
-			},
-		},
-	}
-	// SysConfigsColumns holds the columns for the "sys_configs" table.
-	SysConfigsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
-		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
-		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
-		{Name: "updated_at", Type: field.TypeTime, Comment: "updated Time | 更新时间"},
-		{Name: "updated_id", Type: field.TypeInt64, Comment: "updated ID | 更新人ID"},
-		{Name: "updated_by", Type: field.TypeString, Size: 64, Comment: "updated Name | 更新人名称"},
-		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
-		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称，不能为空"},
-		{Name: "key", Type: field.TypeString, Unique: true, Size: 128, Comment: "key，不能为空"},
-		{Name: "value", Type: field.TypeString, Size: 128, Comment: "值，不能为空"},
-	}
-	// SysConfigsTable holds the schema information for the "sys_configs" table.
-	SysConfigsTable = &schema.Table{
-		Name:       "sys_configs",
-		Comment:    "config Table | 配置表",
-		Columns:    SysConfigsColumns,
-		PrimaryKey: []*schema.Column{SysConfigsColumns[0]},
-		Indexes: []*schema.Index{
-			{
-				Name:    "sysconfig_key_status",
-				Unique:  false,
-				Columns: []*schema.Column{SysConfigsColumns[10], SysConfigsColumns[7]},
-			},
 		},
 	}
 	// SysDeptsColumns holds the columns for the "sys_depts" table.
 	SysDeptsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID，不能为空"},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -106,23 +60,30 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 128, Comment: "名称，不能为空"},
-		{Name: "mobile", Type: field.TypeString, Comment: "手机号码", Default: ""},
-		{Name: "email", Type: field.TypeString, Comment: "邮箱地址", Default: ""},
-		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级id，不能为空,0为第一级", Default: 0},
-		{Name: "leader_id", Type: field.TypeInt64, Comment: "负责人id，不能为空，创建租户的时候顺便创建用户", Default: 0},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "部门电话 | Department Phone", Default: ""},
+		{Name: "email", Type: field.TypeString, Size: 64, Comment: "部门邮箱 | Department Email", Default: ""},
+		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "leader_id", Type: field.TypeInt64, Nullable: true, Comment: "负责人ID | Leader ID", Default: 0},
+		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
 	// SysDeptsTable holds the schema information for the "sys_depts" table.
 	SysDeptsTable = &schema.Table{
 		Name:       "sys_depts",
-		Comment:    "dept Table | 部门表",
+		Comment:    "Department Table | 部门表",
 		Columns:    SysDeptsColumns,
 		PrimaryKey: []*schema.Column{SysDeptsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "sys_depts_sys_users_leader",
-				Columns:    []*schema.Column{SysDeptsColumns[17]},
+				Columns:    []*schema.Column{SysDeptsColumns[16]},
 				RefColumns: []*schema.Column{SysUsersColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "sys_depts_sys_tenants_sys_depts",
+				Columns:    []*schema.Column{SysDeptsColumns[17]},
+				RefColumns: []*schema.Column{SysTenantsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
 		},
@@ -130,14 +91,29 @@ var (
 			{
 				Name:    "sysdept_tenant_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysDeptsColumns[1]},
+				Columns: []*schema.Column{SysDeptsColumns[17]},
+			},
+			{
+				Name:    "sysdept_tenant_id_parent_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[15]},
+			},
+			{
+				Name:    "sysdept_tenant_id_name",
+				Unique:  false,
+				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[12]},
+			},
+			{
+				Name:    "sysdept_tenant_id_status",
+				Unique:  false,
+				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[10]},
 			},
 		},
 	}
 	// SysDictsColumns holds the columns for the "sys_dicts" table.
 	SysDictsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID，不能为空"},
+		{Name: "tenant_id", Type: field.TypeInt64, Nullable: true, Comment: "租户ID | Tenant ID", Default: 0},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -149,14 +125,13 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称，不能为空"},
-		{Name: "key", Type: field.TypeString, Size: 128, Comment: "key，不能为空"},
-		{Name: "is_public", Type: field.TypeBool, Comment: "Whether to be public for everyone | 是否公开词典，无需登录即可访问", Default: false},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "key", Type: field.TypeString, Size: 128, Comment: "键 | Key"},
 	}
 	// SysDictsTable holds the schema information for the "sys_dicts" table.
 	SysDictsTable = &schema.Table{
 		Name:       "sys_dicts",
-		Comment:    "dict Table | 字典表",
+		Comment:    "Dictionary Table | 字典表",
 		Columns:    SysDictsColumns,
 		PrimaryKey: []*schema.Column{SysDictsColumns[0]},
 		Indexes: []*schema.Index{
@@ -180,17 +155,12 @@ var (
 				Unique:  false,
 				Columns: []*schema.Column{SysDictsColumns[1], SysDictsColumns[13]},
 			},
-			{
-				Name:    "sysdict_is_public_status",
-				Unique:  false,
-				Columns: []*schema.Column{SysDictsColumns[15], SysDictsColumns[11]},
-			},
 		},
 	}
 	// SysDictDatasColumns holds the columns for the "sys_dict_datas" table.
 	SysDictDatasColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID，不能为空"},
+		{Name: "tenant_id", Type: field.TypeInt64, Nullable: true, Comment: "租户ID | Tenant ID", Default: 0},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -202,17 +172,25 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称，不能为空"},
-		{Name: "key", Type: field.TypeString, Size: 128, Comment: "key，不能为空"},
-		{Name: "value", Type: field.TypeString, Size: 128, Comment: "值，不能为空"},
-		{Name: "dict_id", Type: field.TypeInt64, Comment: "字典ID，不能为空", Default: 0},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "key", Type: field.TypeString, Size: 128, Comment: "键 | Key"},
+		{Name: "value", Type: field.TypeString, Size: 128, Comment: "值 | Value"},
+		{Name: "dict_id", Type: field.TypeInt64, Comment: "字典ID | Dictionary ID"},
 	}
 	// SysDictDatasTable holds the schema information for the "sys_dict_datas" table.
 	SysDictDatasTable = &schema.Table{
 		Name:       "sys_dict_datas",
-		Comment:    "dict data Table | 字典数据表",
+		Comment:    "Dictionary Data Table | 字典数据表",
 		Columns:    SysDictDatasColumns,
 		PrimaryKey: []*schema.Column{SysDictDatasColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_dict_datas_sys_dicts_sys_dict_datas",
+				Columns:    []*schema.Column{SysDictDatasColumns[16]},
+				RefColumns: []*schema.Column{SysDictsColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "sysdictdata_tenant_id",
@@ -241,9 +219,50 @@ var (
 			},
 		},
 	}
+	// SysLoginLogsColumns holds the columns for the "sys_login_logs" table.
+	SysLoginLogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
+		{Name: "user_id", Type: field.TypeInt64, Comment: "用户ID | User ID"},
+		{Name: "username", Type: field.TypeString, Size: 128, Comment: "用户名 | Username"},
+		{Name: "ip", Type: field.TypeString, Size: 45, Comment: "登录IP | Login IP", Default: ""},
+		{Name: "status", Type: field.TypeEnum, Comment: "状态：success-成功 fail-失败 | Status", Enums: []string{"success", "fail"}, Default: "success"},
+		{Name: "message", Type: field.TypeString, Size: 255, Comment: "消息 | Message", Default: ""},
+		{Name: "login_time", Type: field.TypeTime, Comment: "登录时间 | Login Time"},
+		{Name: "tenant_id", Type: field.TypeInt64, Nullable: true, Comment: "租户ID | Tenant ID", Default: 0},
+	}
+	// SysLoginLogsTable holds the schema information for the "sys_login_logs" table.
+	SysLoginLogsTable = &schema.Table{
+		Name:       "sys_login_logs",
+		Comment:    "Login Log Table | 登录日志表",
+		Columns:    SysLoginLogsColumns,
+		PrimaryKey: []*schema.Column{SysLoginLogsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sysloginlog_user_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysLoginLogsColumns[1]},
+			},
+			{
+				Name:    "sysloginlog_username",
+				Unique:  false,
+				Columns: []*schema.Column{SysLoginLogsColumns[2]},
+			},
+			{
+				Name:    "sysloginlog_login_time",
+				Unique:  false,
+				Columns: []*schema.Column{SysLoginLogsColumns[6]},
+			},
+			{
+				Name:    "sysloginlog_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysLoginLogsColumns[7]},
+			},
+		},
+	}
 	// SysMenusColumns holds the columns for the "sys_menus" table.
 	SysMenusColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
+		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -256,52 +275,138 @@ var (
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
-		{Name: "menu_type", Type: field.TypeEnum, Comment: "类型：directory-目录，menu-菜单，button-按钮", Enums: []string{"directory", "menu", "button"}, Default: "directory"},
-		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称，不能为空"},
-		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级id，不能为空,0为第一级", Default: 0},
-		{Name: "component", Type: field.TypeString, Nullable: true, Comment: "The path of vue file | 组件路径", Default: ""},
-		{Name: "path", Type: field.TypeString, Nullable: true, Comment: "Index path | 菜单路由路径", Default: ""},
-		{Name: "icon", Type: field.TypeString, Comment: "Menu icon | 菜单图标"},
-		{Name: "is_redirect", Type: field.TypeBool, Comment: "是否重定向", Default: false},
-		{Name: "redirect", Type: field.TypeString, Nullable: true, Comment: "重定向", Default: ""},
+		{Name: "menu_type", Type: field.TypeEnum, Comment: "类型：directory-目录 menu-菜单 button-按钮 | Menu Type", Enums: []string{"directory", "menu", "button"}, Default: "directory"},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "component", Type: field.TypeString, Nullable: true, Comment: "组件路径 | Component Path", Default: ""},
+		{Name: "path", Type: field.TypeString, Nullable: true, Comment: "路由路径 | Route Path", Default: ""},
+		{Name: "icon", Type: field.TypeString, Comment: "图标 | Icon", Default: ""},
+		{Name: "is_redirect", Type: field.TypeBool, Comment: "是否重定向 | Is Redirect", Default: false},
+		{Name: "redirect", Type: field.TypeString, Nullable: true, Comment: "重定向路径 | Redirect Path", Default: ""},
+		{Name: "hidden", Type: field.TypeBool, Comment: "是否隐藏 | Hidden", Default: false},
 	}
 	// SysMenusTable holds the schema information for the "sys_menus" table.
 	SysMenusTable = &schema.Table{
 		Name:       "sys_menus",
-		Comment:    "menu Table | 菜单表",
+		Comment:    "Menu Table | 菜单表",
 		Columns:    SysMenusColumns,
 		PrimaryKey: []*schema.Column{SysMenusColumns[0]},
 		Indexes: []*schema.Index{
 			{
+				Name:    "sysmenu_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysMenusColumns[1]},
+			},
+			{
 				Name:    "sysmenu_parent_id_sort",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[15], SysMenusColumns[12]},
+				Columns: []*schema.Column{SysMenusColumns[16], SysMenusColumns[13]},
 			},
 			{
 				Name:    "sysmenu_path",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[17]},
+				Columns: []*schema.Column{SysMenusColumns[18]},
 			},
 			{
 				Name:    "sysmenu_name",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[14]},
+				Columns: []*schema.Column{SysMenusColumns[15]},
 			},
 			{
 				Name:    "sysmenu_parent_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[15]},
+				Columns: []*schema.Column{SysMenusColumns[16]},
 			},
 			{
 				Name:    "sysmenu_menu_type_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[13], SysMenusColumns[10]},
+				Columns: []*schema.Column{SysMenusColumns[14], SysMenusColumns[11]},
+			},
+		},
+	}
+	// SysOperationLogsColumns holds the columns for the "sys_operation_logs" table.
+	SysOperationLogsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
+		{Name: "module", Type: field.TypeString, Size: 64, Comment: "模块 | Module", Default: ""},
+		{Name: "operation", Type: field.TypeString, Size: 128, Comment: "操作 | Operation", Default: ""},
+		{Name: "method", Type: field.TypeString, Size: 12, Comment: "请求方式 | HTTP Method", Default: ""},
+		{Name: "path", Type: field.TypeString, Size: 255, Comment: "请求路径 | Request Path", Default: ""},
+		{Name: "params", Type: field.TypeString, Nullable: true, Comment: "请求参数 | Request Params"},
+		{Name: "result", Type: field.TypeString, Nullable: true, Comment: "返回结果 | Response Result"},
+		{Name: "duration", Type: field.TypeInt64, Comment: "耗时(ms) | Duration", Default: 0},
+		{Name: "ip", Type: field.TypeString, Size: 45, Comment: "操作IP | Operator IP", Default: ""},
+		{Name: "user_agent", Type: field.TypeString, Nullable: true, Size: 500, Comment: "User-Agent | 用户代理"},
+		{Name: "operator_id", Type: field.TypeInt64, Comment: "操作人ID | Operator ID", Default: 0},
+		{Name: "operator_name", Type: field.TypeString, Size: 64, Comment: "操作人名称 | Operator Name", Default: ""},
+		{Name: "tenant_id", Type: field.TypeInt64, Nullable: true, Comment: "租户ID | Tenant ID", Default: 0},
+	}
+	// SysOperationLogsTable holds the schema information for the "sys_operation_logs" table.
+	SysOperationLogsTable = &schema.Table{
+		Name:       "sys_operation_logs",
+		Comment:    "Operation Log Table | 操作日志表",
+		Columns:    SysOperationLogsColumns,
+		PrimaryKey: []*schema.Column{SysOperationLogsColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "sysoperationlog_module_operation",
+				Unique:  false,
+				Columns: []*schema.Column{SysOperationLogsColumns[1], SysOperationLogsColumns[2]},
+			},
+			{
+				Name:    "sysoperationlog_operator_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysOperationLogsColumns[10]},
+			},
+			{
+				Name:    "sysoperationlog_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysOperationLogsColumns[12]},
+			},
+			{
+				Name:    "sysoperationlog_path",
+				Unique:  false,
+				Columns: []*schema.Column{SysOperationLogsColumns[4]},
+			},
+		},
+	}
+	// SysPackagesColumns holds the columns for the "sys_packages" table.
+	SysPackagesColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
+		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
+		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
+		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "updated Time | 更新时间"},
+		{Name: "updated_id", Type: field.TypeInt64, Comment: "updated ID | 更新人ID"},
+		{Name: "updated_by", Type: field.TypeString, Size: 64, Comment: "updated Name | 更新人名称"},
+		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
+		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
+		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "套餐名称 | Package Name"},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 64, Comment: "套餐编码 | Package Code"},
+	}
+	// SysPackagesTable holds the schema information for the "sys_packages" table.
+	SysPackagesTable = &schema.Table{
+		Name:       "sys_packages",
+		Comment:    "Package Table | 套餐表",
+		Columns:    SysPackagesColumns,
+		PrimaryKey: []*schema.Column{SysPackagesColumns[0]},
+		Indexes: []*schema.Index{
+			{
+				Name:    "syspackage_status",
+				Unique:  false,
+				Columns: []*schema.Column{SysPackagesColumns[7]},
+			},
+			{
+				Name:    "syspackage_sort",
+				Unique:  false,
+				Columns: []*schema.Column{SysPackagesColumns[8]},
 			},
 		},
 	}
 	// SysRolesColumns holds the columns for the "sys_roles" table.
 	SysRolesColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
+		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -314,25 +419,30 @@ var (
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称，不能为空"},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "code，不能为空"},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码 | Code"},
 	}
 	// SysRolesTable holds the schema information for the "sys_roles" table.
 	SysRolesTable = &schema.Table{
 		Name:       "sys_roles",
-		Comment:    "role Table | 角色表",
+		Comment:    "Role Table | 角色表",
 		Columns:    SysRolesColumns,
 		PrimaryKey: []*schema.Column{SysRolesColumns[0]},
 		Indexes: []*schema.Index{
 			{
+				Name:    "sysrole_tenant_id",
+				Unique:  false,
+				Columns: []*schema.Column{SysRolesColumns[1]},
+			},
+			{
 				Name:    "sysrole_sort",
 				Unique:  false,
-				Columns: []*schema.Column{SysRolesColumns[11]},
+				Columns: []*schema.Column{SysRolesColumns[12]},
 			},
 			{
 				Name:    "sysrole_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysRolesColumns[10]},
+				Columns: []*schema.Column{SysRolesColumns[11]},
 			},
 		},
 	}
@@ -350,23 +460,24 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 128, Comment: "名称，不能为空"},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码，不能为空"},
-		{Name: "admin_id", Type: field.TypeInt64, Comment: "管理员id，不能为空，创建租户的时候顺便创建用户"},
-		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级id，不能为空,0为第一级", Default: 0},
-		{Name: "sys_dept_sys_tenant", Type: field.TypeInt64, Nullable: true},
+		{Name: "name", Type: field.TypeString, Unique: true, Size: 128, Comment: "名称 | Name"},
+		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码 | Code"},
+		{Name: "admin_id", Type: field.TypeInt64, Comment: "管理员ID | Admin ID"},
+		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "expired_at", Type: field.TypeTime, Nullable: true, Comment: "到期时间 | Expired At"},
+		{Name: "package_id", Type: field.TypeInt64, Nullable: true, Comment: "套餐ID | Package ID", Default: 0},
 	}
 	// SysTenantsTable holds the schema information for the "sys_tenants" table.
 	SysTenantsTable = &schema.Table{
 		Name:       "sys_tenants",
-		Comment:    "tenant Table | 租户表",
+		Comment:    "Tenant Table | 租户表",
 		Columns:    SysTenantsColumns,
 		PrimaryKey: []*schema.Column{SysTenantsColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "sys_tenants_sys_depts_sys_tenant",
-				Columns:    []*schema.Column{SysTenantsColumns[16]},
-				RefColumns: []*schema.Column{SysDeptsColumns[0]},
+				Symbol:     "sys_tenants_sys_packages_tenants",
+				Columns:    []*schema.Column{SysTenantsColumns[17]},
+				RefColumns: []*schema.Column{SysPackagesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 		},
@@ -386,7 +497,6 @@ var (
 	// SysUsersColumns holds the columns for the "sys_users" table.
 	SysUsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID，不能为空"},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -398,74 +508,134 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "username", Type: field.TypeString, Unique: true, Size: 128, Comment: "名称，不能为空"},
-		{Name: "password", Type: field.TypeString, Size: 255, Comment: "密码，不能为空"},
-		{Name: "nickname", Type: field.TypeString, Size: 128, Comment: "昵称，不能为空", Default: ""},
-		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "手机号码,注意国外的号码", Default: ""},
-		{Name: "email", Type: field.TypeString, Size: 64, Comment: "邮箱地址", Default: ""},
-		{Name: "avatar", Type: field.TypeString, Comment: "头像路径", Default: ""},
-		{Name: "dept_id", Type: field.TypeInt64, Comment: "部门ID，不能为空", Default: 0},
-		{Name: "sys_dept_sys_user", Type: field.TypeInt64, Nullable: true},
+		{Name: "username", Type: field.TypeString, Unique: true, Size: 128, Comment: "用户名 | Username"},
+		{Name: "password", Type: field.TypeString, Size: 255, Comment: "密码 | Password"},
+		{Name: "nickname", Type: field.TypeString, Size: 128, Comment: "昵称 | Nickname", Default: ""},
+		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "手机号码 | Mobile", Default: ""},
+		{Name: "email", Type: field.TypeString, Size: 64, Comment: "邮箱 | Email", Default: ""},
+		{Name: "login_ip", Type: field.TypeString, Size: 64, Comment: "最后登录IP | Last Login IP", Default: ""},
+		{Name: "login_at", Type: field.TypeTime, Nullable: true, Comment: "最后登录时间 | Last Login At"},
+		{Name: "login_error_count", Type: field.TypeInt32, Comment: "连续登录错误次数 | Login Error Count", Default: 0},
+		{Name: "lockout_until", Type: field.TypeTime, Nullable: true, Comment: "锁定截止时间 | Lockout Until"},
+		{Name: "position", Type: field.TypeString, Size: 64, Comment: "岗位 | Position", Default: ""},
+		{Name: "dept_id", Type: field.TypeInt64, Nullable: true, Comment: "部门ID | Department ID", Default: 0},
+		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
 	// SysUsersTable holds the schema information for the "sys_users" table.
 	SysUsersTable = &schema.Table{
 		Name:       "sys_users",
-		Comment:    "user Table | 用户表",
+		Comment:    "User Table | 用户表",
 		Columns:    SysUsersColumns,
 		PrimaryKey: []*schema.Column{SysUsersColumns[0]},
 		ForeignKeys: []*schema.ForeignKey{
 			{
-				Symbol:     "sys_users_sys_depts_sys_user",
-				Columns:    []*schema.Column{SysUsersColumns[20]},
+				Symbol:     "sys_users_sys_depts_sys_users",
+				Columns:    []*schema.Column{SysUsersColumns[22]},
 				RefColumns: []*schema.Column{SysDeptsColumns[0]},
 				OnDelete:   schema.SetNull,
+			},
+			{
+				Symbol:     "sys_users_sys_tenants_sys_users",
+				Columns:    []*schema.Column{SysUsersColumns[23]},
+				RefColumns: []*schema.Column{SysTenantsColumns[0]},
+				OnDelete:   schema.NoAction,
 			},
 		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "sysuser_tenant_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1]},
+				Columns: []*schema.Column{SysUsersColumns[23]},
 			},
 			{
 				Name:    "sysuser_tenant_id_username",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[13]},
+				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[12]},
 			},
 			{
 				Name:    "sysuser_tenant_id_mobile",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[16]},
+				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[15]},
 			},
 			{
 				Name:    "sysuser_tenant_id_email",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[17]},
+				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[16]},
 			},
 			{
 				Name:    "sysuser_dept_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[19]},
+				Columns: []*schema.Column{SysUsersColumns[22]},
 			},
 			{
 				Name:    "sysuser_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[11]},
+				Columns: []*schema.Column{SysUsersColumns[10]},
 			},
 			{
 				Name:    "sysuser_created_at",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[2]},
+				Columns: []*schema.Column{SysUsersColumns[1]},
 			},
 			{
 				Name:    "sysuser_tenant_id_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[11]},
+				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[10]},
 			},
 			{
 				Name:    "sysuser_tenant_id_dept_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysUsersColumns[1], SysUsersColumns[19]},
+				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[22]},
+			},
+		},
+	}
+	// SysPackageMenusColumns holds the columns for the "sys_package_menus" table.
+	SysPackageMenusColumns = []*schema.Column{
+		{Name: "sys_package_id", Type: field.TypeInt64},
+		{Name: "sys_menu_id", Type: field.TypeInt64},
+	}
+	// SysPackageMenusTable holds the schema information for the "sys_package_menus" table.
+	SysPackageMenusTable = &schema.Table{
+		Name:       "sys_package_menus",
+		Columns:    SysPackageMenusColumns,
+		PrimaryKey: []*schema.Column{SysPackageMenusColumns[0], SysPackageMenusColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_package_menus_sys_package_id",
+				Columns:    []*schema.Column{SysPackageMenusColumns[0]},
+				RefColumns: []*schema.Column{SysPackagesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "sys_package_menus_sys_menu_id",
+				Columns:    []*schema.Column{SysPackageMenusColumns[1]},
+				RefColumns: []*schema.Column{SysMenusColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
+	// SysPackageApisColumns holds the columns for the "sys_package_apis" table.
+	SysPackageApisColumns = []*schema.Column{
+		{Name: "sys_package_id", Type: field.TypeInt64},
+		{Name: "sys_api_id", Type: field.TypeInt64},
+	}
+	// SysPackageApisTable holds the schema information for the "sys_package_apis" table.
+	SysPackageApisTable = &schema.Table{
+		Name:       "sys_package_apis",
+		Columns:    SysPackageApisColumns,
+		PrimaryKey: []*schema.Column{SysPackageApisColumns[0], SysPackageApisColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_package_apis_sys_package_id",
+				Columns:    []*schema.Column{SysPackageApisColumns[0]},
+				RefColumns: []*schema.Column{SysPackagesColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "sys_package_apis_sys_api_id",
+				Columns:    []*schema.Column{SysPackageApisColumns[1]},
+				RefColumns: []*schema.Column{SysApisColumns[0]},
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -490,56 +660,6 @@ var (
 				Symbol:     "sys_role_menus_sys_menu_id",
 				Columns:    []*schema.Column{SysRoleMenusColumns[1]},
 				RefColumns: []*schema.Column{SysMenusColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// SysRoleApisColumns holds the columns for the "sys_role_apis" table.
-	SysRoleApisColumns = []*schema.Column{
-		{Name: "sys_role_id", Type: field.TypeInt64},
-		{Name: "sys_api_id", Type: field.TypeInt64},
-	}
-	// SysRoleApisTable holds the schema information for the "sys_role_apis" table.
-	SysRoleApisTable = &schema.Table{
-		Name:       "sys_role_apis",
-		Columns:    SysRoleApisColumns,
-		PrimaryKey: []*schema.Column{SysRoleApisColumns[0], SysRoleApisColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "sys_role_apis_sys_role_id",
-				Columns:    []*schema.Column{SysRoleApisColumns[0]},
-				RefColumns: []*schema.Column{SysRolesColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "sys_role_apis_sys_api_id",
-				Columns:    []*schema.Column{SysRoleApisColumns[1]},
-				RefColumns: []*schema.Column{SysApisColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
-	// SysTenantRolesColumns holds the columns for the "sys_tenant_roles" table.
-	SysTenantRolesColumns = []*schema.Column{
-		{Name: "sys_tenant_id", Type: field.TypeInt64},
-		{Name: "sys_role_id", Type: field.TypeInt64},
-	}
-	// SysTenantRolesTable holds the schema information for the "sys_tenant_roles" table.
-	SysTenantRolesTable = &schema.Table{
-		Name:       "sys_tenant_roles",
-		Columns:    SysTenantRolesColumns,
-		PrimaryKey: []*schema.Column{SysTenantRolesColumns[0], SysTenantRolesColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "sys_tenant_roles_sys_tenant_id",
-				Columns:    []*schema.Column{SysTenantRolesColumns[0]},
-				RefColumns: []*schema.Column{SysTenantsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "sys_tenant_roles_sys_role_id",
-				Columns:    []*schema.Column{SysTenantRolesColumns[1]},
-				RefColumns: []*schema.Column{SysRolesColumns[0]},
 				OnDelete:   schema.Cascade,
 			},
 		},
@@ -572,17 +692,19 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		SysApisTable,
-		SysConfigsTable,
 		SysDeptsTable,
 		SysDictsTable,
 		SysDictDatasTable,
+		SysLoginLogsTable,
 		SysMenusTable,
+		SysOperationLogsTable,
+		SysPackagesTable,
 		SysRolesTable,
 		SysTenantsTable,
 		SysUsersTable,
+		SysPackageMenusTable,
+		SysPackageApisTable,
 		SysRoleMenusTable,
-		SysRoleApisTable,
-		SysTenantRolesTable,
 		SysUserRolesTable,
 	}
 )
@@ -591,39 +713,48 @@ func init() {
 	SysApisTable.Annotation = &entsql.Annotation{
 		Table: "sys_apis",
 	}
-	SysConfigsTable.Annotation = &entsql.Annotation{
-		Table: "sys_configs",
-	}
 	SysDeptsTable.ForeignKeys[0].RefTable = SysUsersTable
+	SysDeptsTable.ForeignKeys[1].RefTable = SysTenantsTable
 	SysDeptsTable.Annotation = &entsql.Annotation{
 		Table: "sys_depts",
 	}
 	SysDictsTable.Annotation = &entsql.Annotation{
 		Table: "sys_dicts",
 	}
+	SysDictDatasTable.ForeignKeys[0].RefTable = SysDictsTable
 	SysDictDatasTable.Annotation = &entsql.Annotation{
 		Table: "sys_dict_datas",
+	}
+	SysLoginLogsTable.Annotation = &entsql.Annotation{
+		Table: "sys_login_logs",
 	}
 	SysMenusTable.Annotation = &entsql.Annotation{
 		Table: "sys_menus",
 	}
+	SysOperationLogsTable.Annotation = &entsql.Annotation{
+		Table: "sys_operation_logs",
+	}
+	SysPackagesTable.Annotation = &entsql.Annotation{
+		Table: "sys_packages",
+	}
 	SysRolesTable.Annotation = &entsql.Annotation{
 		Table: "sys_roles",
 	}
-	SysTenantsTable.ForeignKeys[0].RefTable = SysDeptsTable
+	SysTenantsTable.ForeignKeys[0].RefTable = SysPackagesTable
 	SysTenantsTable.Annotation = &entsql.Annotation{
 		Table: "sys_tenants",
 	}
 	SysUsersTable.ForeignKeys[0].RefTable = SysDeptsTable
+	SysUsersTable.ForeignKeys[1].RefTable = SysTenantsTable
 	SysUsersTable.Annotation = &entsql.Annotation{
 		Table: "sys_users",
 	}
+	SysPackageMenusTable.ForeignKeys[0].RefTable = SysPackagesTable
+	SysPackageMenusTable.ForeignKeys[1].RefTable = SysMenusTable
+	SysPackageApisTable.ForeignKeys[0].RefTable = SysPackagesTable
+	SysPackageApisTable.ForeignKeys[1].RefTable = SysApisTable
 	SysRoleMenusTable.ForeignKeys[0].RefTable = SysRolesTable
 	SysRoleMenusTable.ForeignKeys[1].RefTable = SysMenusTable
-	SysRoleApisTable.ForeignKeys[0].RefTable = SysRolesTable
-	SysRoleApisTable.ForeignKeys[1].RefTable = SysApisTable
-	SysTenantRolesTable.ForeignKeys[0].RefTable = SysTenantsTable
-	SysTenantRolesTable.ForeignKeys[1].RefTable = SysRolesTable
 	SysUserRolesTable.ForeignKeys[0].RefTable = SysUsersTable
 	SysUserRolesTable.ForeignKeys[1].RefTable = SysRolesTable
 }

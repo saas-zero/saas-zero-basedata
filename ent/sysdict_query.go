@@ -4,6 +4,7 @@ package ent
 
 import (
 	"context"
+	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -13,15 +14,17 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
 // SysDictQuery is the builder for querying SysDict entities.
 type SysDictQuery struct {
 	config
-	ctx        *QueryContext
-	order      []sysdict.OrderOption
-	inters     []Interceptor
-	predicates []predicate.SysDict
+	ctx              *QueryContext
+	order            []sysdict.OrderOption
+	inters           []Interceptor
+	predicates       []predicate.SysDict
+	withSysDictDatas *SysDictDataQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -56,6 +59,28 @@ func (_q *SysDictQuery) Unique(unique bool) *SysDictQuery {
 func (_q *SysDictQuery) Order(o ...sysdict.OrderOption) *SysDictQuery {
 	_q.order = append(_q.order, o...)
 	return _q
+}
+
+// QuerySysDictDatas chains the current query on the "sys_dict_datas" edge.
+func (_q *SysDictQuery) QuerySysDictDatas() *SysDictDataQuery {
+	query := (&SysDictDataClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdict.Table, sysdict.FieldID, selector),
+			sqlgraph.To(sysdictdata.Table, sysdictdata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysdict.SysDictDatasTable, sysdict.SysDictDatasColumn),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
 }
 
 // First returns the first SysDict entity from the query.
@@ -245,15 +270,27 @@ func (_q *SysDictQuery) Clone() *SysDictQuery {
 		return nil
 	}
 	return &SysDictQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]sysdict.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.SysDict{}, _q.predicates...),
+		config:           _q.config,
+		ctx:              _q.ctx.Clone(),
+		order:            append([]sysdict.OrderOption{}, _q.order...),
+		inters:           append([]Interceptor{}, _q.inters...),
+		predicates:       append([]predicate.SysDict{}, _q.predicates...),
+		withSysDictDatas: _q.withSysDictDatas.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
+}
+
+// WithSysDictDatas tells the query-builder to eager-load the nodes that are connected to
+// the "sys_dict_datas" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *SysDictQuery) WithSysDictDatas(opts ...func(*SysDictDataQuery)) *SysDictQuery {
+	query := (&SysDictDataClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withSysDictDatas = query
+	return _q
 }
 
 // GroupBy is used to group vertices by one or more fields/columns.
@@ -332,8 +369,11 @@ func (_q *SysDictQuery) prepareQuery(ctx context.Context) error {
 
 func (_q *SysDictQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysDict, error) {
 	var (
-		nodes = []*SysDict{}
-		_spec = _q.querySpec()
+		nodes       = []*SysDict{}
+		_spec       = _q.querySpec()
+		loadedTypes = [1]bool{
+			_q.withSysDictDatas != nil,
+		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysDict).scanValues(nil, columns)
@@ -341,6 +381,7 @@ func (_q *SysDictQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysD
 	_spec.Assign = func(columns []string, values []any) error {
 		node := &SysDict{config: _q.config}
 		nodes = append(nodes, node)
+		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
 	for i := range hooks {
@@ -352,7 +393,45 @@ func (_q *SysDictQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysD
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
+	if query := _q.withSysDictDatas; query != nil {
+		if err := _q.loadSysDictDatas(ctx, query, nodes,
+			func(n *SysDict) { n.Edges.SysDictDatas = []*SysDictData{} },
+			func(n *SysDict, e *SysDictData) { n.Edges.SysDictDatas = append(n.Edges.SysDictDatas, e) }); err != nil {
+			return nil, err
+		}
+	}
 	return nodes, nil
+}
+
+func (_q *SysDictQuery) loadSysDictDatas(ctx context.Context, query *SysDictDataQuery, nodes []*SysDict, init func(*SysDict), assign func(*SysDict, *SysDictData)) error {
+	fks := make([]driver.Value, 0, len(nodes))
+	nodeids := make(map[int64]*SysDict)
+	for i := range nodes {
+		fks = append(fks, nodes[i].ID)
+		nodeids[nodes[i].ID] = nodes[i]
+		if init != nil {
+			init(nodes[i])
+		}
+	}
+	if len(query.ctx.Fields) > 0 {
+		query.ctx.AppendFieldOnce(sysdictdata.FieldDictID)
+	}
+	query.Where(predicate.SysDictData(func(s *sql.Selector) {
+		s.Where(sql.InValues(s.C(sysdict.SysDictDatasColumn), fks...))
+	}))
+	neighbors, err := query.All(ctx)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		fk := n.DictID
+		node, ok := nodeids[fk]
+		if !ok {
+			return fmt.Errorf(`unexpected referenced foreign-key "dict_id" returned %v for node %v`, fk, n.ID)
+		}
+		assign(node, n)
+	}
+	return nil
 }
 
 func (_q *SysDictQuery) sqlCount(ctx context.Context) (int, error) {

@@ -55,6 +55,11 @@ func IDLTE(id int64) predicate.SysRole {
 	return predicate.SysRole(sql.FieldLTE(FieldID, id))
 }
 
+// TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
+func TenantID(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldTenantID, v))
+}
+
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldCreatedAt, v))
@@ -118,6 +123,46 @@ func Name(v string) predicate.SysRole {
 // Code applies equality check predicate on the "code" field. It's identical to CodeEQ.
 func Code(v string) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldCode, v))
+}
+
+// TenantIDEQ applies the EQ predicate on the "tenant_id" field.
+func TenantIDEQ(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldTenantID, v))
+}
+
+// TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
+func TenantIDNEQ(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldNEQ(FieldTenantID, v))
+}
+
+// TenantIDIn applies the In predicate on the "tenant_id" field.
+func TenantIDIn(vs ...int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldIn(FieldTenantID, vs...))
+}
+
+// TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
+func TenantIDNotIn(vs ...int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldNotIn(FieldTenantID, vs...))
+}
+
+// TenantIDGT applies the GT predicate on the "tenant_id" field.
+func TenantIDGT(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldGT(FieldTenantID, v))
+}
+
+// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
+func TenantIDGTE(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldGTE(FieldTenantID, v))
+}
+
+// TenantIDLT applies the LT predicate on the "tenant_id" field.
+func TenantIDLT(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldLT(FieldTenantID, v))
+}
+
+// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
+func TenantIDLTE(v int64) predicate.SysRole {
+	return predicate.SysRole(sql.FieldLTE(FieldTenantID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -873,29 +918,6 @@ func HasMenusWith(preds ...predicate.SysMenu) predicate.SysRole {
 	})
 }
 
-// HasApis applies the HasEdge predicate on the "apis" edge.
-func HasApis() predicate.SysRole {
-	return predicate.SysRole(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, ApisTable, ApisPrimaryKey...),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasApisWith applies the HasEdge predicate on the "apis" edge with a given conditions (other predicates).
-func HasApisWith(preds ...predicate.SysApi) predicate.SysRole {
-	return predicate.SysRole(func(s *sql.Selector) {
-		step := newApisStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // HasUsers applies the HasEdge predicate on the "users" edge.
 func HasUsers() predicate.SysRole {
 	return predicate.SysRole(func(s *sql.Selector) {
@@ -911,29 +933,6 @@ func HasUsers() predicate.SysRole {
 func HasUsersWith(preds ...predicate.SysUser) predicate.SysRole {
 	return predicate.SysRole(func(s *sql.Selector) {
 		step := newUsersStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasTenants applies the HasEdge predicate on the "tenants" edge.
-func HasTenants() predicate.SysRole {
-	return predicate.SysRole(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, TenantsTable, TenantsPrimaryKey...),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasTenantsWith applies the HasEdge predicate on the "tenants" edge with a given conditions (other predicates).
-func HasTenantsWith(preds ...predicate.SysTenant) predicate.SysRole {
-	return predicate.SysRole(func(s *sql.Selector) {
-		step := newTenantsStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

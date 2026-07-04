@@ -10,8 +10,10 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysTenantCreate is the builder for creating a SysTenant entity.
@@ -175,25 +177,87 @@ func (_c *SysTenantCreate) SetNillableParentID(v *int64) *SysTenantCreate {
 	return _c
 }
 
+// SetPackageID sets the "package_id" field.
+func (_c *SysTenantCreate) SetPackageID(v int64) *SysTenantCreate {
+	_c.mutation.SetPackageID(v)
+	return _c
+}
+
+// SetNillablePackageID sets the "package_id" field if the given value is not nil.
+func (_c *SysTenantCreate) SetNillablePackageID(v *int64) *SysTenantCreate {
+	if v != nil {
+		_c.SetPackageID(*v)
+	}
+	return _c
+}
+
+// SetExpiredAt sets the "expired_at" field.
+func (_c *SysTenantCreate) SetExpiredAt(v time.Time) *SysTenantCreate {
+	_c.mutation.SetExpiredAt(v)
+	return _c
+}
+
+// SetNillableExpiredAt sets the "expired_at" field if the given value is not nil.
+func (_c *SysTenantCreate) SetNillableExpiredAt(v *time.Time) *SysTenantCreate {
+	if v != nil {
+		_c.SetExpiredAt(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysTenantCreate) SetID(v int64) *SysTenantCreate {
 	_c.mutation.SetID(v)
 	return _c
 }
 
-// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
-func (_c *SysTenantCreate) AddRoleIDs(ids ...int64) *SysTenantCreate {
-	_c.mutation.AddRoleIDs(ids...)
+// AddSysUserIDs adds the "sys_users" edge to the SysUser entity by IDs.
+func (_c *SysTenantCreate) AddSysUserIDs(ids ...int64) *SysTenantCreate {
+	_c.mutation.AddSysUserIDs(ids...)
 	return _c
 }
 
-// AddRoles adds the "roles" edges to the SysRole entity.
-func (_c *SysTenantCreate) AddRoles(v ...*SysRole) *SysTenantCreate {
+// AddSysUsers adds the "sys_users" edges to the SysUser entity.
+func (_c *SysTenantCreate) AddSysUsers(v ...*SysUser) *SysTenantCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _c.AddRoleIDs(ids...)
+	return _c.AddSysUserIDs(ids...)
+}
+
+// AddSysDeptIDs adds the "sys_depts" edge to the SysDept entity by IDs.
+func (_c *SysTenantCreate) AddSysDeptIDs(ids ...int64) *SysTenantCreate {
+	_c.mutation.AddSysDeptIDs(ids...)
+	return _c
+}
+
+// AddSysDepts adds the "sys_depts" edges to the SysDept entity.
+func (_c *SysTenantCreate) AddSysDepts(v ...*SysDept) *SysTenantCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddSysDeptIDs(ids...)
+}
+
+// SetSysPackageID sets the "sys_package" edge to the SysPackage entity by ID.
+func (_c *SysTenantCreate) SetSysPackageID(id int64) *SysTenantCreate {
+	_c.mutation.SetSysPackageID(id)
+	return _c
+}
+
+// SetNillableSysPackageID sets the "sys_package" edge to the SysPackage entity by ID if the given value is not nil.
+func (_c *SysTenantCreate) SetNillableSysPackageID(id *int64) *SysTenantCreate {
+	if id != nil {
+		_c = _c.SetSysPackageID(*id)
+	}
+	return _c
+}
+
+// SetSysPackage sets the "sys_package" edge to the SysPackage entity.
+func (_c *SysTenantCreate) SetSysPackage(v *SysPackage) *SysTenantCreate {
+	return _c.SetSysPackageID(v.ID)
 }
 
 // Mutation returns the SysTenantMutation object of the builder.
@@ -203,7 +267,9 @@ func (_c *SysTenantCreate) Mutation() *SysTenantMutation {
 
 // Save creates the SysTenant in the database.
 func (_c *SysTenantCreate) Save(ctx context.Context) (*SysTenant, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -230,12 +296,18 @@ func (_c *SysTenantCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysTenantCreate) defaults() {
+func (_c *SysTenantCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if systenant.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized systenant.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := systenant.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if systenant.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized systenant.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := systenant.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -247,6 +319,11 @@ func (_c *SysTenantCreate) defaults() {
 		v := systenant.DefaultParentID
 		_c.mutation.SetParentID(v)
 	}
+	if _, ok := _c.mutation.PackageID(); !ok {
+		v := systenant.DefaultPackageID
+		_c.mutation.SetPackageID(v)
+	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -329,14 +406,6 @@ func (_c *SysTenantCreate) check() error {
 	if v, ok := _c.mutation.AdminID(); ok {
 		if err := systenant.AdminIDValidator(v); err != nil {
 			return &ValidationError{Name: "admin_id", err: fmt.Errorf(`ent: validator failed for field "SysTenant.admin_id": %w`, err)}
-		}
-	}
-	if _, ok := _c.mutation.ParentID(); !ok {
-		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "SysTenant.parent_id"`)}
-	}
-	if v, ok := _c.mutation.ParentID(); ok {
-		if err := systenant.ParentIDValidator(v); err != nil {
-			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysTenant.parent_id": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
@@ -436,20 +505,57 @@ func (_c *SysTenantCreate) createSpec() (*SysTenant, *sqlgraph.CreateSpec) {
 		_spec.SetField(systenant.FieldParentID, field.TypeInt64, value)
 		_node.ParentID = value
 	}
-	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
+	if value, ok := _c.mutation.ExpiredAt(); ok {
+		_spec.SetField(systenant.FieldExpiredAt, field.TypeTime, value)
+		_node.ExpiredAt = value
+	}
+	if nodes := _c.mutation.SysUsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
+			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   systenant.RolesTable,
-			Columns: systenant.RolesPrimaryKey,
+			Table:   systenant.SysUsersTable,
+			Columns: []string{systenant.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.SysDeptsIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   systenant.SysDeptsTable,
+			Columns: []string{systenant.SysDeptsColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.SysPackageIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   systenant.SysPackageTable,
+			Columns: []string{systenant.SysPackageColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.PackageID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec

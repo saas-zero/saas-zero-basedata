@@ -12,7 +12,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 )
 
 // SysApiUpdate is the builder for updating SysApi entities.
@@ -104,47 +104,39 @@ func (_u *SysApiUpdate) SetNillableAPIPath(v *string) *SysApiUpdate {
 	return _u
 }
 
-// SetServiceName sets the "service_name" field.
-func (_u *SysApiUpdate) SetServiceName(v string) *SysApiUpdate {
-	_u.mutation.SetServiceName(v)
+// SetAPIMethod sets the "api_method" field.
+func (_u *SysApiUpdate) SetAPIMethod(v sysapi.APIMethod) *SysApiUpdate {
+	_u.mutation.SetAPIMethod(v)
 	return _u
 }
 
-// SetNillableServiceName sets the "service_name" field if the given value is not nil.
-func (_u *SysApiUpdate) SetNillableServiceName(v *string) *SysApiUpdate {
+// SetNillableAPIMethod sets the "api_method" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableAPIMethod(v *sysapi.APIMethod) *SysApiUpdate {
 	if v != nil {
-		_u.SetServiceName(*v)
+		_u.SetAPIMethod(*v)
 	}
 	return _u
 }
 
-// SetMethod sets the "method" field.
-func (_u *SysApiUpdate) SetMethod(v sysapi.Method) *SysApiUpdate {
-	_u.mutation.SetMethod(v)
+// ClearAPIMethod clears the value of the "api_method" field.
+func (_u *SysApiUpdate) ClearAPIMethod() *SysApiUpdate {
+	_u.mutation.ClearAPIMethod()
 	return _u
 }
 
-// SetNillableMethod sets the "method" field if the given value is not nil.
-func (_u *SysApiUpdate) SetNillableMethod(v *sysapi.Method) *SysApiUpdate {
-	if v != nil {
-		_u.SetMethod(*v)
-	}
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_u *SysApiUpdate) AddPackageIDs(ids ...int64) *SysApiUpdate {
+	_u.mutation.AddPackageIDs(ids...)
 	return _u
 }
 
-// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
-func (_u *SysApiUpdate) AddRoleIDs(ids ...int64) *SysApiUpdate {
-	_u.mutation.AddRoleIDs(ids...)
-	return _u
-}
-
-// AddRoles adds the "roles" edges to the SysRole entity.
-func (_u *SysApiUpdate) AddRoles(v ...*SysRole) *SysApiUpdate {
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_u *SysApiUpdate) AddPackages(v ...*SysPackage) *SysApiUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddRoleIDs(ids...)
+	return _u.AddPackageIDs(ids...)
 }
 
 // Mutation returns the SysApiMutation object of the builder.
@@ -152,25 +144,25 @@ func (_u *SysApiUpdate) Mutation() *SysApiMutation {
 	return _u.mutation
 }
 
-// ClearRoles clears all "roles" edges to the SysRole entity.
-func (_u *SysApiUpdate) ClearRoles() *SysApiUpdate {
-	_u.mutation.ClearRoles()
+// ClearPackages clears all "packages" edges to the SysPackage entity.
+func (_u *SysApiUpdate) ClearPackages() *SysApiUpdate {
+	_u.mutation.ClearPackages()
 	return _u
 }
 
-// RemoveRoleIDs removes the "roles" edge to SysRole entities by IDs.
-func (_u *SysApiUpdate) RemoveRoleIDs(ids ...int64) *SysApiUpdate {
-	_u.mutation.RemoveRoleIDs(ids...)
+// RemovePackageIDs removes the "packages" edge to SysPackage entities by IDs.
+func (_u *SysApiUpdate) RemovePackageIDs(ids ...int64) *SysApiUpdate {
+	_u.mutation.RemovePackageIDs(ids...)
 	return _u
 }
 
-// RemoveRoles removes "roles" edges to SysRole entities.
-func (_u *SysApiUpdate) RemoveRoles(v ...*SysRole) *SysApiUpdate {
+// RemovePackages removes "packages" edges to SysPackage entities.
+func (_u *SysApiUpdate) RemovePackages(v ...*SysPackage) *SysApiUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveRoleIDs(ids...)
+	return _u.RemovePackageIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -227,14 +219,9 @@ func (_u *SysApiUpdate) check() error {
 			return &ValidationError{Name: "api_path", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_path": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ServiceName(); ok {
-		if err := sysapi.ServiceNameValidator(v); err != nil {
-			return &ValidationError{Name: "service_name", err: fmt.Errorf(`ent: validator failed for field "SysApi.service_name": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Method(); ok {
-		if err := sysapi.MethodValidator(v); err != nil {
-			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "SysApi.method": %w`, err)}
+	if v, ok := _u.mutation.APIMethod(); ok {
+		if err := sysapi.APIMethodValidator(v); err != nil {
+			return &ValidationError{Name: "api_method", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_method": %w`, err)}
 		}
 	}
 	return nil
@@ -270,34 +257,34 @@ func (_u *SysApiUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.APIPath(); ok {
 		_spec.SetField(sysapi.FieldAPIPath, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ServiceName(); ok {
-		_spec.SetField(sysapi.FieldServiceName, field.TypeString, value)
+	if value, ok := _u.mutation.APIMethod(); ok {
+		_spec.SetField(sysapi.FieldAPIMethod, field.TypeEnum, value)
 	}
-	if value, ok := _u.mutation.Method(); ok {
-		_spec.SetField(sysapi.FieldMethod, field.TypeEnum, value)
+	if _u.mutation.APIMethodCleared() {
+		_spec.ClearField(sysapi.FieldAPIMethod, field.TypeEnum)
 	}
-	if _u.mutation.RolesCleared() {
+	if _u.mutation.PackagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+	if nodes := _u.mutation.RemovedPackagesIDs(); len(nodes) > 0 && !_u.mutation.PackagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -305,15 +292,15 @@ func (_u *SysApiUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PackagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -417,47 +404,39 @@ func (_u *SysApiUpdateOne) SetNillableAPIPath(v *string) *SysApiUpdateOne {
 	return _u
 }
 
-// SetServiceName sets the "service_name" field.
-func (_u *SysApiUpdateOne) SetServiceName(v string) *SysApiUpdateOne {
-	_u.mutation.SetServiceName(v)
+// SetAPIMethod sets the "api_method" field.
+func (_u *SysApiUpdateOne) SetAPIMethod(v sysapi.APIMethod) *SysApiUpdateOne {
+	_u.mutation.SetAPIMethod(v)
 	return _u
 }
 
-// SetNillableServiceName sets the "service_name" field if the given value is not nil.
-func (_u *SysApiUpdateOne) SetNillableServiceName(v *string) *SysApiUpdateOne {
+// SetNillableAPIMethod sets the "api_method" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableAPIMethod(v *sysapi.APIMethod) *SysApiUpdateOne {
 	if v != nil {
-		_u.SetServiceName(*v)
+		_u.SetAPIMethod(*v)
 	}
 	return _u
 }
 
-// SetMethod sets the "method" field.
-func (_u *SysApiUpdateOne) SetMethod(v sysapi.Method) *SysApiUpdateOne {
-	_u.mutation.SetMethod(v)
+// ClearAPIMethod clears the value of the "api_method" field.
+func (_u *SysApiUpdateOne) ClearAPIMethod() *SysApiUpdateOne {
+	_u.mutation.ClearAPIMethod()
 	return _u
 }
 
-// SetNillableMethod sets the "method" field if the given value is not nil.
-func (_u *SysApiUpdateOne) SetNillableMethod(v *sysapi.Method) *SysApiUpdateOne {
-	if v != nil {
-		_u.SetMethod(*v)
-	}
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_u *SysApiUpdateOne) AddPackageIDs(ids ...int64) *SysApiUpdateOne {
+	_u.mutation.AddPackageIDs(ids...)
 	return _u
 }
 
-// AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
-func (_u *SysApiUpdateOne) AddRoleIDs(ids ...int64) *SysApiUpdateOne {
-	_u.mutation.AddRoleIDs(ids...)
-	return _u
-}
-
-// AddRoles adds the "roles" edges to the SysRole entity.
-func (_u *SysApiUpdateOne) AddRoles(v ...*SysRole) *SysApiUpdateOne {
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_u *SysApiUpdateOne) AddPackages(v ...*SysPackage) *SysApiUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.AddRoleIDs(ids...)
+	return _u.AddPackageIDs(ids...)
 }
 
 // Mutation returns the SysApiMutation object of the builder.
@@ -465,25 +444,25 @@ func (_u *SysApiUpdateOne) Mutation() *SysApiMutation {
 	return _u.mutation
 }
 
-// ClearRoles clears all "roles" edges to the SysRole entity.
-func (_u *SysApiUpdateOne) ClearRoles() *SysApiUpdateOne {
-	_u.mutation.ClearRoles()
+// ClearPackages clears all "packages" edges to the SysPackage entity.
+func (_u *SysApiUpdateOne) ClearPackages() *SysApiUpdateOne {
+	_u.mutation.ClearPackages()
 	return _u
 }
 
-// RemoveRoleIDs removes the "roles" edge to SysRole entities by IDs.
-func (_u *SysApiUpdateOne) RemoveRoleIDs(ids ...int64) *SysApiUpdateOne {
-	_u.mutation.RemoveRoleIDs(ids...)
+// RemovePackageIDs removes the "packages" edge to SysPackage entities by IDs.
+func (_u *SysApiUpdateOne) RemovePackageIDs(ids ...int64) *SysApiUpdateOne {
+	_u.mutation.RemovePackageIDs(ids...)
 	return _u
 }
 
-// RemoveRoles removes "roles" edges to SysRole entities.
-func (_u *SysApiUpdateOne) RemoveRoles(v ...*SysRole) *SysApiUpdateOne {
+// RemovePackages removes "packages" edges to SysPackage entities.
+func (_u *SysApiUpdateOne) RemovePackages(v ...*SysPackage) *SysApiUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
 	}
-	return _u.RemoveRoleIDs(ids...)
+	return _u.RemovePackageIDs(ids...)
 }
 
 // Where appends a list predicates to the SysApiUpdate builder.
@@ -553,14 +532,9 @@ func (_u *SysApiUpdateOne) check() error {
 			return &ValidationError{Name: "api_path", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_path": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ServiceName(); ok {
-		if err := sysapi.ServiceNameValidator(v); err != nil {
-			return &ValidationError{Name: "service_name", err: fmt.Errorf(`ent: validator failed for field "SysApi.service_name": %w`, err)}
-		}
-	}
-	if v, ok := _u.mutation.Method(); ok {
-		if err := sysapi.MethodValidator(v); err != nil {
-			return &ValidationError{Name: "method", err: fmt.Errorf(`ent: validator failed for field "SysApi.method": %w`, err)}
+	if v, ok := _u.mutation.APIMethod(); ok {
+		if err := sysapi.APIMethodValidator(v); err != nil {
+			return &ValidationError{Name: "api_method", err: fmt.Errorf(`ent: validator failed for field "SysApi.api_method": %w`, err)}
 		}
 	}
 	return nil
@@ -613,34 +587,34 @@ func (_u *SysApiUpdateOne) sqlSave(ctx context.Context) (_node *SysApi, err erro
 	if value, ok := _u.mutation.APIPath(); ok {
 		_spec.SetField(sysapi.FieldAPIPath, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.ServiceName(); ok {
-		_spec.SetField(sysapi.FieldServiceName, field.TypeString, value)
+	if value, ok := _u.mutation.APIMethod(); ok {
+		_spec.SetField(sysapi.FieldAPIMethod, field.TypeEnum, value)
 	}
-	if value, ok := _u.mutation.Method(); ok {
-		_spec.SetField(sysapi.FieldMethod, field.TypeEnum, value)
+	if _u.mutation.APIMethodCleared() {
+		_spec.ClearField(sysapi.FieldAPIMethod, field.TypeEnum)
 	}
-	if _u.mutation.RolesCleared() {
+	if _u.mutation.PackagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedRolesIDs(); len(nodes) > 0 && !_u.mutation.RolesCleared() {
+	if nodes := _u.mutation.RemovedPackagesIDs(); len(nodes) > 0 && !_u.mutation.PackagesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -648,15 +622,15 @@ func (_u *SysApiUpdateOne) sqlSave(ctx context.Context) (_node *SysApi, err erro
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RolesIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PackagesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: true,
-			Table:   sysapi.RolesTable,
-			Columns: sysapi.RolesPrimaryKey,
+			Table:   sysapi.PackagesTable,
+			Columns: sysapi.PackagesPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

@@ -9,9 +9,6 @@ import (
 // SysApi is the predicate function for sysapi builders.
 type SysApi func(*sql.Selector)
 
-// SysConfig is the predicate function for sysconfig builders.
-type SysConfig func(*sql.Selector)
-
 // SysDept is the predicate function for sysdept builders.
 type SysDept func(*sql.Selector)
 
@@ -21,8 +18,17 @@ type SysDict func(*sql.Selector)
 // SysDictData is the predicate function for sysdictdata builders.
 type SysDictData func(*sql.Selector)
 
+// SysLoginLog is the predicate function for sysloginlog builders.
+type SysLoginLog func(*sql.Selector)
+
 // SysMenu is the predicate function for sysmenu builders.
 type SysMenu func(*sql.Selector)
+
+// SysOperationLog is the predicate function for sysoperationlog builders.
+type SysOperationLog func(*sql.Selector)
+
+// SysPackage is the predicate function for syspackage builders.
+type SysPackage func(*sql.Selector)
 
 // SysRole is the predicate function for sysrole builders.
 type SysRole func(*sql.Selector)

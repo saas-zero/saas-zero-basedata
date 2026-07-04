@@ -155,26 +155,6 @@ func TenantIDNotIn(vs ...int64) predicate.SysDept {
 	return predicate.SysDept(sql.FieldNotIn(FieldTenantID, vs...))
 }
 
-// TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v int64) predicate.SysDept {
-	return predicate.SysDept(sql.FieldGT(FieldTenantID, v))
-}
-
-// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v int64) predicate.SysDept {
-	return predicate.SysDept(sql.FieldGTE(FieldTenantID, v))
-}
-
-// TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v int64) predicate.SysDept {
-	return predicate.SysDept(sql.FieldLT(FieldTenantID, v))
-}
-
-// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v int64) predicate.SysDept {
-	return predicate.SysDept(sql.FieldLTE(FieldTenantID, v))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.SysDept {
 	return predicate.SysDept(sql.FieldEQ(FieldCreatedAt, v))
@@ -785,6 +765,16 @@ func LeaderIDNotIn(vs ...int64) predicate.SysDept {
 	return predicate.SysDept(sql.FieldNotIn(FieldLeaderID, vs...))
 }
 
+// LeaderIDIsNil applies the IsNil predicate on the "leader_id" field.
+func LeaderIDIsNil() predicate.SysDept {
+	return predicate.SysDept(sql.FieldIsNull(FieldLeaderID))
+}
+
+// LeaderIDNotNil applies the NotNil predicate on the "leader_id" field.
+func LeaderIDNotNil() predicate.SysDept {
+	return predicate.SysDept(sql.FieldNotNull(FieldLeaderID))
+}
+
 // MobileEQ applies the EQ predicate on the "mobile" field.
 func MobileEQ(v string) predicate.SysDept {
 	return predicate.SysDept(sql.FieldEQ(FieldMobile, v))
@@ -960,7 +950,7 @@ func HasSysTenant() predicate.SysDept {
 	return predicate.SysDept(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, SysTenantTable, SysTenantColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, SysTenantTable, SysTenantColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
@@ -1001,21 +991,21 @@ func HasLeaderWith(preds ...predicate.SysUser) predicate.SysDept {
 	})
 }
 
-// HasSysUser applies the HasEdge predicate on the "sys_user" edge.
-func HasSysUser() predicate.SysDept {
+// HasSysUsers applies the HasEdge predicate on the "sys_users" edge.
+func HasSysUsers() predicate.SysDept {
 	return predicate.SysDept(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, SysUserTable, SysUserColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, SysUsersTable, SysUsersColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasSysUserWith applies the HasEdge predicate on the "sys_user" edge with a given conditions (other predicates).
-func HasSysUserWith(preds ...predicate.SysUser) predicate.SysDept {
+// HasSysUsersWith applies the HasEdge predicate on the "sys_users" edge with a given conditions (other predicates).
+func HasSysUsersWith(preds ...predicate.SysUser) predicate.SysDept {
 	return predicate.SysDept(func(s *sql.Selector) {
-		step := newSysUserStep()
+		step := newSysUsersStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

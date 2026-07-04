@@ -12,7 +12,9 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
@@ -31,7 +33,6 @@ func (_u *SysUserUpdate) Where(ps ...predicate.SysUser) *SysUserUpdate {
 
 // SetTenantID sets the "tenant_id" field.
 func (_u *SysUserUpdate) SetTenantID(v int64) *SysUserUpdate {
-	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
@@ -41,12 +42,6 @@ func (_u *SysUserUpdate) SetNillableTenantID(v *int64) *SysUserUpdate {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysUserUpdate) AddTenantID(v int64) *SysUserUpdate {
-	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -256,23 +251,8 @@ func (_u *SysUserUpdate) SetNillableEmail(v *string) *SysUserUpdate {
 	return _u
 }
 
-// SetAvatar sets the "avatar" field.
-func (_u *SysUserUpdate) SetAvatar(v string) *SysUserUpdate {
-	_u.mutation.SetAvatar(v)
-	return _u
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (_u *SysUserUpdate) SetNillableAvatar(v *string) *SysUserUpdate {
-	if v != nil {
-		_u.SetAvatar(*v)
-	}
-	return _u
-}
-
 // SetDeptID sets the "dept_id" field.
 func (_u *SysUserUpdate) SetDeptID(v int64) *SysUserUpdate {
-	_u.mutation.ResetDeptID()
 	_u.mutation.SetDeptID(v)
 	return _u
 }
@@ -285,10 +265,129 @@ func (_u *SysUserUpdate) SetNillableDeptID(v *int64) *SysUserUpdate {
 	return _u
 }
 
-// AddDeptID adds value to the "dept_id" field.
-func (_u *SysUserUpdate) AddDeptID(v int64) *SysUserUpdate {
-	_u.mutation.AddDeptID(v)
+// ClearDeptID clears the value of the "dept_id" field.
+func (_u *SysUserUpdate) ClearDeptID() *SysUserUpdate {
+	_u.mutation.ClearDeptID()
 	return _u
+}
+
+// SetLoginIP sets the "login_ip" field.
+func (_u *SysUserUpdate) SetLoginIP(v string) *SysUserUpdate {
+	_u.mutation.SetLoginIP(v)
+	return _u
+}
+
+// SetNillableLoginIP sets the "login_ip" field if the given value is not nil.
+func (_u *SysUserUpdate) SetNillableLoginIP(v *string) *SysUserUpdate {
+	if v != nil {
+		_u.SetLoginIP(*v)
+	}
+	return _u
+}
+
+// SetLoginAt sets the "login_at" field.
+func (_u *SysUserUpdate) SetLoginAt(v time.Time) *SysUserUpdate {
+	_u.mutation.SetLoginAt(v)
+	return _u
+}
+
+// SetNillableLoginAt sets the "login_at" field if the given value is not nil.
+func (_u *SysUserUpdate) SetNillableLoginAt(v *time.Time) *SysUserUpdate {
+	if v != nil {
+		_u.SetLoginAt(*v)
+	}
+	return _u
+}
+
+// ClearLoginAt clears the value of the "login_at" field.
+func (_u *SysUserUpdate) ClearLoginAt() *SysUserUpdate {
+	_u.mutation.ClearLoginAt()
+	return _u
+}
+
+// SetLoginErrorCount sets the "login_error_count" field.
+func (_u *SysUserUpdate) SetLoginErrorCount(v int32) *SysUserUpdate {
+	_u.mutation.ResetLoginErrorCount()
+	_u.mutation.SetLoginErrorCount(v)
+	return _u
+}
+
+// SetNillableLoginErrorCount sets the "login_error_count" field if the given value is not nil.
+func (_u *SysUserUpdate) SetNillableLoginErrorCount(v *int32) *SysUserUpdate {
+	if v != nil {
+		_u.SetLoginErrorCount(*v)
+	}
+	return _u
+}
+
+// AddLoginErrorCount adds value to the "login_error_count" field.
+func (_u *SysUserUpdate) AddLoginErrorCount(v int32) *SysUserUpdate {
+	_u.mutation.AddLoginErrorCount(v)
+	return _u
+}
+
+// SetLockoutUntil sets the "lockout_until" field.
+func (_u *SysUserUpdate) SetLockoutUntil(v time.Time) *SysUserUpdate {
+	_u.mutation.SetLockoutUntil(v)
+	return _u
+}
+
+// SetNillableLockoutUntil sets the "lockout_until" field if the given value is not nil.
+func (_u *SysUserUpdate) SetNillableLockoutUntil(v *time.Time) *SysUserUpdate {
+	if v != nil {
+		_u.SetLockoutUntil(*v)
+	}
+	return _u
+}
+
+// ClearLockoutUntil clears the value of the "lockout_until" field.
+func (_u *SysUserUpdate) ClearLockoutUntil() *SysUserUpdate {
+	_u.mutation.ClearLockoutUntil()
+	return _u
+}
+
+// SetPosition sets the "position" field.
+func (_u *SysUserUpdate) SetPosition(v string) *SysUserUpdate {
+	_u.mutation.SetPosition(v)
+	return _u
+}
+
+// SetNillablePosition sets the "position" field if the given value is not nil.
+func (_u *SysUserUpdate) SetNillablePosition(v *string) *SysUserUpdate {
+	if v != nil {
+		_u.SetPosition(*v)
+	}
+	return _u
+}
+
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_u *SysUserUpdate) SetSysTenantID(id int64) *SysUserUpdate {
+	_u.mutation.SetSysTenantID(id)
+	return _u
+}
+
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysUserUpdate) SetSysTenant(v *SysTenant) *SysUserUpdate {
+	return _u.SetSysTenantID(v.ID)
+}
+
+// SetSysDeptID sets the "sys_dept" edge to the SysDept entity by ID.
+func (_u *SysUserUpdate) SetSysDeptID(id int64) *SysUserUpdate {
+	_u.mutation.SetSysDeptID(id)
+	return _u
+}
+
+// SetNillableSysDeptID sets the "sys_dept" edge to the SysDept entity by ID if the given value is not nil.
+func (_u *SysUserUpdate) SetNillableSysDeptID(id *int64) *SysUserUpdate {
+	if id != nil {
+		_u = _u.SetSysDeptID(*id)
+	}
+	return _u
+}
+
+// SetSysDept sets the "sys_dept" edge to the SysDept entity.
+func (_u *SysUserUpdate) SetSysDept(v *SysDept) *SysUserUpdate {
+	return _u.SetSysDeptID(v.ID)
 }
 
 // AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
@@ -309,6 +408,18 @@ func (_u *SysUserUpdate) AddRoles(v ...*SysRole) *SysUserUpdate {
 // Mutation returns the SysUserMutation object of the builder.
 func (_u *SysUserUpdate) Mutation() *SysUserMutation {
 	return _u.mutation
+}
+
+// ClearSysTenant clears the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysUserUpdate) ClearSysTenant() *SysUserUpdate {
+	_u.mutation.ClearSysTenant()
+	return _u
+}
+
+// ClearSysDept clears the "sys_dept" edge to the SysDept entity.
+func (_u *SysUserUpdate) ClearSysDept() *SysUserUpdate {
+	_u.mutation.ClearSysDept()
+	return _u
 }
 
 // ClearRoles clears all "roles" edges to the SysRole entity.
@@ -411,10 +522,18 @@ func (_u *SysUserUpdate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysUser.email": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.DeptID(); ok {
-		if err := sysuser.DeptIDValidator(v); err != nil {
-			return &ValidationError{Name: "dept_id", err: fmt.Errorf(`ent: validator failed for field "SysUser.dept_id": %w`, err)}
+	if v, ok := _u.mutation.LoginIP(); ok {
+		if err := sysuser.LoginIPValidator(v); err != nil {
+			return &ValidationError{Name: "login_ip", err: fmt.Errorf(`ent: validator failed for field "SysUser.login_ip": %w`, err)}
 		}
+	}
+	if v, ok := _u.mutation.Position(); ok {
+		if err := sysuser.PositionValidator(v); err != nil {
+			return &ValidationError{Name: "position", err: fmt.Errorf(`ent: validator failed for field "SysUser.position": %w`, err)}
+		}
+	}
+	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysUser.sys_tenant"`)
 	}
 	return nil
 }
@@ -430,12 +549,6 @@ func (_u *SysUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysuser.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysuser.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysuser.FieldUpdatedAt, field.TypeTime, value)
@@ -491,14 +604,87 @@ func (_u *SysUserUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(sysuser.FieldEmail, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Avatar(); ok {
-		_spec.SetField(sysuser.FieldAvatar, field.TypeString, value)
+	if value, ok := _u.mutation.LoginIP(); ok {
+		_spec.SetField(sysuser.FieldLoginIP, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DeptID(); ok {
-		_spec.SetField(sysuser.FieldDeptID, field.TypeInt64, value)
+	if value, ok := _u.mutation.LoginAt(); ok {
+		_spec.SetField(sysuser.FieldLoginAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.AddedDeptID(); ok {
-		_spec.AddField(sysuser.FieldDeptID, field.TypeInt64, value)
+	if _u.mutation.LoginAtCleared() {
+		_spec.ClearField(sysuser.FieldLoginAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.LoginErrorCount(); ok {
+		_spec.SetField(sysuser.FieldLoginErrorCount, field.TypeInt32, value)
+	}
+	if value, ok := _u.mutation.AddedLoginErrorCount(); ok {
+		_spec.AddField(sysuser.FieldLoginErrorCount, field.TypeInt32, value)
+	}
+	if value, ok := _u.mutation.LockoutUntil(); ok {
+		_spec.SetField(sysuser.FieldLockoutUntil, field.TypeTime, value)
+	}
+	if _u.mutation.LockoutUntilCleared() {
+		_spec.ClearField(sysuser.FieldLockoutUntil, field.TypeTime)
+	}
+	if value, ok := _u.mutation.Position(); ok {
+		_spec.SetField(sysuser.FieldPosition, field.TypeString, value)
+	}
+	if _u.mutation.SysTenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysTenantTable,
+			Columns: []string{sysuser.SysTenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SysTenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysTenantTable,
+			Columns: []string{sysuser.SysTenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.SysDeptCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysDeptTable,
+			Columns: []string{sysuser.SysDeptColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SysDeptIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysDeptTable,
+			Columns: []string{sysuser.SysDeptColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -567,7 +753,6 @@ type SysUserUpdateOne struct {
 
 // SetTenantID sets the "tenant_id" field.
 func (_u *SysUserUpdateOne) SetTenantID(v int64) *SysUserUpdateOne {
-	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
@@ -577,12 +762,6 @@ func (_u *SysUserUpdateOne) SetNillableTenantID(v *int64) *SysUserUpdateOne {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysUserUpdateOne) AddTenantID(v int64) *SysUserUpdateOne {
-	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -792,23 +971,8 @@ func (_u *SysUserUpdateOne) SetNillableEmail(v *string) *SysUserUpdateOne {
 	return _u
 }
 
-// SetAvatar sets the "avatar" field.
-func (_u *SysUserUpdateOne) SetAvatar(v string) *SysUserUpdateOne {
-	_u.mutation.SetAvatar(v)
-	return _u
-}
-
-// SetNillableAvatar sets the "avatar" field if the given value is not nil.
-func (_u *SysUserUpdateOne) SetNillableAvatar(v *string) *SysUserUpdateOne {
-	if v != nil {
-		_u.SetAvatar(*v)
-	}
-	return _u
-}
-
 // SetDeptID sets the "dept_id" field.
 func (_u *SysUserUpdateOne) SetDeptID(v int64) *SysUserUpdateOne {
-	_u.mutation.ResetDeptID()
 	_u.mutation.SetDeptID(v)
 	return _u
 }
@@ -821,10 +985,129 @@ func (_u *SysUserUpdateOne) SetNillableDeptID(v *int64) *SysUserUpdateOne {
 	return _u
 }
 
-// AddDeptID adds value to the "dept_id" field.
-func (_u *SysUserUpdateOne) AddDeptID(v int64) *SysUserUpdateOne {
-	_u.mutation.AddDeptID(v)
+// ClearDeptID clears the value of the "dept_id" field.
+func (_u *SysUserUpdateOne) ClearDeptID() *SysUserUpdateOne {
+	_u.mutation.ClearDeptID()
 	return _u
+}
+
+// SetLoginIP sets the "login_ip" field.
+func (_u *SysUserUpdateOne) SetLoginIP(v string) *SysUserUpdateOne {
+	_u.mutation.SetLoginIP(v)
+	return _u
+}
+
+// SetNillableLoginIP sets the "login_ip" field if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillableLoginIP(v *string) *SysUserUpdateOne {
+	if v != nil {
+		_u.SetLoginIP(*v)
+	}
+	return _u
+}
+
+// SetLoginAt sets the "login_at" field.
+func (_u *SysUserUpdateOne) SetLoginAt(v time.Time) *SysUserUpdateOne {
+	_u.mutation.SetLoginAt(v)
+	return _u
+}
+
+// SetNillableLoginAt sets the "login_at" field if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillableLoginAt(v *time.Time) *SysUserUpdateOne {
+	if v != nil {
+		_u.SetLoginAt(*v)
+	}
+	return _u
+}
+
+// ClearLoginAt clears the value of the "login_at" field.
+func (_u *SysUserUpdateOne) ClearLoginAt() *SysUserUpdateOne {
+	_u.mutation.ClearLoginAt()
+	return _u
+}
+
+// SetLoginErrorCount sets the "login_error_count" field.
+func (_u *SysUserUpdateOne) SetLoginErrorCount(v int32) *SysUserUpdateOne {
+	_u.mutation.ResetLoginErrorCount()
+	_u.mutation.SetLoginErrorCount(v)
+	return _u
+}
+
+// SetNillableLoginErrorCount sets the "login_error_count" field if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillableLoginErrorCount(v *int32) *SysUserUpdateOne {
+	if v != nil {
+		_u.SetLoginErrorCount(*v)
+	}
+	return _u
+}
+
+// AddLoginErrorCount adds value to the "login_error_count" field.
+func (_u *SysUserUpdateOne) AddLoginErrorCount(v int32) *SysUserUpdateOne {
+	_u.mutation.AddLoginErrorCount(v)
+	return _u
+}
+
+// SetLockoutUntil sets the "lockout_until" field.
+func (_u *SysUserUpdateOne) SetLockoutUntil(v time.Time) *SysUserUpdateOne {
+	_u.mutation.SetLockoutUntil(v)
+	return _u
+}
+
+// SetNillableLockoutUntil sets the "lockout_until" field if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillableLockoutUntil(v *time.Time) *SysUserUpdateOne {
+	if v != nil {
+		_u.SetLockoutUntil(*v)
+	}
+	return _u
+}
+
+// ClearLockoutUntil clears the value of the "lockout_until" field.
+func (_u *SysUserUpdateOne) ClearLockoutUntil() *SysUserUpdateOne {
+	_u.mutation.ClearLockoutUntil()
+	return _u
+}
+
+// SetPosition sets the "position" field.
+func (_u *SysUserUpdateOne) SetPosition(v string) *SysUserUpdateOne {
+	_u.mutation.SetPosition(v)
+	return _u
+}
+
+// SetNillablePosition sets the "position" field if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillablePosition(v *string) *SysUserUpdateOne {
+	if v != nil {
+		_u.SetPosition(*v)
+	}
+	return _u
+}
+
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_u *SysUserUpdateOne) SetSysTenantID(id int64) *SysUserUpdateOne {
+	_u.mutation.SetSysTenantID(id)
+	return _u
+}
+
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysUserUpdateOne) SetSysTenant(v *SysTenant) *SysUserUpdateOne {
+	return _u.SetSysTenantID(v.ID)
+}
+
+// SetSysDeptID sets the "sys_dept" edge to the SysDept entity by ID.
+func (_u *SysUserUpdateOne) SetSysDeptID(id int64) *SysUserUpdateOne {
+	_u.mutation.SetSysDeptID(id)
+	return _u
+}
+
+// SetNillableSysDeptID sets the "sys_dept" edge to the SysDept entity by ID if the given value is not nil.
+func (_u *SysUserUpdateOne) SetNillableSysDeptID(id *int64) *SysUserUpdateOne {
+	if id != nil {
+		_u = _u.SetSysDeptID(*id)
+	}
+	return _u
+}
+
+// SetSysDept sets the "sys_dept" edge to the SysDept entity.
+func (_u *SysUserUpdateOne) SetSysDept(v *SysDept) *SysUserUpdateOne {
+	return _u.SetSysDeptID(v.ID)
 }
 
 // AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
@@ -845,6 +1128,18 @@ func (_u *SysUserUpdateOne) AddRoles(v ...*SysRole) *SysUserUpdateOne {
 // Mutation returns the SysUserMutation object of the builder.
 func (_u *SysUserUpdateOne) Mutation() *SysUserMutation {
 	return _u.mutation
+}
+
+// ClearSysTenant clears the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysUserUpdateOne) ClearSysTenant() *SysUserUpdateOne {
+	_u.mutation.ClearSysTenant()
+	return _u
+}
+
+// ClearSysDept clears the "sys_dept" edge to the SysDept entity.
+func (_u *SysUserUpdateOne) ClearSysDept() *SysUserUpdateOne {
+	_u.mutation.ClearSysDept()
+	return _u
 }
 
 // ClearRoles clears all "roles" edges to the SysRole entity.
@@ -960,10 +1255,18 @@ func (_u *SysUserUpdateOne) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysUser.email": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.DeptID(); ok {
-		if err := sysuser.DeptIDValidator(v); err != nil {
-			return &ValidationError{Name: "dept_id", err: fmt.Errorf(`ent: validator failed for field "SysUser.dept_id": %w`, err)}
+	if v, ok := _u.mutation.LoginIP(); ok {
+		if err := sysuser.LoginIPValidator(v); err != nil {
+			return &ValidationError{Name: "login_ip", err: fmt.Errorf(`ent: validator failed for field "SysUser.login_ip": %w`, err)}
 		}
+	}
+	if v, ok := _u.mutation.Position(); ok {
+		if err := sysuser.PositionValidator(v); err != nil {
+			return &ValidationError{Name: "position", err: fmt.Errorf(`ent: validator failed for field "SysUser.position": %w`, err)}
+		}
+	}
+	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysUser.sys_tenant"`)
 	}
 	return nil
 }
@@ -996,12 +1299,6 @@ func (_u *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysuser.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysuser.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysuser.FieldUpdatedAt, field.TypeTime, value)
@@ -1057,14 +1354,87 @@ func (_u *SysUserUpdateOne) sqlSave(ctx context.Context) (_node *SysUser, err er
 	if value, ok := _u.mutation.Email(); ok {
 		_spec.SetField(sysuser.FieldEmail, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.Avatar(); ok {
-		_spec.SetField(sysuser.FieldAvatar, field.TypeString, value)
+	if value, ok := _u.mutation.LoginIP(); ok {
+		_spec.SetField(sysuser.FieldLoginIP, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DeptID(); ok {
-		_spec.SetField(sysuser.FieldDeptID, field.TypeInt64, value)
+	if value, ok := _u.mutation.LoginAt(); ok {
+		_spec.SetField(sysuser.FieldLoginAt, field.TypeTime, value)
 	}
-	if value, ok := _u.mutation.AddedDeptID(); ok {
-		_spec.AddField(sysuser.FieldDeptID, field.TypeInt64, value)
+	if _u.mutation.LoginAtCleared() {
+		_spec.ClearField(sysuser.FieldLoginAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.LoginErrorCount(); ok {
+		_spec.SetField(sysuser.FieldLoginErrorCount, field.TypeInt32, value)
+	}
+	if value, ok := _u.mutation.AddedLoginErrorCount(); ok {
+		_spec.AddField(sysuser.FieldLoginErrorCount, field.TypeInt32, value)
+	}
+	if value, ok := _u.mutation.LockoutUntil(); ok {
+		_spec.SetField(sysuser.FieldLockoutUntil, field.TypeTime, value)
+	}
+	if _u.mutation.LockoutUntilCleared() {
+		_spec.ClearField(sysuser.FieldLockoutUntil, field.TypeTime)
+	}
+	if value, ok := _u.mutation.Position(); ok {
+		_spec.SetField(sysuser.FieldPosition, field.TypeString, value)
+	}
+	if _u.mutation.SysTenantCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysTenantTable,
+			Columns: []string{sysuser.SysTenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SysTenantIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysTenantTable,
+			Columns: []string{sysuser.SysTenantColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.SysDeptCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysDeptTable,
+			Columns: []string{sysuser.SysDeptColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.SysDeptIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysuser.SysDeptTable,
+			Columns: []string{sysuser.SysDeptColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdept.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{

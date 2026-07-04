@@ -21,18 +21,6 @@ func (f SysApiFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, erro
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysApiMutation", m)
 }
 
-// The SysConfigFunc type is an adapter to allow the use of ordinary
-// function as SysConfig mutator.
-type SysConfigFunc func(context.Context, *ent.SysConfigMutation) (ent.Value, error)
-
-// Mutate calls f(ctx, m).
-func (f SysConfigFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
-	if mv, ok := m.(*ent.SysConfigMutation); ok {
-		return f(ctx, mv)
-	}
-	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysConfigMutation", m)
-}
-
 // The SysDeptFunc type is an adapter to allow the use of ordinary
 // function as SysDept mutator.
 type SysDeptFunc func(context.Context, *ent.SysDeptMutation) (ent.Value, error)
@@ -69,6 +57,18 @@ func (f SysDictDataFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value,
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysDictDataMutation", m)
 }
 
+// The SysLoginLogFunc type is an adapter to allow the use of ordinary
+// function as SysLoginLog mutator.
+type SysLoginLogFunc func(context.Context, *ent.SysLoginLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SysLoginLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SysLoginLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysLoginLogMutation", m)
+}
+
 // The SysMenuFunc type is an adapter to allow the use of ordinary
 // function as SysMenu mutator.
 type SysMenuFunc func(context.Context, *ent.SysMenuMutation) (ent.Value, error)
@@ -79,6 +79,30 @@ func (f SysMenuFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, err
 		return f(ctx, mv)
 	}
 	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysMenuMutation", m)
+}
+
+// The SysOperationLogFunc type is an adapter to allow the use of ordinary
+// function as SysOperationLog mutator.
+type SysOperationLogFunc func(context.Context, *ent.SysOperationLogMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SysOperationLogFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SysOperationLogMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysOperationLogMutation", m)
+}
+
+// The SysPackageFunc type is an adapter to allow the use of ordinary
+// function as SysPackage mutator.
+type SysPackageFunc func(context.Context, *ent.SysPackageMutation) (ent.Value, error)
+
+// Mutate calls f(ctx, m).
+func (f SysPackageFunc) Mutate(ctx context.Context, m ent.Mutation) (ent.Value, error) {
+	if mv, ok := m.(*ent.SysPackageMutation); ok {
+		return f(ctx, mv)
+	}
+	return nil, fmt.Errorf("unexpected mutation type %T. expect *ent.SysPackageMutation", m)
 }
 
 // The SysRoleFunc type is an adapter to allow the use of ordinary

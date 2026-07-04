@@ -10,16 +10,17 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
-// dept Table | 部门表
+// Department Table | 部门表
 type SysDept struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
-	// 租户ID，不能为空
+	// 租户ID | Tenant ID
 	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -43,15 +44,15 @@ type SysDept struct {
 	Status sysdept.Status `json:"status,omitempty"`
 	// Sort Number | 排序编号
 	Sort uint32 `json:"sort,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// 负责人id，不能为空，创建租户的时候顺便创建用户
+	// 负责人ID | Leader ID
 	LeaderID int64 `json:"leader_id,omitempty"`
-	// 手机号码
+	// 部门电话 | Department Phone
 	Mobile string `json:"mobile,omitempty"`
-	// 邮箱地址
+	// 部门邮箱 | Department Email
 	Email string `json:"email,omitempty"`
-	// 父级id，不能为空,0为第一级
+	// 父级ID | Parent ID
 	ParentID int64 `json:"parent_id,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysDeptQuery when eager-loading is set.
@@ -62,21 +63,23 @@ type SysDept struct {
 // SysDeptEdges holds the relations/edges for other nodes in the graph.
 type SysDeptEdges struct {
 	// SysTenant holds the value of the sys_tenant edge.
-	SysTenant []*SysTenant `json:"sys_tenant,omitempty"`
+	SysTenant *SysTenant `json:"sys_tenant,omitempty"`
 	// Leader holds the value of the leader edge.
 	Leader *SysUser `json:"leader,omitempty"`
-	// SysUser holds the value of the sys_user edge.
-	SysUser []*SysUser `json:"sys_user,omitempty"`
+	// SysUsers holds the value of the sys_users edge.
+	SysUsers []*SysUser `json:"sys_users,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [3]bool
 }
 
 // SysTenantOrErr returns the SysTenant value or an error if the edge
-// was not loaded in eager-loading.
-func (e SysDeptEdges) SysTenantOrErr() ([]*SysTenant, error) {
-	if e.loadedTypes[0] {
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysDeptEdges) SysTenantOrErr() (*SysTenant, error) {
+	if e.SysTenant != nil {
 		return e.SysTenant, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: systenant.Label}
 	}
 	return nil, &NotLoadedError{edge: "sys_tenant"}
 }
@@ -92,13 +95,13 @@ func (e SysDeptEdges) LeaderOrErr() (*SysUser, error) {
 	return nil, &NotLoadedError{edge: "leader"}
 }
 
-// SysUserOrErr returns the SysUser value or an error if the edge
+// SysUsersOrErr returns the SysUsers value or an error if the edge
 // was not loaded in eager-loading.
-func (e SysDeptEdges) SysUserOrErr() ([]*SysUser, error) {
+func (e SysDeptEdges) SysUsersOrErr() ([]*SysUser, error) {
 	if e.loadedTypes[2] {
-		return e.SysUser, nil
+		return e.SysUsers, nil
 	}
-	return nil, &NotLoadedError{edge: "sys_user"}
+	return nil, &NotLoadedError{edge: "sys_users"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -258,9 +261,9 @@ func (_m *SysDept) QueryLeader() *SysUserQuery {
 	return NewSysDeptClient(_m.config).QueryLeader(_m)
 }
 
-// QuerySysUser queries the "sys_user" edge of the SysDept entity.
-func (_m *SysDept) QuerySysUser() *SysUserQuery {
-	return NewSysDeptClient(_m.config).QuerySysUser(_m)
+// QuerySysUsers queries the "sys_users" edge of the SysDept entity.
+func (_m *SysDept) QuerySysUsers() *SysUserQuery {
+	return NewSysDeptClient(_m.config).QuerySysUsers(_m)
 }
 
 // Update returns a builder for updating this SysDept.

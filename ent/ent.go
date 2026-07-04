@@ -13,11 +13,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysloginlog"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysoperationlog"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -81,15 +83,17 @@ var (
 func checkColumn(t, c string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
-			sysapi.Table:      sysapi.ValidColumn,
-			sysconfig.Table:   sysconfig.ValidColumn,
-			sysdept.Table:     sysdept.ValidColumn,
-			sysdict.Table:     sysdict.ValidColumn,
-			sysdictdata.Table: sysdictdata.ValidColumn,
-			sysmenu.Table:     sysmenu.ValidColumn,
-			sysrole.Table:     sysrole.ValidColumn,
-			systenant.Table:   systenant.ValidColumn,
-			sysuser.Table:     sysuser.ValidColumn,
+			sysapi.Table:          sysapi.ValidColumn,
+			sysdept.Table:         sysdept.ValidColumn,
+			sysdict.Table:         sysdict.ValidColumn,
+			sysdictdata.Table:     sysdictdata.ValidColumn,
+			sysloginlog.Table:     sysloginlog.ValidColumn,
+			sysmenu.Table:         sysmenu.ValidColumn,
+			sysoperationlog.Table: sysoperationlog.ValidColumn,
+			syspackage.Table:      syspackage.ValidColumn,
+			sysrole.Table:         sysrole.ValidColumn,
+			systenant.Table:       systenant.ValidColumn,
+			sysuser.Table:         sysuser.ValidColumn,
 		})
 	})
 	return columnCheck(t, c)

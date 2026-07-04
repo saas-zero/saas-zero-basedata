@@ -12,13 +12,13 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 )
 
-// dict Table | 字典表
+// Dictionary Table | 字典表
 type SysDict struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
-	// 租户ID，不能为空
+	// 租户ID | Tenant ID
 	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -42,13 +42,32 @@ type SysDict struct {
 	Status sysdict.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// key，不能为空
+	// 键 | Key
 	Key string `json:"key,omitempty"`
-	// Whether to be public for everyone | 是否公开词典，无需登录即可访问
-	IsPublic     bool `json:"is_public,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysDictQuery when eager-loading is set.
+	Edges        SysDictEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// SysDictEdges holds the relations/edges for other nodes in the graph.
+type SysDictEdges struct {
+	// SysDictDatas holds the value of the sys_dict_datas edge.
+	SysDictDatas []*SysDictData `json:"sys_dict_datas,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// SysDictDatasOrErr returns the SysDictDatas value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysDictEdges) SysDictDatasOrErr() ([]*SysDictData, error) {
+	if e.loadedTypes[0] {
+		return e.SysDictDatas, nil
+	}
+	return nil, &NotLoadedError{edge: "sys_dict_datas"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -56,8 +75,6 @@ func (*SysDict) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysdict.FieldIsPublic:
-			values[i] = new(sql.NullBool)
 		case sysdict.FieldID, sysdict.FieldTenantID, sysdict.FieldCreatedID, sysdict.FieldUpdatedID, sysdict.FieldDeletedID:
 			values[i] = new(sql.NullInt64)
 		case sysdict.FieldCreatedBy, sysdict.FieldUpdatedBy, sysdict.FieldDeletedBy, sysdict.FieldStatus, sysdict.FieldRemark, sysdict.FieldName, sysdict.FieldKey:
@@ -169,12 +186,6 @@ func (_m *SysDict) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Key = value.String
 			}
-		case sysdict.FieldIsPublic:
-			if value, ok := values[i].(*sql.NullBool); !ok {
-				return fmt.Errorf("unexpected type %T for field is_public", values[i])
-			} else if value.Valid {
-				_m.IsPublic = value.Bool
-			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -186,6 +197,11 @@ func (_m *SysDict) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *SysDict) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QuerySysDictDatas queries the "sys_dict_datas" edge of the SysDict entity.
+func (_m *SysDict) QuerySysDictDatas() *SysDictDataQuery {
+	return NewSysDictClient(_m.config).QuerySysDictDatas(_m)
 }
 
 // Update returns a builder for updating this SysDict.
@@ -252,9 +268,6 @@ func (_m *SysDict) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("key=")
 	builder.WriteString(_m.Key)
-	builder.WriteString(", ")
-	builder.WriteString("is_public=")
-	builder.WriteString(fmt.Sprintf("%v", _m.IsPublic))
 	builder.WriteByte(')')
 	return builder.String()
 }

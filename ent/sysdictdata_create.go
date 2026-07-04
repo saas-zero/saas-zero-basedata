@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
@@ -23,6 +24,14 @@ type SysDictDataCreate struct {
 // SetTenantID sets the "tenant_id" field.
 func (_c *SysDictDataCreate) SetTenantID(v int64) *SysDictDataCreate {
 	_c.mutation.SetTenantID(v)
+	return _c
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_c *SysDictDataCreate) SetNillableTenantID(v *int64) *SysDictDataCreate {
+	if v != nil {
+		_c.SetTenantID(*v)
+	}
 	return _c
 }
 
@@ -172,18 +181,21 @@ func (_c *SysDictDataCreate) SetDictID(v int64) *SysDictDataCreate {
 	return _c
 }
 
-// SetNillableDictID sets the "dict_id" field if the given value is not nil.
-func (_c *SysDictDataCreate) SetNillableDictID(v *int64) *SysDictDataCreate {
-	if v != nil {
-		_c.SetDictID(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *SysDictDataCreate) SetID(v int64) *SysDictDataCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// SetSysDictID sets the "sys_dict" edge to the SysDict entity by ID.
+func (_c *SysDictDataCreate) SetSysDictID(id int64) *SysDictDataCreate {
+	_c.mutation.SetSysDictID(id)
+	return _c
+}
+
+// SetSysDict sets the "sys_dict" edge to the SysDict entity.
+func (_c *SysDictDataCreate) SetSysDict(v *SysDict) *SysDictDataCreate {
+	return _c.SetSysDictID(v.ID)
 }
 
 // Mutation returns the SysDictDataMutation object of the builder.
@@ -193,7 +205,9 @@ func (_c *SysDictDataCreate) Mutation() *SysDictDataMutation {
 
 // Save creates the SysDictData in the database.
 func (_c *SysDictDataCreate) Save(ctx context.Context) (*SysDictData, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -220,12 +234,22 @@ func (_c *SysDictDataCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysDictDataCreate) defaults() {
+func (_c *SysDictDataCreate) defaults() error {
+	if _, ok := _c.mutation.TenantID(); !ok {
+		v := sysdictdata.DefaultTenantID
+		_c.mutation.SetTenantID(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysdictdata.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdictdata.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdictdata.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysdictdata.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdictdata.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdictdata.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -233,22 +257,11 @@ func (_c *SysDictDataCreate) defaults() {
 		v := sysdictdata.DefaultStatus
 		_c.mutation.SetStatus(v)
 	}
-	if _, ok := _c.mutation.DictID(); !ok {
-		v := sysdictdata.DefaultDictID
-		_c.mutation.SetDictID(v)
-	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysDictDataCreate) check() error {
-	if _, ok := _c.mutation.TenantID(); !ok {
-		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "SysDictData.tenant_id"`)}
-	}
-	if v, ok := _c.mutation.TenantID(); ok {
-		if err := sysdictdata.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.tenant_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysDictData.created_at"`)}
 	}
@@ -342,6 +355,9 @@ func (_c *SysDictDataCreate) check() error {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.id": %w`, err)}
 		}
 	}
+	if len(_c.mutation.SysDictIDs()) == 0 {
+		return &ValidationError{Name: "sys_dict", err: errors.New(`ent: missing required edge "SysDictData.sys_dict"`)}
+	}
 	return nil
 }
 
@@ -434,9 +450,22 @@ func (_c *SysDictDataCreate) createSpec() (*SysDictData, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysdictdata.FieldValue, field.TypeString, value)
 		_node.Value = value
 	}
-	if value, ok := _c.mutation.DictID(); ok {
-		_spec.SetField(sysdictdata.FieldDictID, field.TypeInt64, value)
-		_node.DictID = value
+	if nodes := _c.mutation.SysDictIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictdata.SysDictTable,
+			Columns: []string{sysdictdata.SysDictColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdict.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_node.DictID = nodes[0]
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

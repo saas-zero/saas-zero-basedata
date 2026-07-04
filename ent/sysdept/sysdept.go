@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -53,17 +54,17 @@ const (
 	EdgeSysTenant = "sys_tenant"
 	// EdgeLeader holds the string denoting the leader edge name in mutations.
 	EdgeLeader = "leader"
-	// EdgeSysUser holds the string denoting the sys_user edge name in mutations.
-	EdgeSysUser = "sys_user"
+	// EdgeSysUsers holds the string denoting the sys_users edge name in mutations.
+	EdgeSysUsers = "sys_users"
 	// Table holds the table name of the sysdept in the database.
 	Table = "sys_depts"
 	// SysTenantTable is the table that holds the sys_tenant relation/edge.
-	SysTenantTable = "sys_tenants"
+	SysTenantTable = "sys_depts"
 	// SysTenantInverseTable is the table name for the SysTenant entity.
 	// It exists in this package in order to avoid circular dependency with the "systenant" package.
 	SysTenantInverseTable = "sys_tenants"
 	// SysTenantColumn is the table column denoting the sys_tenant relation/edge.
-	SysTenantColumn = "sys_dept_sys_tenant"
+	SysTenantColumn = "tenant_id"
 	// LeaderTable is the table that holds the leader relation/edge.
 	LeaderTable = "sys_depts"
 	// LeaderInverseTable is the table name for the SysUser entity.
@@ -71,13 +72,13 @@ const (
 	LeaderInverseTable = "sys_users"
 	// LeaderColumn is the table column denoting the leader relation/edge.
 	LeaderColumn = "leader_id"
-	// SysUserTable is the table that holds the sys_user relation/edge.
-	SysUserTable = "sys_users"
-	// SysUserInverseTable is the table name for the SysUser entity.
+	// SysUsersTable is the table that holds the sys_users relation/edge.
+	SysUsersTable = "sys_users"
+	// SysUsersInverseTable is the table name for the SysUser entity.
 	// It exists in this package in order to avoid circular dependency with the "sysuser" package.
-	SysUserInverseTable = "sys_users"
-	// SysUserColumn is the table column denoting the sys_user relation/edge.
-	SysUserColumn = "sys_dept_sys_user"
+	SysUsersInverseTable = "sys_users"
+	// SysUsersColumn is the table column denoting the sys_users relation/edge.
+	SysUsersColumn = "dept_id"
 )
 
 // Columns holds all SQL columns for sysdept fields.
@@ -112,7 +113,13 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [4]ent.Hook
 	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
 	TenantIDValidator func(int64) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
@@ -137,12 +144,14 @@ var (
 	NameValidator func(string) error
 	// DefaultLeaderID holds the default value on creation for the "leader_id" field.
 	DefaultLeaderID int64
-	// LeaderIDValidator is a validator for the "leader_id" field. It is called by the builders before save.
-	LeaderIDValidator func(int64) error
 	// DefaultMobile holds the default value on creation for the "mobile" field.
 	DefaultMobile string
+	// MobileValidator is a validator for the "mobile" field. It is called by the builders before save.
+	MobileValidator func(string) error
 	// DefaultEmail holds the default value on creation for the "email" field.
 	DefaultEmail string
+	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
+	EmailValidator func(string) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
 	// ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
@@ -271,17 +280,10 @@ func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
-// BySysTenantCount orders the results by sys_tenant count.
-func BySysTenantCount(opts ...sql.OrderTermOption) OrderOption {
+// BySysTenantField orders the results by sys_tenant field.
+func BySysTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSysTenantStep(), opts...)
-	}
-}
-
-// BySysTenant orders the results by sys_tenant terms.
-func BySysTenant(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSysTenantStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSysTenantStep(), sql.OrderByField(field, opts...))
 	}
 }
 
@@ -292,24 +294,24 @@ func ByLeaderField(field string, opts ...sql.OrderTermOption) OrderOption {
 	}
 }
 
-// BySysUserCount orders the results by sys_user count.
-func BySysUserCount(opts ...sql.OrderTermOption) OrderOption {
+// BySysUsersCount orders the results by sys_users count.
+func BySysUsersCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSysUserStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newSysUsersStep(), opts...)
 	}
 }
 
-// BySysUser orders the results by sys_user terms.
-func BySysUser(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// BySysUsers orders the results by sys_users terms.
+func BySysUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSysUserStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSysUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 func newSysTenantStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(SysTenantInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, SysTenantTable, SysTenantColumn),
+		sqlgraph.Edge(sqlgraph.M2O, true, SysTenantTable, SysTenantColumn),
 	)
 }
 func newLeaderStep() *sqlgraph.Step {
@@ -319,10 +321,10 @@ func newLeaderStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2O, false, LeaderTable, LeaderColumn),
 	)
 }
-func newSysUserStep() *sqlgraph.Step {
+func newSysUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SysUserInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2M, false, SysUserTable, SysUserColumn),
+		sqlgraph.To(SysUsersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SysUsersTable, SysUsersColumn),
 	)
 }

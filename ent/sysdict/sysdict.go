@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -42,10 +44,17 @@ const (
 	FieldName = "name"
 	// FieldKey holds the string denoting the key field in the database.
 	FieldKey = "key"
-	// FieldIsPublic holds the string denoting the is_public field in the database.
-	FieldIsPublic = "is_public"
+	// EdgeSysDictDatas holds the string denoting the sys_dict_datas edge name in mutations.
+	EdgeSysDictDatas = "sys_dict_datas"
 	// Table holds the table name of the sysdict in the database.
 	Table = "sys_dicts"
+	// SysDictDatasTable is the table that holds the sys_dict_datas relation/edge.
+	SysDictDatasTable = "sys_dict_datas"
+	// SysDictDatasInverseTable is the table name for the SysDictData entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdictdata" package.
+	SysDictDatasInverseTable = "sys_dict_datas"
+	// SysDictDatasColumn is the table column denoting the sys_dict_datas relation/edge.
+	SysDictDatasColumn = "dict_id"
 )
 
 // Columns holds all SQL columns for sysdict fields.
@@ -65,7 +74,6 @@ var Columns = []string{
 	FieldRemark,
 	FieldName,
 	FieldKey,
-	FieldIsPublic,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -78,9 +86,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
-	TenantIDValidator func(int64) error
+	Hooks [4]ent.Hook
+	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
+	DefaultTenantID int64
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -101,8 +115,6 @@ var (
 	NameValidator func(string) error
 	// KeyValidator is a validator for the "key" field. It is called by the builders before save.
 	KeyValidator func(string) error
-	// DefaultIsPublic holds the default value on creation for the "is_public" field.
-	DefaultIsPublic bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -212,7 +224,23 @@ func ByKey(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldKey, opts...).ToFunc()
 }
 
-// ByIsPublic orders the results by the is_public field.
-func ByIsPublic(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIsPublic, opts...).ToFunc()
+// BySysDictDatasCount orders the results by sys_dict_datas count.
+func BySysDictDatasCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newSysDictDatasStep(), opts...)
+	}
+}
+
+// BySysDictDatas orders the results by sys_dict_datas terms.
+func BySysDictDatas(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysDictDatasStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newSysDictDatasStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysDictDatasInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SysDictDatasTable, SysDictDatasColumn),
+	)
 }

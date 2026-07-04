@@ -14,17 +14,17 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 )
 
 // SysApiQuery is the builder for querying SysApi entities.
 type SysApiQuery struct {
 	config
-	ctx        *QueryContext
-	order      []sysapi.OrderOption
-	inters     []Interceptor
-	predicates []predicate.SysApi
-	withRoles  *SysRoleQuery
+	ctx          *QueryContext
+	order        []sysapi.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.SysApi
+	withPackages *SysPackageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -61,9 +61,9 @@ func (_q *SysApiQuery) Order(o ...sysapi.OrderOption) *SysApiQuery {
 	return _q
 }
 
-// QueryRoles chains the current query on the "roles" edge.
-func (_q *SysApiQuery) QueryRoles() *SysRoleQuery {
-	query := (&SysRoleClient{config: _q.config}).Query()
+// QueryPackages chains the current query on the "packages" edge.
+func (_q *SysApiQuery) QueryPackages() *SysPackageQuery {
+	query := (&SysPackageClient{config: _q.config}).Query()
 	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
 		if err := _q.prepareQuery(ctx); err != nil {
 			return nil, err
@@ -74,8 +74,8 @@ func (_q *SysApiQuery) QueryRoles() *SysRoleQuery {
 		}
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sysapi.Table, sysapi.FieldID, selector),
-			sqlgraph.To(sysrole.Table, sysrole.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, sysapi.RolesTable, sysapi.RolesPrimaryKey...),
+			sqlgraph.To(syspackage.Table, syspackage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysapi.PackagesTable, sysapi.PackagesPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -270,26 +270,26 @@ func (_q *SysApiQuery) Clone() *SysApiQuery {
 		return nil
 	}
 	return &SysApiQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]sysapi.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.SysApi{}, _q.predicates...),
-		withRoles:  _q.withRoles.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]sysapi.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.SysApi{}, _q.predicates...),
+		withPackages: _q.withPackages.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
 	}
 }
 
-// WithRoles tells the query-builder to eager-load the nodes that are connected to
-// the "roles" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *SysApiQuery) WithRoles(opts ...func(*SysRoleQuery)) *SysApiQuery {
-	query := (&SysRoleClient{config: _q.config}).Query()
+// WithPackages tells the query-builder to eager-load the nodes that are connected to
+// the "packages" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *SysApiQuery) WithPackages(opts ...func(*SysPackageQuery)) *SysApiQuery {
+	query := (&SysPackageClient{config: _q.config}).Query()
 	for _, opt := range opts {
 		opt(query)
 	}
-	_q.withRoles = query
+	_q.withPackages = query
 	return _q
 }
 
@@ -372,7 +372,7 @@ func (_q *SysApiQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysAp
 		nodes       = []*SysApi{}
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
-			_q.withRoles != nil,
+			_q.withPackages != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -393,17 +393,17 @@ func (_q *SysApiQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysAp
 	if len(nodes) == 0 {
 		return nodes, nil
 	}
-	if query := _q.withRoles; query != nil {
-		if err := _q.loadRoles(ctx, query, nodes,
-			func(n *SysApi) { n.Edges.Roles = []*SysRole{} },
-			func(n *SysApi, e *SysRole) { n.Edges.Roles = append(n.Edges.Roles, e) }); err != nil {
+	if query := _q.withPackages; query != nil {
+		if err := _q.loadPackages(ctx, query, nodes,
+			func(n *SysApi) { n.Edges.Packages = []*SysPackage{} },
+			func(n *SysApi, e *SysPackage) { n.Edges.Packages = append(n.Edges.Packages, e) }); err != nil {
 			return nil, err
 		}
 	}
 	return nodes, nil
 }
 
-func (_q *SysApiQuery) loadRoles(ctx context.Context, query *SysRoleQuery, nodes []*SysApi, init func(*SysApi), assign func(*SysApi, *SysRole)) error {
+func (_q *SysApiQuery) loadPackages(ctx context.Context, query *SysPackageQuery, nodes []*SysApi, init func(*SysApi), assign func(*SysApi, *SysPackage)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int64]*SysApi)
 	nids := make(map[int64]map[*SysApi]struct{})
@@ -415,11 +415,11 @@ func (_q *SysApiQuery) loadRoles(ctx context.Context, query *SysRoleQuery, nodes
 		}
 	}
 	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(sysapi.RolesTable)
-		s.Join(joinT).On(s.C(sysrole.FieldID), joinT.C(sysapi.RolesPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(sysapi.RolesPrimaryKey[1]), edgeIDs...))
+		joinT := sql.Table(sysapi.PackagesTable)
+		s.Join(joinT).On(s.C(syspackage.FieldID), joinT.C(sysapi.PackagesPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(sysapi.PackagesPrimaryKey[1]), edgeIDs...))
 		columns := s.SelectedColumns()
-		s.Select(joinT.C(sysapi.RolesPrimaryKey[1]))
+		s.Select(joinT.C(sysapi.PackagesPrimaryKey[1]))
 		s.AppendSelect(columns...)
 		s.SetDistinct(false)
 	})
@@ -449,14 +449,14 @@ func (_q *SysApiQuery) loadRoles(ctx context.Context, query *SysRoleQuery, nodes
 			}
 		})
 	})
-	neighbors, err := withInterceptors[[]*SysRole](ctx, query, qr, query.inters)
+	neighbors, err := withInterceptors[[]*SysPackage](ctx, query, qr, query.inters)
 	if err != nil {
 		return err
 	}
 	for _, n := range neighbors {
 		nodes, ok := nids[n.ID]
 		if !ok {
-			return fmt.Errorf(`unexpected "roles" node returned %v`, n.ID)
+			return fmt.Errorf(`unexpected "packages" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)

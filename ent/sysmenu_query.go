@@ -14,17 +14,19 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
 // SysMenuQuery is the builder for querying SysMenu entities.
 type SysMenuQuery struct {
 	config
-	ctx        *QueryContext
-	order      []sysmenu.OrderOption
-	inters     []Interceptor
-	predicates []predicate.SysMenu
-	withRoles  *SysRoleQuery
+	ctx          *QueryContext
+	order        []sysmenu.OrderOption
+	inters       []Interceptor
+	predicates   []predicate.SysMenu
+	withRoles    *SysRoleQuery
+	withPackages *SysPackageQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -76,6 +78,28 @@ func (_q *SysMenuQuery) QueryRoles() *SysRoleQuery {
 			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, selector),
 			sqlgraph.To(sysrole.Table, sysrole.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, sysmenu.RolesTable, sysmenu.RolesPrimaryKey...),
+		)
+		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
+		return fromU, nil
+	}
+	return query
+}
+
+// QueryPackages chains the current query on the "packages" edge.
+func (_q *SysMenuQuery) QueryPackages() *SysPackageQuery {
+	query := (&SysPackageClient{config: _q.config}).Query()
+	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
+		if err := _q.prepareQuery(ctx); err != nil {
+			return nil, err
+		}
+		selector := _q.sqlQuery(ctx)
+		if err := selector.Err(); err != nil {
+			return nil, err
+		}
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, selector),
+			sqlgraph.To(syspackage.Table, syspackage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysmenu.PackagesTable, sysmenu.PackagesPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -270,12 +294,13 @@ func (_q *SysMenuQuery) Clone() *SysMenuQuery {
 		return nil
 	}
 	return &SysMenuQuery{
-		config:     _q.config,
-		ctx:        _q.ctx.Clone(),
-		order:      append([]sysmenu.OrderOption{}, _q.order...),
-		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.SysMenu{}, _q.predicates...),
-		withRoles:  _q.withRoles.Clone(),
+		config:       _q.config,
+		ctx:          _q.ctx.Clone(),
+		order:        append([]sysmenu.OrderOption{}, _q.order...),
+		inters:       append([]Interceptor{}, _q.inters...),
+		predicates:   append([]predicate.SysMenu{}, _q.predicates...),
+		withRoles:    _q.withRoles.Clone(),
+		withPackages: _q.withPackages.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -293,18 +318,29 @@ func (_q *SysMenuQuery) WithRoles(opts ...func(*SysRoleQuery)) *SysMenuQuery {
 	return _q
 }
 
+// WithPackages tells the query-builder to eager-load the nodes that are connected to
+// the "packages" edge. The optional arguments are used to configure the query builder of the edge.
+func (_q *SysMenuQuery) WithPackages(opts ...func(*SysPackageQuery)) *SysMenuQuery {
+	query := (&SysPackageClient{config: _q.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	_q.withPackages = query
+	return _q
+}
+
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SysMenu.Query().
-//		GroupBy(sysmenu.FieldCreatedAt).
+//		GroupBy(sysmenu.FieldTenantID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *SysMenuQuery) GroupBy(field string, fields ...string) *SysMenuGroupBy {
@@ -322,11 +358,11 @@ func (_q *SysMenuQuery) GroupBy(field string, fields ...string) *SysMenuGroupBy 
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //	}
 //
 //	client.SysMenu.Query().
-//		Select(sysmenu.FieldCreatedAt).
+//		Select(sysmenu.FieldTenantID).
 //		Scan(ctx, &v)
 func (_q *SysMenuQuery) Select(fields ...string) *SysMenuSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -371,8 +407,9 @@ func (_q *SysMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysM
 	var (
 		nodes       = []*SysMenu{}
 		_spec       = _q.querySpec()
-		loadedTypes = [1]bool{
+		loadedTypes = [2]bool{
 			_q.withRoles != nil,
+			_q.withPackages != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -397,6 +434,13 @@ func (_q *SysMenuQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysM
 		if err := _q.loadRoles(ctx, query, nodes,
 			func(n *SysMenu) { n.Edges.Roles = []*SysRole{} },
 			func(n *SysMenu, e *SysRole) { n.Edges.Roles = append(n.Edges.Roles, e) }); err != nil {
+			return nil, err
+		}
+	}
+	if query := _q.withPackages; query != nil {
+		if err := _q.loadPackages(ctx, query, nodes,
+			func(n *SysMenu) { n.Edges.Packages = []*SysPackage{} },
+			func(n *SysMenu, e *SysPackage) { n.Edges.Packages = append(n.Edges.Packages, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -457,6 +501,67 @@ func (_q *SysMenuQuery) loadRoles(ctx context.Context, query *SysRoleQuery, node
 		nodes, ok := nids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected "roles" node returned %v`, n.ID)
+		}
+		for kn := range nodes {
+			assign(kn, n)
+		}
+	}
+	return nil
+}
+func (_q *SysMenuQuery) loadPackages(ctx context.Context, query *SysPackageQuery, nodes []*SysMenu, init func(*SysMenu), assign func(*SysMenu, *SysPackage)) error {
+	edgeIDs := make([]driver.Value, len(nodes))
+	byID := make(map[int64]*SysMenu)
+	nids := make(map[int64]map[*SysMenu]struct{})
+	for i, node := range nodes {
+		edgeIDs[i] = node.ID
+		byID[node.ID] = node
+		if init != nil {
+			init(node)
+		}
+	}
+	query.Where(func(s *sql.Selector) {
+		joinT := sql.Table(sysmenu.PackagesTable)
+		s.Join(joinT).On(s.C(syspackage.FieldID), joinT.C(sysmenu.PackagesPrimaryKey[0]))
+		s.Where(sql.InValues(joinT.C(sysmenu.PackagesPrimaryKey[1]), edgeIDs...))
+		columns := s.SelectedColumns()
+		s.Select(joinT.C(sysmenu.PackagesPrimaryKey[1]))
+		s.AppendSelect(columns...)
+		s.SetDistinct(false)
+	})
+	if err := query.prepareQuery(ctx); err != nil {
+		return err
+	}
+	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
+		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
+			assign := spec.Assign
+			values := spec.ScanValues
+			spec.ScanValues = func(columns []string) ([]any, error) {
+				values, err := values(columns[1:])
+				if err != nil {
+					return nil, err
+				}
+				return append([]any{new(sql.NullInt64)}, values...), nil
+			}
+			spec.Assign = func(columns []string, values []any) error {
+				outValue := values[0].(*sql.NullInt64).Int64
+				inValue := values[1].(*sql.NullInt64).Int64
+				if nids[inValue] == nil {
+					nids[inValue] = map[*SysMenu]struct{}{byID[outValue]: {}}
+					return assign(columns[1:], values[1:])
+				}
+				nids[inValue][byID[outValue]] = struct{}{}
+				return nil
+			}
+		})
+	})
+	neighbors, err := withInterceptors[[]*SysPackage](ctx, query, qr, query.inters)
+	if err != nil {
+		return err
+	}
+	for _, n := range neighbors {
+		nodes, ok := nids[n.ID]
+		if !ok {
+			return fmt.Errorf(`unexpected "packages" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)

@@ -135,14 +135,34 @@ func Email(v string) predicate.SysUser {
 	return predicate.SysUser(sql.FieldEQ(FieldEmail, v))
 }
 
-// Avatar applies equality check predicate on the "avatar" field. It's identical to AvatarEQ.
-func Avatar(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldEQ(FieldAvatar, v))
-}
-
 // DeptID applies equality check predicate on the "dept_id" field. It's identical to DeptIDEQ.
 func DeptID(v int64) predicate.SysUser {
 	return predicate.SysUser(sql.FieldEQ(FieldDeptID, v))
+}
+
+// LoginIP applies equality check predicate on the "login_ip" field. It's identical to LoginIPEQ.
+func LoginIP(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginIP, v))
+}
+
+// LoginAt applies equality check predicate on the "login_at" field. It's identical to LoginAtEQ.
+func LoginAt(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginAt, v))
+}
+
+// LoginErrorCount applies equality check predicate on the "login_error_count" field. It's identical to LoginErrorCountEQ.
+func LoginErrorCount(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginErrorCount, v))
+}
+
+// LockoutUntil applies equality check predicate on the "lockout_until" field. It's identical to LockoutUntilEQ.
+func LockoutUntil(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLockoutUntil, v))
+}
+
+// Position applies equality check predicate on the "position" field. It's identical to PositionEQ.
+func Position(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldPosition, v))
 }
 
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
@@ -163,26 +183,6 @@ func TenantIDIn(vs ...int64) predicate.SysUser {
 // TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
 func TenantIDNotIn(vs ...int64) predicate.SysUser {
 	return predicate.SysUser(sql.FieldNotIn(FieldTenantID, vs...))
-}
-
-// TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGT(FieldTenantID, v))
-}
-
-// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGTE(FieldTenantID, v))
-}
-
-// TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLT(FieldTenantID, v))
-}
-
-// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLTE(FieldTenantID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -1070,71 +1070,6 @@ func EmailContainsFold(v string) predicate.SysUser {
 	return predicate.SysUser(sql.FieldContainsFold(FieldEmail, v))
 }
 
-// AvatarEQ applies the EQ predicate on the "avatar" field.
-func AvatarEQ(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldEQ(FieldAvatar, v))
-}
-
-// AvatarNEQ applies the NEQ predicate on the "avatar" field.
-func AvatarNEQ(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldNEQ(FieldAvatar, v))
-}
-
-// AvatarIn applies the In predicate on the "avatar" field.
-func AvatarIn(vs ...string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldIn(FieldAvatar, vs...))
-}
-
-// AvatarNotIn applies the NotIn predicate on the "avatar" field.
-func AvatarNotIn(vs ...string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldNotIn(FieldAvatar, vs...))
-}
-
-// AvatarGT applies the GT predicate on the "avatar" field.
-func AvatarGT(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGT(FieldAvatar, v))
-}
-
-// AvatarGTE applies the GTE predicate on the "avatar" field.
-func AvatarGTE(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGTE(FieldAvatar, v))
-}
-
-// AvatarLT applies the LT predicate on the "avatar" field.
-func AvatarLT(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLT(FieldAvatar, v))
-}
-
-// AvatarLTE applies the LTE predicate on the "avatar" field.
-func AvatarLTE(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLTE(FieldAvatar, v))
-}
-
-// AvatarContains applies the Contains predicate on the "avatar" field.
-func AvatarContains(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldContains(FieldAvatar, v))
-}
-
-// AvatarHasPrefix applies the HasPrefix predicate on the "avatar" field.
-func AvatarHasPrefix(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldHasPrefix(FieldAvatar, v))
-}
-
-// AvatarHasSuffix applies the HasSuffix predicate on the "avatar" field.
-func AvatarHasSuffix(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldHasSuffix(FieldAvatar, v))
-}
-
-// AvatarEqualFold applies the EqualFold predicate on the "avatar" field.
-func AvatarEqualFold(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldEqualFold(FieldAvatar, v))
-}
-
-// AvatarContainsFold applies the ContainsFold predicate on the "avatar" field.
-func AvatarContainsFold(v string) predicate.SysUser {
-	return predicate.SysUser(sql.FieldContainsFold(FieldAvatar, v))
-}
-
 // DeptIDEQ applies the EQ predicate on the "dept_id" field.
 func DeptIDEQ(v int64) predicate.SysUser {
 	return predicate.SysUser(sql.FieldEQ(FieldDeptID, v))
@@ -1155,24 +1090,330 @@ func DeptIDNotIn(vs ...int64) predicate.SysUser {
 	return predicate.SysUser(sql.FieldNotIn(FieldDeptID, vs...))
 }
 
-// DeptIDGT applies the GT predicate on the "dept_id" field.
-func DeptIDGT(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGT(FieldDeptID, v))
+// DeptIDIsNil applies the IsNil predicate on the "dept_id" field.
+func DeptIDIsNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldIsNull(FieldDeptID))
 }
 
-// DeptIDGTE applies the GTE predicate on the "dept_id" field.
-func DeptIDGTE(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldGTE(FieldDeptID, v))
+// DeptIDNotNil applies the NotNil predicate on the "dept_id" field.
+func DeptIDNotNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotNull(FieldDeptID))
 }
 
-// DeptIDLT applies the LT predicate on the "dept_id" field.
-func DeptIDLT(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLT(FieldDeptID, v))
+// LoginIPEQ applies the EQ predicate on the "login_ip" field.
+func LoginIPEQ(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginIP, v))
 }
 
-// DeptIDLTE applies the LTE predicate on the "dept_id" field.
-func DeptIDLTE(v int64) predicate.SysUser {
-	return predicate.SysUser(sql.FieldLTE(FieldDeptID, v))
+// LoginIPNEQ applies the NEQ predicate on the "login_ip" field.
+func LoginIPNEQ(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNEQ(FieldLoginIP, v))
+}
+
+// LoginIPIn applies the In predicate on the "login_ip" field.
+func LoginIPIn(vs ...string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldIn(FieldLoginIP, vs...))
+}
+
+// LoginIPNotIn applies the NotIn predicate on the "login_ip" field.
+func LoginIPNotIn(vs ...string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotIn(FieldLoginIP, vs...))
+}
+
+// LoginIPGT applies the GT predicate on the "login_ip" field.
+func LoginIPGT(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGT(FieldLoginIP, v))
+}
+
+// LoginIPGTE applies the GTE predicate on the "login_ip" field.
+func LoginIPGTE(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGTE(FieldLoginIP, v))
+}
+
+// LoginIPLT applies the LT predicate on the "login_ip" field.
+func LoginIPLT(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLT(FieldLoginIP, v))
+}
+
+// LoginIPLTE applies the LTE predicate on the "login_ip" field.
+func LoginIPLTE(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLTE(FieldLoginIP, v))
+}
+
+// LoginIPContains applies the Contains predicate on the "login_ip" field.
+func LoginIPContains(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldContains(FieldLoginIP, v))
+}
+
+// LoginIPHasPrefix applies the HasPrefix predicate on the "login_ip" field.
+func LoginIPHasPrefix(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldHasPrefix(FieldLoginIP, v))
+}
+
+// LoginIPHasSuffix applies the HasSuffix predicate on the "login_ip" field.
+func LoginIPHasSuffix(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldHasSuffix(FieldLoginIP, v))
+}
+
+// LoginIPEqualFold applies the EqualFold predicate on the "login_ip" field.
+func LoginIPEqualFold(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEqualFold(FieldLoginIP, v))
+}
+
+// LoginIPContainsFold applies the ContainsFold predicate on the "login_ip" field.
+func LoginIPContainsFold(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldContainsFold(FieldLoginIP, v))
+}
+
+// LoginAtEQ applies the EQ predicate on the "login_at" field.
+func LoginAtEQ(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginAt, v))
+}
+
+// LoginAtNEQ applies the NEQ predicate on the "login_at" field.
+func LoginAtNEQ(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNEQ(FieldLoginAt, v))
+}
+
+// LoginAtIn applies the In predicate on the "login_at" field.
+func LoginAtIn(vs ...time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldIn(FieldLoginAt, vs...))
+}
+
+// LoginAtNotIn applies the NotIn predicate on the "login_at" field.
+func LoginAtNotIn(vs ...time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotIn(FieldLoginAt, vs...))
+}
+
+// LoginAtGT applies the GT predicate on the "login_at" field.
+func LoginAtGT(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGT(FieldLoginAt, v))
+}
+
+// LoginAtGTE applies the GTE predicate on the "login_at" field.
+func LoginAtGTE(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGTE(FieldLoginAt, v))
+}
+
+// LoginAtLT applies the LT predicate on the "login_at" field.
+func LoginAtLT(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLT(FieldLoginAt, v))
+}
+
+// LoginAtLTE applies the LTE predicate on the "login_at" field.
+func LoginAtLTE(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLTE(FieldLoginAt, v))
+}
+
+// LoginAtIsNil applies the IsNil predicate on the "login_at" field.
+func LoginAtIsNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldIsNull(FieldLoginAt))
+}
+
+// LoginAtNotNil applies the NotNil predicate on the "login_at" field.
+func LoginAtNotNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotNull(FieldLoginAt))
+}
+
+// LoginErrorCountEQ applies the EQ predicate on the "login_error_count" field.
+func LoginErrorCountEQ(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLoginErrorCount, v))
+}
+
+// LoginErrorCountNEQ applies the NEQ predicate on the "login_error_count" field.
+func LoginErrorCountNEQ(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNEQ(FieldLoginErrorCount, v))
+}
+
+// LoginErrorCountIn applies the In predicate on the "login_error_count" field.
+func LoginErrorCountIn(vs ...int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldIn(FieldLoginErrorCount, vs...))
+}
+
+// LoginErrorCountNotIn applies the NotIn predicate on the "login_error_count" field.
+func LoginErrorCountNotIn(vs ...int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotIn(FieldLoginErrorCount, vs...))
+}
+
+// LoginErrorCountGT applies the GT predicate on the "login_error_count" field.
+func LoginErrorCountGT(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGT(FieldLoginErrorCount, v))
+}
+
+// LoginErrorCountGTE applies the GTE predicate on the "login_error_count" field.
+func LoginErrorCountGTE(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGTE(FieldLoginErrorCount, v))
+}
+
+// LoginErrorCountLT applies the LT predicate on the "login_error_count" field.
+func LoginErrorCountLT(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLT(FieldLoginErrorCount, v))
+}
+
+// LoginErrorCountLTE applies the LTE predicate on the "login_error_count" field.
+func LoginErrorCountLTE(v int32) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLTE(FieldLoginErrorCount, v))
+}
+
+// LockoutUntilEQ applies the EQ predicate on the "lockout_until" field.
+func LockoutUntilEQ(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldLockoutUntil, v))
+}
+
+// LockoutUntilNEQ applies the NEQ predicate on the "lockout_until" field.
+func LockoutUntilNEQ(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNEQ(FieldLockoutUntil, v))
+}
+
+// LockoutUntilIn applies the In predicate on the "lockout_until" field.
+func LockoutUntilIn(vs ...time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldIn(FieldLockoutUntil, vs...))
+}
+
+// LockoutUntilNotIn applies the NotIn predicate on the "lockout_until" field.
+func LockoutUntilNotIn(vs ...time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotIn(FieldLockoutUntil, vs...))
+}
+
+// LockoutUntilGT applies the GT predicate on the "lockout_until" field.
+func LockoutUntilGT(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGT(FieldLockoutUntil, v))
+}
+
+// LockoutUntilGTE applies the GTE predicate on the "lockout_until" field.
+func LockoutUntilGTE(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGTE(FieldLockoutUntil, v))
+}
+
+// LockoutUntilLT applies the LT predicate on the "lockout_until" field.
+func LockoutUntilLT(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLT(FieldLockoutUntil, v))
+}
+
+// LockoutUntilLTE applies the LTE predicate on the "lockout_until" field.
+func LockoutUntilLTE(v time.Time) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLTE(FieldLockoutUntil, v))
+}
+
+// LockoutUntilIsNil applies the IsNil predicate on the "lockout_until" field.
+func LockoutUntilIsNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldIsNull(FieldLockoutUntil))
+}
+
+// LockoutUntilNotNil applies the NotNil predicate on the "lockout_until" field.
+func LockoutUntilNotNil() predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotNull(FieldLockoutUntil))
+}
+
+// PositionEQ applies the EQ predicate on the "position" field.
+func PositionEQ(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEQ(FieldPosition, v))
+}
+
+// PositionNEQ applies the NEQ predicate on the "position" field.
+func PositionNEQ(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNEQ(FieldPosition, v))
+}
+
+// PositionIn applies the In predicate on the "position" field.
+func PositionIn(vs ...string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldIn(FieldPosition, vs...))
+}
+
+// PositionNotIn applies the NotIn predicate on the "position" field.
+func PositionNotIn(vs ...string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldNotIn(FieldPosition, vs...))
+}
+
+// PositionGT applies the GT predicate on the "position" field.
+func PositionGT(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGT(FieldPosition, v))
+}
+
+// PositionGTE applies the GTE predicate on the "position" field.
+func PositionGTE(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldGTE(FieldPosition, v))
+}
+
+// PositionLT applies the LT predicate on the "position" field.
+func PositionLT(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLT(FieldPosition, v))
+}
+
+// PositionLTE applies the LTE predicate on the "position" field.
+func PositionLTE(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldLTE(FieldPosition, v))
+}
+
+// PositionContains applies the Contains predicate on the "position" field.
+func PositionContains(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldContains(FieldPosition, v))
+}
+
+// PositionHasPrefix applies the HasPrefix predicate on the "position" field.
+func PositionHasPrefix(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldHasPrefix(FieldPosition, v))
+}
+
+// PositionHasSuffix applies the HasSuffix predicate on the "position" field.
+func PositionHasSuffix(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldHasSuffix(FieldPosition, v))
+}
+
+// PositionEqualFold applies the EqualFold predicate on the "position" field.
+func PositionEqualFold(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldEqualFold(FieldPosition, v))
+}
+
+// PositionContainsFold applies the ContainsFold predicate on the "position" field.
+func PositionContainsFold(v string) predicate.SysUser {
+	return predicate.SysUser(sql.FieldContainsFold(FieldPosition, v))
+}
+
+// HasSysTenant applies the HasEdge predicate on the "sys_tenant" edge.
+func HasSysTenant() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, SysTenantTable, SysTenantColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSysTenantWith applies the HasEdge predicate on the "sys_tenant" edge with a given conditions (other predicates).
+func HasSysTenantWith(preds ...predicate.SysTenant) predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := newSysTenantStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSysDept applies the HasEdge predicate on the "sys_dept" edge.
+func HasSysDept() predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, SysDeptTable, SysDeptColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSysDeptWith applies the HasEdge predicate on the "sys_dept" edge with a given conditions (other predicates).
+func HasSysDeptWith(preds ...predicate.SysDept) predicate.SysUser {
+	return predicate.SysUser(func(s *sql.Selector) {
+		step := newSysDeptStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // HasRoles applies the HasEdge predicate on the "roles" edge.

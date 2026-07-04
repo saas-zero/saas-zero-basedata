@@ -13,6 +13,7 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
@@ -26,6 +27,27 @@ type SysMenuUpdate struct {
 // Where appends a list predicates to the SysMenuUpdate builder.
 func (_u *SysMenuUpdate) Where(ps ...predicate.SysMenu) *SysMenuUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_u *SysMenuUpdate) SetTenantID(v int64) *SysMenuUpdate {
+	_u.mutation.ResetTenantID()
+	_u.mutation.SetTenantID(v)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_u *SysMenuUpdate) SetNillableTenantID(v *int64) *SysMenuUpdate {
+	if v != nil {
+		_u.SetTenantID(*v)
+	}
+	return _u
+}
+
+// AddTenantID adds value to the "tenant_id" field.
+func (_u *SysMenuUpdate) AddTenantID(v int64) *SysMenuUpdate {
+	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -337,6 +359,20 @@ func (_u *SysMenuUpdate) ClearRedirect() *SysMenuUpdate {
 	return _u
 }
 
+// SetHidden sets the "hidden" field.
+func (_u *SysMenuUpdate) SetHidden(v bool) *SysMenuUpdate {
+	_u.mutation.SetHidden(v)
+	return _u
+}
+
+// SetNillableHidden sets the "hidden" field if the given value is not nil.
+func (_u *SysMenuUpdate) SetNillableHidden(v *bool) *SysMenuUpdate {
+	if v != nil {
+		_u.SetHidden(*v)
+	}
+	return _u
+}
+
 // AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
 func (_u *SysMenuUpdate) AddRoleIDs(ids ...int64) *SysMenuUpdate {
 	_u.mutation.AddRoleIDs(ids...)
@@ -350,6 +386,21 @@ func (_u *SysMenuUpdate) AddRoles(v ...*SysRole) *SysMenuUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddRoleIDs(ids...)
+}
+
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_u *SysMenuUpdate) AddPackageIDs(ids ...int64) *SysMenuUpdate {
+	_u.mutation.AddPackageIDs(ids...)
+	return _u
+}
+
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_u *SysMenuUpdate) AddPackages(v ...*SysPackage) *SysMenuUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPackageIDs(ids...)
 }
 
 // Mutation returns the SysMenuMutation object of the builder.
@@ -376,6 +427,27 @@ func (_u *SysMenuUpdate) RemoveRoles(v ...*SysRole) *SysMenuUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveRoleIDs(ids...)
+}
+
+// ClearPackages clears all "packages" edges to the SysPackage entity.
+func (_u *SysMenuUpdate) ClearPackages() *SysMenuUpdate {
+	_u.mutation.ClearPackages()
+	return _u
+}
+
+// RemovePackageIDs removes the "packages" edge to SysPackage entities by IDs.
+func (_u *SysMenuUpdate) RemovePackageIDs(ids ...int64) *SysMenuUpdate {
+	_u.mutation.RemovePackageIDs(ids...)
+	return _u
+}
+
+// RemovePackages removes "packages" edges to SysPackage entities.
+func (_u *SysMenuUpdate) RemovePackages(v ...*SysPackage) *SysMenuUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePackageIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -407,6 +479,11 @@ func (_u *SysMenuUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysMenuUpdate) check() error {
+	if v, ok := _u.mutation.TenantID(); ok {
+		if err := sysmenu.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysmenu.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.updated_id": %w`, err)}
@@ -466,6 +543,12 @@ func (_u *SysMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.TenantID(); ok {
+		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedTenantID(); ok {
+		_spec.AddField(sysmenu.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysmenu.FieldUpdatedAt, field.TypeTime, value)
@@ -551,6 +634,9 @@ func (_u *SysMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if _u.mutation.RedirectCleared() {
 		_spec.ClearField(sysmenu.FieldRedirect, field.TypeString)
 	}
+	if value, ok := _u.mutation.Hidden(); ok {
+		_spec.SetField(sysmenu.FieldHidden, field.TypeBool, value)
+	}
 	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -596,6 +682,51 @@ func (_u *SysMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
+	if _u.mutation.PackagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPackagesIDs(); len(nodes) > 0 && !_u.mutation.PackagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sysmenu.Label}
@@ -614,6 +745,27 @@ type SysMenuUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SysMenuMutation
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_u *SysMenuUpdateOne) SetTenantID(v int64) *SysMenuUpdateOne {
+	_u.mutation.ResetTenantID()
+	_u.mutation.SetTenantID(v)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_u *SysMenuUpdateOne) SetNillableTenantID(v *int64) *SysMenuUpdateOne {
+	if v != nil {
+		_u.SetTenantID(*v)
+	}
+	return _u
+}
+
+// AddTenantID adds value to the "tenant_id" field.
+func (_u *SysMenuUpdateOne) AddTenantID(v int64) *SysMenuUpdateOne {
+	_u.mutation.AddTenantID(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -924,6 +1076,20 @@ func (_u *SysMenuUpdateOne) ClearRedirect() *SysMenuUpdateOne {
 	return _u
 }
 
+// SetHidden sets the "hidden" field.
+func (_u *SysMenuUpdateOne) SetHidden(v bool) *SysMenuUpdateOne {
+	_u.mutation.SetHidden(v)
+	return _u
+}
+
+// SetNillableHidden sets the "hidden" field if the given value is not nil.
+func (_u *SysMenuUpdateOne) SetNillableHidden(v *bool) *SysMenuUpdateOne {
+	if v != nil {
+		_u.SetHidden(*v)
+	}
+	return _u
+}
+
 // AddRoleIDs adds the "roles" edge to the SysRole entity by IDs.
 func (_u *SysMenuUpdateOne) AddRoleIDs(ids ...int64) *SysMenuUpdateOne {
 	_u.mutation.AddRoleIDs(ids...)
@@ -937,6 +1103,21 @@ func (_u *SysMenuUpdateOne) AddRoles(v ...*SysRole) *SysMenuUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.AddRoleIDs(ids...)
+}
+
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_u *SysMenuUpdateOne) AddPackageIDs(ids ...int64) *SysMenuUpdateOne {
+	_u.mutation.AddPackageIDs(ids...)
+	return _u
+}
+
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_u *SysMenuUpdateOne) AddPackages(v ...*SysPackage) *SysMenuUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddPackageIDs(ids...)
 }
 
 // Mutation returns the SysMenuMutation object of the builder.
@@ -963,6 +1144,27 @@ func (_u *SysMenuUpdateOne) RemoveRoles(v ...*SysRole) *SysMenuUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveRoleIDs(ids...)
+}
+
+// ClearPackages clears all "packages" edges to the SysPackage entity.
+func (_u *SysMenuUpdateOne) ClearPackages() *SysMenuUpdateOne {
+	_u.mutation.ClearPackages()
+	return _u
+}
+
+// RemovePackageIDs removes the "packages" edge to SysPackage entities by IDs.
+func (_u *SysMenuUpdateOne) RemovePackageIDs(ids ...int64) *SysMenuUpdateOne {
+	_u.mutation.RemovePackageIDs(ids...)
+	return _u
+}
+
+// RemovePackages removes "packages" edges to SysPackage entities.
+func (_u *SysMenuUpdateOne) RemovePackages(v ...*SysPackage) *SysMenuUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemovePackageIDs(ids...)
 }
 
 // Where appends a list predicates to the SysMenuUpdate builder.
@@ -1007,6 +1209,11 @@ func (_u *SysMenuUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysMenuUpdateOne) check() error {
+	if v, ok := _u.mutation.TenantID(); ok {
+		if err := sysmenu.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysmenu.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.updated_id": %w`, err)}
@@ -1083,6 +1290,12 @@ func (_u *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err er
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.TenantID(); ok {
+		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedTenantID(); ok {
+		_spec.AddField(sysmenu.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysmenu.FieldUpdatedAt, field.TypeTime, value)
@@ -1168,6 +1381,9 @@ func (_u *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err er
 	if _u.mutation.RedirectCleared() {
 		_spec.ClearField(sysmenu.FieldRedirect, field.TypeString)
 	}
+	if value, ok := _u.mutation.Hidden(); ok {
+		_spec.SetField(sysmenu.FieldHidden, field.TypeBool, value)
+	}
 	if _u.mutation.RolesCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -1206,6 +1422,51 @@ func (_u *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.PackagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedPackagesIDs(); len(nodes) > 0 && !_u.mutation.PackagesCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.PackagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

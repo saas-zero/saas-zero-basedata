@@ -12,67 +12,67 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysoperationlog"
 )
 
-// SysConfigQuery is the builder for querying SysConfig entities.
-type SysConfigQuery struct {
+// SysOperationLogQuery is the builder for querying SysOperationLog entities.
+type SysOperationLogQuery struct {
 	config
 	ctx        *QueryContext
-	order      []sysconfig.OrderOption
+	order      []sysoperationlog.OrderOption
 	inters     []Interceptor
-	predicates []predicate.SysConfig
+	predicates []predicate.SysOperationLog
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
 }
 
-// Where adds a new predicate for the SysConfigQuery builder.
-func (_q *SysConfigQuery) Where(ps ...predicate.SysConfig) *SysConfigQuery {
+// Where adds a new predicate for the SysOperationLogQuery builder.
+func (_q *SysOperationLogQuery) Where(ps ...predicate.SysOperationLog) *SysOperationLogQuery {
 	_q.predicates = append(_q.predicates, ps...)
 	return _q
 }
 
 // Limit the number of records to be returned by this query.
-func (_q *SysConfigQuery) Limit(limit int) *SysConfigQuery {
+func (_q *SysOperationLogQuery) Limit(limit int) *SysOperationLogQuery {
 	_q.ctx.Limit = &limit
 	return _q
 }
 
 // Offset to start from.
-func (_q *SysConfigQuery) Offset(offset int) *SysConfigQuery {
+func (_q *SysOperationLogQuery) Offset(offset int) *SysOperationLogQuery {
 	_q.ctx.Offset = &offset
 	return _q
 }
 
 // Unique configures the query builder to filter duplicate records on query.
 // By default, unique is set to true, and can be disabled using this method.
-func (_q *SysConfigQuery) Unique(unique bool) *SysConfigQuery {
+func (_q *SysOperationLogQuery) Unique(unique bool) *SysOperationLogQuery {
 	_q.ctx.Unique = &unique
 	return _q
 }
 
 // Order specifies how the records should be ordered.
-func (_q *SysConfigQuery) Order(o ...sysconfig.OrderOption) *SysConfigQuery {
+func (_q *SysOperationLogQuery) Order(o ...sysoperationlog.OrderOption) *SysOperationLogQuery {
 	_q.order = append(_q.order, o...)
 	return _q
 }
 
-// First returns the first SysConfig entity from the query.
-// Returns a *NotFoundError when no SysConfig was found.
-func (_q *SysConfigQuery) First(ctx context.Context) (*SysConfig, error) {
+// First returns the first SysOperationLog entity from the query.
+// Returns a *NotFoundError when no SysOperationLog was found.
+func (_q *SysOperationLogQuery) First(ctx context.Context) (*SysOperationLog, error) {
 	nodes, err := _q.Limit(1).All(setContextOp(ctx, _q.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
 	if len(nodes) == 0 {
-		return nil, &NotFoundError{sysconfig.Label}
+		return nil, &NotFoundError{sysoperationlog.Label}
 	}
 	return nodes[0], nil
 }
 
 // FirstX is like First, but panics if an error occurs.
-func (_q *SysConfigQuery) FirstX(ctx context.Context) *SysConfig {
+func (_q *SysOperationLogQuery) FirstX(ctx context.Context) *SysOperationLog {
 	node, err := _q.First(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -80,22 +80,22 @@ func (_q *SysConfigQuery) FirstX(ctx context.Context) *SysConfig {
 	return node
 }
 
-// FirstID returns the first SysConfig ID from the query.
-// Returns a *NotFoundError when no SysConfig ID was found.
-func (_q *SysConfigQuery) FirstID(ctx context.Context) (id int64, err error) {
+// FirstID returns the first SysOperationLog ID from the query.
+// Returns a *NotFoundError when no SysOperationLog ID was found.
+func (_q *SysOperationLogQuery) FirstID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(1).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryFirstID)); err != nil {
 		return
 	}
 	if len(ids) == 0 {
-		err = &NotFoundError{sysconfig.Label}
+		err = &NotFoundError{sysoperationlog.Label}
 		return
 	}
 	return ids[0], nil
 }
 
 // FirstIDX is like FirstID, but panics if an error occurs.
-func (_q *SysConfigQuery) FirstIDX(ctx context.Context) int64 {
+func (_q *SysOperationLogQuery) FirstIDX(ctx context.Context) int64 {
 	id, err := _q.FirstID(ctx)
 	if err != nil && !IsNotFound(err) {
 		panic(err)
@@ -103,10 +103,10 @@ func (_q *SysConfigQuery) FirstIDX(ctx context.Context) int64 {
 	return id
 }
 
-// Only returns a single SysConfig entity found by the query, ensuring it only returns one.
-// Returns a *NotSingularError when more than one SysConfig entity is found.
-// Returns a *NotFoundError when no SysConfig entities are found.
-func (_q *SysConfigQuery) Only(ctx context.Context) (*SysConfig, error) {
+// Only returns a single SysOperationLog entity found by the query, ensuring it only returns one.
+// Returns a *NotSingularError when more than one SysOperationLog entity is found.
+// Returns a *NotFoundError when no SysOperationLog entities are found.
+func (_q *SysOperationLogQuery) Only(ctx context.Context) (*SysOperationLog, error) {
 	nodes, err := _q.Limit(2).All(setContextOp(ctx, _q.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
@@ -115,14 +115,14 @@ func (_q *SysConfigQuery) Only(ctx context.Context) (*SysConfig, error) {
 	case 1:
 		return nodes[0], nil
 	case 0:
-		return nil, &NotFoundError{sysconfig.Label}
+		return nil, &NotFoundError{sysoperationlog.Label}
 	default:
-		return nil, &NotSingularError{sysconfig.Label}
+		return nil, &NotSingularError{sysoperationlog.Label}
 	}
 }
 
 // OnlyX is like Only, but panics if an error occurs.
-func (_q *SysConfigQuery) OnlyX(ctx context.Context) *SysConfig {
+func (_q *SysOperationLogQuery) OnlyX(ctx context.Context) *SysOperationLog {
 	node, err := _q.Only(ctx)
 	if err != nil {
 		panic(err)
@@ -130,10 +130,10 @@ func (_q *SysConfigQuery) OnlyX(ctx context.Context) *SysConfig {
 	return node
 }
 
-// OnlyID is like Only, but returns the only SysConfig ID in the query.
-// Returns a *NotSingularError when more than one SysConfig ID is found.
+// OnlyID is like Only, but returns the only SysOperationLog ID in the query.
+// Returns a *NotSingularError when more than one SysOperationLog ID is found.
 // Returns a *NotFoundError when no entities are found.
-func (_q *SysConfigQuery) OnlyID(ctx context.Context) (id int64, err error) {
+func (_q *SysOperationLogQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	var ids []int64
 	if ids, err = _q.Limit(2).IDs(setContextOp(ctx, _q.ctx, ent.OpQueryOnlyID)); err != nil {
 		return
@@ -142,15 +142,15 @@ func (_q *SysConfigQuery) OnlyID(ctx context.Context) (id int64, err error) {
 	case 1:
 		id = ids[0]
 	case 0:
-		err = &NotFoundError{sysconfig.Label}
+		err = &NotFoundError{sysoperationlog.Label}
 	default:
-		err = &NotSingularError{sysconfig.Label}
+		err = &NotSingularError{sysoperationlog.Label}
 	}
 	return
 }
 
 // OnlyIDX is like OnlyID, but panics if an error occurs.
-func (_q *SysConfigQuery) OnlyIDX(ctx context.Context) int64 {
+func (_q *SysOperationLogQuery) OnlyIDX(ctx context.Context) int64 {
 	id, err := _q.OnlyID(ctx)
 	if err != nil {
 		panic(err)
@@ -158,18 +158,18 @@ func (_q *SysConfigQuery) OnlyIDX(ctx context.Context) int64 {
 	return id
 }
 
-// All executes the query and returns a list of SysConfigs.
-func (_q *SysConfigQuery) All(ctx context.Context) ([]*SysConfig, error) {
+// All executes the query and returns a list of SysOperationLogs.
+func (_q *SysOperationLogQuery) All(ctx context.Context) ([]*SysOperationLog, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryAll)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
-	qr := querierAll[[]*SysConfig, *SysConfigQuery]()
-	return withInterceptors[[]*SysConfig](ctx, _q, qr, _q.inters)
+	qr := querierAll[[]*SysOperationLog, *SysOperationLogQuery]()
+	return withInterceptors[[]*SysOperationLog](ctx, _q, qr, _q.inters)
 }
 
 // AllX is like All, but panics if an error occurs.
-func (_q *SysConfigQuery) AllX(ctx context.Context) []*SysConfig {
+func (_q *SysOperationLogQuery) AllX(ctx context.Context) []*SysOperationLog {
 	nodes, err := _q.All(ctx)
 	if err != nil {
 		panic(err)
@@ -177,20 +177,20 @@ func (_q *SysConfigQuery) AllX(ctx context.Context) []*SysConfig {
 	return nodes
 }
 
-// IDs executes the query and returns a list of SysConfig IDs.
-func (_q *SysConfigQuery) IDs(ctx context.Context) (ids []int64, err error) {
+// IDs executes the query and returns a list of SysOperationLog IDs.
+func (_q *SysOperationLogQuery) IDs(ctx context.Context) (ids []int64, err error) {
 	if _q.ctx.Unique == nil && _q.path != nil {
 		_q.Unique(true)
 	}
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryIDs)
-	if err = _q.Select(sysconfig.FieldID).Scan(ctx, &ids); err != nil {
+	if err = _q.Select(sysoperationlog.FieldID).Scan(ctx, &ids); err != nil {
 		return nil, err
 	}
 	return ids, nil
 }
 
 // IDsX is like IDs, but panics if an error occurs.
-func (_q *SysConfigQuery) IDsX(ctx context.Context) []int64 {
+func (_q *SysOperationLogQuery) IDsX(ctx context.Context) []int64 {
 	ids, err := _q.IDs(ctx)
 	if err != nil {
 		panic(err)
@@ -199,16 +199,16 @@ func (_q *SysConfigQuery) IDsX(ctx context.Context) []int64 {
 }
 
 // Count returns the count of the given query.
-func (_q *SysConfigQuery) Count(ctx context.Context) (int, error) {
+func (_q *SysOperationLogQuery) Count(ctx context.Context) (int, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryCount)
 	if err := _q.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
-	return withInterceptors[int](ctx, _q, querierCount[*SysConfigQuery](), _q.inters)
+	return withInterceptors[int](ctx, _q, querierCount[*SysOperationLogQuery](), _q.inters)
 }
 
 // CountX is like Count, but panics if an error occurs.
-func (_q *SysConfigQuery) CountX(ctx context.Context) int {
+func (_q *SysOperationLogQuery) CountX(ctx context.Context) int {
 	count, err := _q.Count(ctx)
 	if err != nil {
 		panic(err)
@@ -217,7 +217,7 @@ func (_q *SysConfigQuery) CountX(ctx context.Context) int {
 }
 
 // Exist returns true if the query has elements in the graph.
-func (_q *SysConfigQuery) Exist(ctx context.Context) (bool, error) {
+func (_q *SysOperationLogQuery) Exist(ctx context.Context) (bool, error) {
 	ctx = setContextOp(ctx, _q.ctx, ent.OpQueryExist)
 	switch _, err := _q.FirstID(ctx); {
 	case IsNotFound(err):
@@ -230,7 +230,7 @@ func (_q *SysConfigQuery) Exist(ctx context.Context) (bool, error) {
 }
 
 // ExistX is like Exist, but panics if an error occurs.
-func (_q *SysConfigQuery) ExistX(ctx context.Context) bool {
+func (_q *SysOperationLogQuery) ExistX(ctx context.Context) bool {
 	exist, err := _q.Exist(ctx)
 	if err != nil {
 		panic(err)
@@ -238,18 +238,18 @@ func (_q *SysConfigQuery) ExistX(ctx context.Context) bool {
 	return exist
 }
 
-// Clone returns a duplicate of the SysConfigQuery builder, including all associated steps. It can be
+// Clone returns a duplicate of the SysOperationLogQuery builder, including all associated steps. It can be
 // used to prepare common query builders and use them differently after the clone is made.
-func (_q *SysConfigQuery) Clone() *SysConfigQuery {
+func (_q *SysOperationLogQuery) Clone() *SysOperationLogQuery {
 	if _q == nil {
 		return nil
 	}
-	return &SysConfigQuery{
+	return &SysOperationLogQuery{
 		config:     _q.config,
 		ctx:        _q.ctx.Clone(),
-		order:      append([]sysconfig.OrderOption{}, _q.order...),
+		order:      append([]sysoperationlog.OrderOption{}, _q.order...),
 		inters:     append([]Interceptor{}, _q.inters...),
-		predicates: append([]predicate.SysConfig{}, _q.predicates...),
+		predicates: append([]predicate.SysOperationLog{}, _q.predicates...),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -262,19 +262,19 @@ func (_q *SysConfigQuery) Clone() *SysConfigQuery {
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		Module string `json:"module,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
-//	client.SysConfig.Query().
-//		GroupBy(sysconfig.FieldCreatedAt).
+//	client.SysOperationLog.Query().
+//		GroupBy(sysoperationlog.FieldModule).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
-func (_q *SysConfigQuery) GroupBy(field string, fields ...string) *SysConfigGroupBy {
+func (_q *SysOperationLogQuery) GroupBy(field string, fields ...string) *SysOperationLogGroupBy {
 	_q.ctx.Fields = append([]string{field}, fields...)
-	grbuild := &SysConfigGroupBy{build: _q}
+	grbuild := &SysOperationLogGroupBy{build: _q}
 	grbuild.flds = &_q.ctx.Fields
-	grbuild.label = sysconfig.Label
+	grbuild.label = sysoperationlog.Label
 	grbuild.scan = grbuild.Scan
 	return grbuild
 }
@@ -285,26 +285,26 @@ func (_q *SysConfigQuery) GroupBy(field string, fields ...string) *SysConfigGrou
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		Module string `json:"module,omitempty"`
 //	}
 //
-//	client.SysConfig.Query().
-//		Select(sysconfig.FieldCreatedAt).
+//	client.SysOperationLog.Query().
+//		Select(sysoperationlog.FieldModule).
 //		Scan(ctx, &v)
-func (_q *SysConfigQuery) Select(fields ...string) *SysConfigSelect {
+func (_q *SysOperationLogQuery) Select(fields ...string) *SysOperationLogSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
-	sbuild := &SysConfigSelect{SysConfigQuery: _q}
-	sbuild.label = sysconfig.Label
+	sbuild := &SysOperationLogSelect{SysOperationLogQuery: _q}
+	sbuild.label = sysoperationlog.Label
 	sbuild.flds, sbuild.scan = &_q.ctx.Fields, sbuild.Scan
 	return sbuild
 }
 
-// Aggregate returns a SysConfigSelect configured with the given aggregations.
-func (_q *SysConfigQuery) Aggregate(fns ...AggregateFunc) *SysConfigSelect {
+// Aggregate returns a SysOperationLogSelect configured with the given aggregations.
+func (_q *SysOperationLogQuery) Aggregate(fns ...AggregateFunc) *SysOperationLogSelect {
 	return _q.Select().Aggregate(fns...)
 }
 
-func (_q *SysConfigQuery) prepareQuery(ctx context.Context) error {
+func (_q *SysOperationLogQuery) prepareQuery(ctx context.Context) error {
 	for _, inter := range _q.inters {
 		if inter == nil {
 			return fmt.Errorf("ent: uninitialized interceptor (forgotten import ent/runtime?)")
@@ -316,7 +316,7 @@ func (_q *SysConfigQuery) prepareQuery(ctx context.Context) error {
 		}
 	}
 	for _, f := range _q.ctx.Fields {
-		if !sysconfig.ValidColumn(f) {
+		if !sysoperationlog.ValidColumn(f) {
 			return &ValidationError{Name: f, err: fmt.Errorf("ent: invalid field %q for query", f)}
 		}
 	}
@@ -330,16 +330,16 @@ func (_q *SysConfigQuery) prepareQuery(ctx context.Context) error {
 	return nil
 }
 
-func (_q *SysConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysConfig, error) {
+func (_q *SysOperationLogQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysOperationLog, error) {
 	var (
-		nodes = []*SysConfig{}
+		nodes = []*SysOperationLog{}
 		_spec = _q.querySpec()
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
-		return (*SysConfig).scanValues(nil, columns)
+		return (*SysOperationLog).scanValues(nil, columns)
 	}
 	_spec.Assign = func(columns []string, values []any) error {
-		node := &SysConfig{config: _q.config}
+		node := &SysOperationLog{config: _q.config}
 		nodes = append(nodes, node)
 		return node.assignValues(columns, values)
 	}
@@ -355,7 +355,7 @@ func (_q *SysConfigQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Sy
 	return nodes, nil
 }
 
-func (_q *SysConfigQuery) sqlCount(ctx context.Context) (int, error) {
+func (_q *SysOperationLogQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := _q.querySpec()
 	_spec.Node.Columns = _q.ctx.Fields
 	if len(_q.ctx.Fields) > 0 {
@@ -364,8 +364,8 @@ func (_q *SysConfigQuery) sqlCount(ctx context.Context) (int, error) {
 	return sqlgraph.CountNodes(ctx, _q.driver, _spec)
 }
 
-func (_q *SysConfigQuery) querySpec() *sqlgraph.QuerySpec {
-	_spec := sqlgraph.NewQuerySpec(sysconfig.Table, sysconfig.Columns, sqlgraph.NewFieldSpec(sysconfig.FieldID, field.TypeInt64))
+func (_q *SysOperationLogQuery) querySpec() *sqlgraph.QuerySpec {
+	_spec := sqlgraph.NewQuerySpec(sysoperationlog.Table, sysoperationlog.Columns, sqlgraph.NewFieldSpec(sysoperationlog.FieldID, field.TypeInt64))
 	_spec.From = _q.sql
 	if unique := _q.ctx.Unique; unique != nil {
 		_spec.Unique = *unique
@@ -374,9 +374,9 @@ func (_q *SysConfigQuery) querySpec() *sqlgraph.QuerySpec {
 	}
 	if fields := _q.ctx.Fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
-		_spec.Node.Columns = append(_spec.Node.Columns, sysconfig.FieldID)
+		_spec.Node.Columns = append(_spec.Node.Columns, sysoperationlog.FieldID)
 		for i := range fields {
-			if fields[i] != sysconfig.FieldID {
+			if fields[i] != sysoperationlog.FieldID {
 				_spec.Node.Columns = append(_spec.Node.Columns, fields[i])
 			}
 		}
@@ -404,12 +404,12 @@ func (_q *SysConfigQuery) querySpec() *sqlgraph.QuerySpec {
 	return _spec
 }
 
-func (_q *SysConfigQuery) sqlQuery(ctx context.Context) *sql.Selector {
+func (_q *SysOperationLogQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	builder := sql.Dialect(_q.driver.Dialect())
-	t1 := builder.Table(sysconfig.Table)
+	t1 := builder.Table(sysoperationlog.Table)
 	columns := _q.ctx.Fields
 	if len(columns) == 0 {
-		columns = sysconfig.Columns
+		columns = sysoperationlog.Columns
 	}
 	selector := builder.Select(t1.Columns(columns...)...).From(t1)
 	if _q.sql != nil {
@@ -436,28 +436,28 @@ func (_q *SysConfigQuery) sqlQuery(ctx context.Context) *sql.Selector {
 	return selector
 }
 
-// SysConfigGroupBy is the group-by builder for SysConfig entities.
-type SysConfigGroupBy struct {
+// SysOperationLogGroupBy is the group-by builder for SysOperationLog entities.
+type SysOperationLogGroupBy struct {
 	selector
-	build *SysConfigQuery
+	build *SysOperationLogQuery
 }
 
 // Aggregate adds the given aggregation functions to the group-by query.
-func (_g *SysConfigGroupBy) Aggregate(fns ...AggregateFunc) *SysConfigGroupBy {
+func (_g *SysOperationLogGroupBy) Aggregate(fns ...AggregateFunc) *SysOperationLogGroupBy {
 	_g.fns = append(_g.fns, fns...)
 	return _g
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_g *SysConfigGroupBy) Scan(ctx context.Context, v any) error {
+func (_g *SysOperationLogGroupBy) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _g.build.ctx, ent.OpQueryGroupBy)
 	if err := _g.build.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SysConfigQuery, *SysConfigGroupBy](ctx, _g.build, _g, _g.build.inters, v)
+	return scanWithInterceptors[*SysOperationLogQuery, *SysOperationLogGroupBy](ctx, _g.build, _g, _g.build.inters, v)
 }
 
-func (_g *SysConfigGroupBy) sqlScan(ctx context.Context, root *SysConfigQuery, v any) error {
+func (_g *SysOperationLogGroupBy) sqlScan(ctx context.Context, root *SysOperationLogQuery, v any) error {
 	selector := root.sqlQuery(ctx).Select()
 	aggregation := make([]string, 0, len(_g.fns))
 	for _, fn := range _g.fns {
@@ -484,28 +484,28 @@ func (_g *SysConfigGroupBy) sqlScan(ctx context.Context, root *SysConfigQuery, v
 	return sql.ScanSlice(rows, v)
 }
 
-// SysConfigSelect is the builder for selecting fields of SysConfig entities.
-type SysConfigSelect struct {
-	*SysConfigQuery
+// SysOperationLogSelect is the builder for selecting fields of SysOperationLog entities.
+type SysOperationLogSelect struct {
+	*SysOperationLogQuery
 	selector
 }
 
 // Aggregate adds the given aggregation functions to the selector query.
-func (_s *SysConfigSelect) Aggregate(fns ...AggregateFunc) *SysConfigSelect {
+func (_s *SysOperationLogSelect) Aggregate(fns ...AggregateFunc) *SysOperationLogSelect {
 	_s.fns = append(_s.fns, fns...)
 	return _s
 }
 
 // Scan applies the selector query and scans the result into the given value.
-func (_s *SysConfigSelect) Scan(ctx context.Context, v any) error {
+func (_s *SysOperationLogSelect) Scan(ctx context.Context, v any) error {
 	ctx = setContextOp(ctx, _s.ctx, ent.OpQuerySelect)
 	if err := _s.prepareQuery(ctx); err != nil {
 		return err
 	}
-	return scanWithInterceptors[*SysConfigQuery, *SysConfigSelect](ctx, _s.SysConfigQuery, _s, _s.inters, v)
+	return scanWithInterceptors[*SysOperationLogQuery, *SysOperationLogSelect](ctx, _s.SysOperationLogQuery, _s, _s.inters, v)
 }
 
-func (_s *SysConfigSelect) sqlScan(ctx context.Context, root *SysConfigQuery, v any) error {
+func (_s *SysOperationLogSelect) sqlScan(ctx context.Context, root *SysOperationLogQuery, v any) error {
 	selector := root.sqlQuery(ctx)
 	aggregation := make([]string, 0, len(_s.fns))
 	for _, fn := range _s.fns {

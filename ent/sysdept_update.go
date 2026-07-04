@@ -32,7 +32,6 @@ func (_u *SysDeptUpdate) Where(ps ...predicate.SysDept) *SysDeptUpdate {
 
 // SetTenantID sets the "tenant_id" field.
 func (_u *SysDeptUpdate) SetTenantID(v int64) *SysDeptUpdate {
-	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
@@ -42,12 +41,6 @@ func (_u *SysDeptUpdate) SetNillableTenantID(v *int64) *SysDeptUpdate {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysDeptUpdate) AddTenantID(v int64) *SysDeptUpdate {
-	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -230,6 +223,12 @@ func (_u *SysDeptUpdate) SetNillableLeaderID(v *int64) *SysDeptUpdate {
 	return _u
 }
 
+// ClearLeaderID clears the value of the "leader_id" field.
+func (_u *SysDeptUpdate) ClearLeaderID() *SysDeptUpdate {
+	_u.mutation.ClearLeaderID()
+	return _u
+}
+
 // SetMobile sets the "mobile" field.
 func (_u *SysDeptUpdate) SetMobile(v string) *SysDeptUpdate {
 	_u.mutation.SetMobile(v)
@@ -279,19 +278,15 @@ func (_u *SysDeptUpdate) AddParentID(v int64) *SysDeptUpdate {
 	return _u
 }
 
-// AddSysTenantIDs adds the "sys_tenant" edge to the SysTenant entity by IDs.
-func (_u *SysDeptUpdate) AddSysTenantIDs(ids ...int64) *SysDeptUpdate {
-	_u.mutation.AddSysTenantIDs(ids...)
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_u *SysDeptUpdate) SetSysTenantID(id int64) *SysDeptUpdate {
+	_u.mutation.SetSysTenantID(id)
 	return _u
 }
 
-// AddSysTenant adds the "sys_tenant" edges to the SysTenant entity.
-func (_u *SysDeptUpdate) AddSysTenant(v ...*SysTenant) *SysDeptUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddSysTenantIDs(ids...)
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysDeptUpdate) SetSysTenant(v *SysTenant) *SysDeptUpdate {
+	return _u.SetSysTenantID(v.ID)
 }
 
 // SetLeader sets the "leader" edge to the SysUser entity.
@@ -299,14 +294,14 @@ func (_u *SysDeptUpdate) SetLeader(v *SysUser) *SysDeptUpdate {
 	return _u.SetLeaderID(v.ID)
 }
 
-// AddSysUserIDs adds the "sys_user" edge to the SysUser entity by IDs.
+// AddSysUserIDs adds the "sys_users" edge to the SysUser entity by IDs.
 func (_u *SysDeptUpdate) AddSysUserIDs(ids ...int64) *SysDeptUpdate {
 	_u.mutation.AddSysUserIDs(ids...)
 	return _u
 }
 
-// AddSysUser adds the "sys_user" edges to the SysUser entity.
-func (_u *SysDeptUpdate) AddSysUser(v ...*SysUser) *SysDeptUpdate {
+// AddSysUsers adds the "sys_users" edges to the SysUser entity.
+func (_u *SysDeptUpdate) AddSysUsers(v ...*SysUser) *SysDeptUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -319,25 +314,10 @@ func (_u *SysDeptUpdate) Mutation() *SysDeptMutation {
 	return _u.mutation
 }
 
-// ClearSysTenant clears all "sys_tenant" edges to the SysTenant entity.
+// ClearSysTenant clears the "sys_tenant" edge to the SysTenant entity.
 func (_u *SysDeptUpdate) ClearSysTenant() *SysDeptUpdate {
 	_u.mutation.ClearSysTenant()
 	return _u
-}
-
-// RemoveSysTenantIDs removes the "sys_tenant" edge to SysTenant entities by IDs.
-func (_u *SysDeptUpdate) RemoveSysTenantIDs(ids ...int64) *SysDeptUpdate {
-	_u.mutation.RemoveSysTenantIDs(ids...)
-	return _u
-}
-
-// RemoveSysTenant removes "sys_tenant" edges to SysTenant entities.
-func (_u *SysDeptUpdate) RemoveSysTenant(v ...*SysTenant) *SysDeptUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveSysTenantIDs(ids...)
 }
 
 // ClearLeader clears the "leader" edge to the SysUser entity.
@@ -346,20 +326,20 @@ func (_u *SysDeptUpdate) ClearLeader() *SysDeptUpdate {
 	return _u
 }
 
-// ClearSysUser clears all "sys_user" edges to the SysUser entity.
-func (_u *SysDeptUpdate) ClearSysUser() *SysDeptUpdate {
-	_u.mutation.ClearSysUser()
+// ClearSysUsers clears all "sys_users" edges to the SysUser entity.
+func (_u *SysDeptUpdate) ClearSysUsers() *SysDeptUpdate {
+	_u.mutation.ClearSysUsers()
 	return _u
 }
 
-// RemoveSysUserIDs removes the "sys_user" edge to SysUser entities by IDs.
+// RemoveSysUserIDs removes the "sys_users" edge to SysUser entities by IDs.
 func (_u *SysDeptUpdate) RemoveSysUserIDs(ids ...int64) *SysDeptUpdate {
 	_u.mutation.RemoveSysUserIDs(ids...)
 	return _u
 }
 
-// RemoveSysUser removes "sys_user" edges to SysUser entities.
-func (_u *SysDeptUpdate) RemoveSysUser(v ...*SysUser) *SysDeptUpdate {
+// RemoveSysUsers removes "sys_users" edges to SysUser entities.
+func (_u *SysDeptUpdate) RemoveSysUsers(v ...*SysUser) *SysDeptUpdate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -431,9 +411,14 @@ func (_u *SysDeptUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysDept.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.LeaderID(); ok {
-		if err := sysdept.LeaderIDValidator(v); err != nil {
-			return &ValidationError{Name: "leader_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.leader_id": %w`, err)}
+	if v, ok := _u.mutation.Mobile(); ok {
+		if err := sysdept.MobileValidator(v); err != nil {
+			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "SysDept.mobile": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := sysdept.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.ParentID(); ok {
@@ -441,8 +426,8 @@ func (_u *SysDeptUpdate) check() error {
 			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_id": %w`, err)}
 		}
 	}
-	if _u.mutation.LeaderCleared() && len(_u.mutation.LeaderIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SysDept.leader"`)
+	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysDept.sys_tenant"`)
 	}
 	return nil
 }
@@ -458,12 +443,6 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysdept.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysdept.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysdept.FieldUpdatedAt, field.TypeTime, value)
@@ -524,37 +503,21 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.SysTenantCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   sysdept.SysTenantTable,
 			Columns: []string{sysdept.SysTenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedSysTenantIDs(); len(nodes) > 0 && !_u.mutation.SysTenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   sysdept.SysTenantTable,
-			Columns: []string{sysdept.SysTenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := _u.mutation.SysTenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   sysdept.SysTenantTable,
 			Columns: []string{sysdept.SysTenantColumn},
 			Bidi:    false,
@@ -596,12 +559,12 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.SysUserCleared() {
+	if _u.mutation.SysUsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
@@ -609,12 +572,12 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedSysUserIDs(); len(nodes) > 0 && !_u.mutation.SysUserCleared() {
+	if nodes := _u.mutation.RemovedSysUsersIDs(); len(nodes) > 0 && !_u.mutation.SysUsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
@@ -625,12 +588,12 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.SysUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SysUsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
@@ -663,7 +626,6 @@ type SysDeptUpdateOne struct {
 
 // SetTenantID sets the "tenant_id" field.
 func (_u *SysDeptUpdateOne) SetTenantID(v int64) *SysDeptUpdateOne {
-	_u.mutation.ResetTenantID()
 	_u.mutation.SetTenantID(v)
 	return _u
 }
@@ -673,12 +635,6 @@ func (_u *SysDeptUpdateOne) SetNillableTenantID(v *int64) *SysDeptUpdateOne {
 	if v != nil {
 		_u.SetTenantID(*v)
 	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysDeptUpdateOne) AddTenantID(v int64) *SysDeptUpdateOne {
-	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -861,6 +817,12 @@ func (_u *SysDeptUpdateOne) SetNillableLeaderID(v *int64) *SysDeptUpdateOne {
 	return _u
 }
 
+// ClearLeaderID clears the value of the "leader_id" field.
+func (_u *SysDeptUpdateOne) ClearLeaderID() *SysDeptUpdateOne {
+	_u.mutation.ClearLeaderID()
+	return _u
+}
+
 // SetMobile sets the "mobile" field.
 func (_u *SysDeptUpdateOne) SetMobile(v string) *SysDeptUpdateOne {
 	_u.mutation.SetMobile(v)
@@ -910,19 +872,15 @@ func (_u *SysDeptUpdateOne) AddParentID(v int64) *SysDeptUpdateOne {
 	return _u
 }
 
-// AddSysTenantIDs adds the "sys_tenant" edge to the SysTenant entity by IDs.
-func (_u *SysDeptUpdateOne) AddSysTenantIDs(ids ...int64) *SysDeptUpdateOne {
-	_u.mutation.AddSysTenantIDs(ids...)
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_u *SysDeptUpdateOne) SetSysTenantID(id int64) *SysDeptUpdateOne {
+	_u.mutation.SetSysTenantID(id)
 	return _u
 }
 
-// AddSysTenant adds the "sys_tenant" edges to the SysTenant entity.
-func (_u *SysDeptUpdateOne) AddSysTenant(v ...*SysTenant) *SysDeptUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddSysTenantIDs(ids...)
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_u *SysDeptUpdateOne) SetSysTenant(v *SysTenant) *SysDeptUpdateOne {
+	return _u.SetSysTenantID(v.ID)
 }
 
 // SetLeader sets the "leader" edge to the SysUser entity.
@@ -930,14 +888,14 @@ func (_u *SysDeptUpdateOne) SetLeader(v *SysUser) *SysDeptUpdateOne {
 	return _u.SetLeaderID(v.ID)
 }
 
-// AddSysUserIDs adds the "sys_user" edge to the SysUser entity by IDs.
+// AddSysUserIDs adds the "sys_users" edge to the SysUser entity by IDs.
 func (_u *SysDeptUpdateOne) AddSysUserIDs(ids ...int64) *SysDeptUpdateOne {
 	_u.mutation.AddSysUserIDs(ids...)
 	return _u
 }
 
-// AddSysUser adds the "sys_user" edges to the SysUser entity.
-func (_u *SysDeptUpdateOne) AddSysUser(v ...*SysUser) *SysDeptUpdateOne {
+// AddSysUsers adds the "sys_users" edges to the SysUser entity.
+func (_u *SysDeptUpdateOne) AddSysUsers(v ...*SysUser) *SysDeptUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -950,25 +908,10 @@ func (_u *SysDeptUpdateOne) Mutation() *SysDeptMutation {
 	return _u.mutation
 }
 
-// ClearSysTenant clears all "sys_tenant" edges to the SysTenant entity.
+// ClearSysTenant clears the "sys_tenant" edge to the SysTenant entity.
 func (_u *SysDeptUpdateOne) ClearSysTenant() *SysDeptUpdateOne {
 	_u.mutation.ClearSysTenant()
 	return _u
-}
-
-// RemoveSysTenantIDs removes the "sys_tenant" edge to SysTenant entities by IDs.
-func (_u *SysDeptUpdateOne) RemoveSysTenantIDs(ids ...int64) *SysDeptUpdateOne {
-	_u.mutation.RemoveSysTenantIDs(ids...)
-	return _u
-}
-
-// RemoveSysTenant removes "sys_tenant" edges to SysTenant entities.
-func (_u *SysDeptUpdateOne) RemoveSysTenant(v ...*SysTenant) *SysDeptUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveSysTenantIDs(ids...)
 }
 
 // ClearLeader clears the "leader" edge to the SysUser entity.
@@ -977,20 +920,20 @@ func (_u *SysDeptUpdateOne) ClearLeader() *SysDeptUpdateOne {
 	return _u
 }
 
-// ClearSysUser clears all "sys_user" edges to the SysUser entity.
-func (_u *SysDeptUpdateOne) ClearSysUser() *SysDeptUpdateOne {
-	_u.mutation.ClearSysUser()
+// ClearSysUsers clears all "sys_users" edges to the SysUser entity.
+func (_u *SysDeptUpdateOne) ClearSysUsers() *SysDeptUpdateOne {
+	_u.mutation.ClearSysUsers()
 	return _u
 }
 
-// RemoveSysUserIDs removes the "sys_user" edge to SysUser entities by IDs.
+// RemoveSysUserIDs removes the "sys_users" edge to SysUser entities by IDs.
 func (_u *SysDeptUpdateOne) RemoveSysUserIDs(ids ...int64) *SysDeptUpdateOne {
 	_u.mutation.RemoveSysUserIDs(ids...)
 	return _u
 }
 
-// RemoveSysUser removes "sys_user" edges to SysUser entities.
-func (_u *SysDeptUpdateOne) RemoveSysUser(v ...*SysUser) *SysDeptUpdateOne {
+// RemoveSysUsers removes "sys_users" edges to SysUser entities.
+func (_u *SysDeptUpdateOne) RemoveSysUsers(v ...*SysUser) *SysDeptUpdateOne {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -1075,9 +1018,14 @@ func (_u *SysDeptUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysDept.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.LeaderID(); ok {
-		if err := sysdept.LeaderIDValidator(v); err != nil {
-			return &ValidationError{Name: "leader_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.leader_id": %w`, err)}
+	if v, ok := _u.mutation.Mobile(); ok {
+		if err := sysdept.MobileValidator(v); err != nil {
+			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "SysDept.mobile": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.Email(); ok {
+		if err := sysdept.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
 		}
 	}
 	if v, ok := _u.mutation.ParentID(); ok {
@@ -1085,8 +1033,8 @@ func (_u *SysDeptUpdateOne) check() error {
 			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_id": %w`, err)}
 		}
 	}
-	if _u.mutation.LeaderCleared() && len(_u.mutation.LeaderIDs()) > 0 {
-		return errors.New(`ent: clearing a required unique edge "SysDept.leader"`)
+	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysDept.sys_tenant"`)
 	}
 	return nil
 }
@@ -1119,12 +1067,6 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysdept.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysdept.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysdept.FieldUpdatedAt, field.TypeTime, value)
@@ -1185,37 +1127,21 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 	}
 	if _u.mutation.SysTenantCleared() {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   sysdept.SysTenantTable,
 			Columns: []string{sysdept.SysTenantColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
 			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedSysTenantIDs(); len(nodes) > 0 && !_u.mutation.SysTenantCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
-			Table:   sysdept.SysTenantTable,
-			Columns: []string{sysdept.SysTenantColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
 	if nodes := _u.mutation.SysTenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   sysdept.SysTenantTable,
 			Columns: []string{sysdept.SysTenantColumn},
 			Bidi:    false,
@@ -1257,12 +1183,12 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.SysUserCleared() {
+	if _u.mutation.SysUsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
@@ -1270,12 +1196,12 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.RemovedSysUserIDs(); len(nodes) > 0 && !_u.mutation.SysUserCleared() {
+	if nodes := _u.mutation.RemovedSysUsersIDs(); len(nodes) > 0 && !_u.mutation.SysUsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
@@ -1286,12 +1212,12 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := _u.mutation.SysUserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.SysUsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),

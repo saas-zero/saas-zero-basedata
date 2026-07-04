@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 )
 
@@ -167,6 +168,16 @@ func TenantIDLT(v int64) predicate.SysDictData {
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
 func TenantIDLTE(v int64) predicate.SysDictData {
 	return predicate.SysDictData(sql.FieldLTE(FieldTenantID, v))
+}
+
+// TenantIDIsNil applies the IsNil predicate on the "tenant_id" field.
+func TenantIDIsNil() predicate.SysDictData {
+	return predicate.SysDictData(sql.FieldIsNull(FieldTenantID))
+}
+
+// TenantIDNotNil applies the NotNil predicate on the "tenant_id" field.
+func TenantIDNotNil() predicate.SysDictData {
+	return predicate.SysDictData(sql.FieldNotNull(FieldTenantID))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -944,24 +955,27 @@ func DictIDNotIn(vs ...int64) predicate.SysDictData {
 	return predicate.SysDictData(sql.FieldNotIn(FieldDictID, vs...))
 }
 
-// DictIDGT applies the GT predicate on the "dict_id" field.
-func DictIDGT(v int64) predicate.SysDictData {
-	return predicate.SysDictData(sql.FieldGT(FieldDictID, v))
+// HasSysDict applies the HasEdge predicate on the "sys_dict" edge.
+func HasSysDict() predicate.SysDictData {
+	return predicate.SysDictData(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, SysDictTable, SysDictColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// DictIDGTE applies the GTE predicate on the "dict_id" field.
-func DictIDGTE(v int64) predicate.SysDictData {
-	return predicate.SysDictData(sql.FieldGTE(FieldDictID, v))
-}
-
-// DictIDLT applies the LT predicate on the "dict_id" field.
-func DictIDLT(v int64) predicate.SysDictData {
-	return predicate.SysDictData(sql.FieldLT(FieldDictID, v))
-}
-
-// DictIDLTE applies the LTE predicate on the "dict_id" field.
-func DictIDLTE(v int64) predicate.SysDictData {
-	return predicate.SysDictData(sql.FieldLTE(FieldDictID, v))
+// HasSysDictWith applies the HasEdge predicate on the "sys_dict" edge with a given conditions (other predicates).
+func HasSysDictWith(preds ...predicate.SysDict) predicate.SysDictData {
+	return predicate.SysDictData(func(s *sql.Selector) {
+		step := newSysDictStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

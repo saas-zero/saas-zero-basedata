@@ -9,29 +9,29 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 )
 
-// SysConfigDelete is the builder for deleting a SysConfig entity.
-type SysConfigDelete struct {
+// SysPackageDelete is the builder for deleting a SysPackage entity.
+type SysPackageDelete struct {
 	config
 	hooks    []Hook
-	mutation *SysConfigMutation
+	mutation *SysPackageMutation
 }
 
-// Where appends a list predicates to the SysConfigDelete builder.
-func (_d *SysConfigDelete) Where(ps ...predicate.SysConfig) *SysConfigDelete {
+// Where appends a list predicates to the SysPackageDelete builder.
+func (_d *SysPackageDelete) Where(ps ...predicate.SysPackage) *SysPackageDelete {
 	_d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query and returns how many vertices were deleted.
-func (_d *SysConfigDelete) Exec(ctx context.Context) (int, error) {
+func (_d *SysPackageDelete) Exec(ctx context.Context) (int, error) {
 	return withHooks(ctx, _d.sqlExec, _d.mutation, _d.hooks)
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *SysConfigDelete) ExecX(ctx context.Context) int {
+func (_d *SysPackageDelete) ExecX(ctx context.Context) int {
 	n, err := _d.Exec(ctx)
 	if err != nil {
 		panic(err)
@@ -39,8 +39,8 @@ func (_d *SysConfigDelete) ExecX(ctx context.Context) int {
 	return n
 }
 
-func (_d *SysConfigDelete) sqlExec(ctx context.Context) (int, error) {
-	_spec := sqlgraph.NewDeleteSpec(sysconfig.Table, sqlgraph.NewFieldSpec(sysconfig.FieldID, field.TypeInt64))
+func (_d *SysPackageDelete) sqlExec(ctx context.Context) (int, error) {
+	_spec := sqlgraph.NewDeleteSpec(syspackage.Table, sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64))
 	if ps := _d.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -56,32 +56,32 @@ func (_d *SysConfigDelete) sqlExec(ctx context.Context) (int, error) {
 	return affected, err
 }
 
-// SysConfigDeleteOne is the builder for deleting a single SysConfig entity.
-type SysConfigDeleteOne struct {
-	_d *SysConfigDelete
+// SysPackageDeleteOne is the builder for deleting a single SysPackage entity.
+type SysPackageDeleteOne struct {
+	_d *SysPackageDelete
 }
 
-// Where appends a list predicates to the SysConfigDelete builder.
-func (_d *SysConfigDeleteOne) Where(ps ...predicate.SysConfig) *SysConfigDeleteOne {
+// Where appends a list predicates to the SysPackageDelete builder.
+func (_d *SysPackageDeleteOne) Where(ps ...predicate.SysPackage) *SysPackageDeleteOne {
 	_d._d.mutation.Where(ps...)
 	return _d
 }
 
 // Exec executes the deletion query.
-func (_d *SysConfigDeleteOne) Exec(ctx context.Context) error {
+func (_d *SysPackageDeleteOne) Exec(ctx context.Context) error {
 	n, err := _d._d.Exec(ctx)
 	switch {
 	case err != nil:
 		return err
 	case n == 0:
-		return &NotFoundError{sysconfig.Label}
+		return &NotFoundError{syspackage.Label}
 	default:
 		return nil
 	}
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (_d *SysConfigDeleteOne) ExecX(ctx context.Context) {
+func (_d *SysPackageDeleteOne) ExecX(ctx context.Context) {
 	if err := _d.Exec(ctx); err != nil {
 		panic(err)
 	}

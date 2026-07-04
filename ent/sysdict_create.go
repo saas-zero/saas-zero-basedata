@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
 // SysDictCreate is the builder for creating a SysDict entity.
@@ -23,6 +24,14 @@ type SysDictCreate struct {
 // SetTenantID sets the "tenant_id" field.
 func (_c *SysDictCreate) SetTenantID(v int64) *SysDictCreate {
 	_c.mutation.SetTenantID(v)
+	return _c
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_c *SysDictCreate) SetNillableTenantID(v *int64) *SysDictCreate {
+	if v != nil {
+		_c.SetTenantID(*v)
+	}
 	return _c
 }
 
@@ -160,24 +169,25 @@ func (_c *SysDictCreate) SetKey(v string) *SysDictCreate {
 	return _c
 }
 
-// SetIsPublic sets the "is_public" field.
-func (_c *SysDictCreate) SetIsPublic(v bool) *SysDictCreate {
-	_c.mutation.SetIsPublic(v)
-	return _c
-}
-
-// SetNillableIsPublic sets the "is_public" field if the given value is not nil.
-func (_c *SysDictCreate) SetNillableIsPublic(v *bool) *SysDictCreate {
-	if v != nil {
-		_c.SetIsPublic(*v)
-	}
-	return _c
-}
-
 // SetID sets the "id" field.
 func (_c *SysDictCreate) SetID(v int64) *SysDictCreate {
 	_c.mutation.SetID(v)
 	return _c
+}
+
+// AddSysDictDataIDs adds the "sys_dict_datas" edge to the SysDictData entity by IDs.
+func (_c *SysDictCreate) AddSysDictDataIDs(ids ...int64) *SysDictCreate {
+	_c.mutation.AddSysDictDataIDs(ids...)
+	return _c
+}
+
+// AddSysDictDatas adds the "sys_dict_datas" edges to the SysDictData entity.
+func (_c *SysDictCreate) AddSysDictDatas(v ...*SysDictData) *SysDictCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddSysDictDataIDs(ids...)
 }
 
 // Mutation returns the SysDictMutation object of the builder.
@@ -187,7 +197,9 @@ func (_c *SysDictCreate) Mutation() *SysDictMutation {
 
 // Save creates the SysDict in the database.
 func (_c *SysDictCreate) Save(ctx context.Context) (*SysDict, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -214,12 +226,22 @@ func (_c *SysDictCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysDictCreate) defaults() {
+func (_c *SysDictCreate) defaults() error {
+	if _, ok := _c.mutation.TenantID(); !ok {
+		v := sysdict.DefaultTenantID
+		_c.mutation.SetTenantID(v)
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysdict.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdict.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdict.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysdict.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdict.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdict.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -227,22 +249,11 @@ func (_c *SysDictCreate) defaults() {
 		v := sysdict.DefaultStatus
 		_c.mutation.SetStatus(v)
 	}
-	if _, ok := _c.mutation.IsPublic(); !ok {
-		v := sysdict.DefaultIsPublic
-		_c.mutation.SetIsPublic(v)
-	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysDictCreate) check() error {
-	if _, ok := _c.mutation.TenantID(); !ok {
-		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "SysDict.tenant_id"`)}
-	}
-	if v, ok := _c.mutation.TenantID(); ok {
-		if err := sysdict.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysDict.tenant_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysDict.created_at"`)}
 	}
@@ -314,9 +325,6 @@ func (_c *SysDictCreate) check() error {
 		if err := sysdict.KeyValidator(v); err != nil {
 			return &ValidationError{Name: "key", err: fmt.Errorf(`ent: validator failed for field "SysDict.key": %w`, err)}
 		}
-	}
-	if _, ok := _c.mutation.IsPublic(); !ok {
-		return &ValidationError{Name: "is_public", err: errors.New(`ent: missing required field "SysDict.is_public"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysdict.IDValidator(v); err != nil {
@@ -411,9 +419,21 @@ func (_c *SysDictCreate) createSpec() (*SysDict, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysdict.FieldKey, field.TypeString, value)
 		_node.Key = value
 	}
-	if value, ok := _c.mutation.IsPublic(); ok {
-		_spec.SetField(sysdict.FieldIsPublic, field.TypeBool, value)
-		_node.IsPublic = value
+	if nodes := _c.mutation.SysDictDatasIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysdict.SysDictDatasTable,
+			Columns: []string{sysdict.SysDictDatasColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdictdata.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

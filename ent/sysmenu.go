@@ -12,12 +12,14 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 )
 
-// menu Table | 菜单表
+// Menu Table | 菜单表
 type SysMenu struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
+	// 租户ID | Tenant ID
+	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Creator ID | 创建人ID
@@ -42,22 +44,24 @@ type SysMenu struct {
 	Remark string `json:"remark,omitempty"`
 	// Sort Number | 排序编号
 	Sort uint32 `json:"sort,omitempty"`
-	// 类型：directory-目录，menu-菜单，button-按钮
+	// 类型：directory-目录 menu-菜单 button-按钮 | Menu Type
 	MenuType sysmenu.MenuType `json:"menu_type,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// 父级id，不能为空,0为第一级
+	// 父级ID | Parent ID
 	ParentID int64 `json:"parent_id,omitempty"`
-	// The path of vue file | 组件路径
+	// 组件路径 | Component Path
 	Component string `json:"component,omitempty"`
-	// Index path | 菜单路由路径
+	// 路由路径 | Route Path
 	Path string `json:"path,omitempty"`
-	// Menu icon | 菜单图标
+	// 图标 | Icon
 	Icon string `json:"icon,omitempty"`
-	// 是否重定向
+	// 是否重定向 | Is Redirect
 	IsRedirect bool `json:"is_redirect,omitempty"`
-	// 重定向
+	// 重定向路径 | Redirect Path
 	Redirect string `json:"redirect,omitempty"`
+	// 是否隐藏 | Hidden
+	Hidden bool `json:"hidden,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysMenuQuery when eager-loading is set.
 	Edges        SysMenuEdges `json:"edges"`
@@ -68,9 +72,11 @@ type SysMenu struct {
 type SysMenuEdges struct {
 	// Roles holds the value of the roles edge.
 	Roles []*SysRole `json:"roles,omitempty"`
+	// Packages holds the value of the packages edge.
+	Packages []*SysPackage `json:"packages,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [2]bool
 }
 
 // RolesOrErr returns the Roles value or an error if the edge
@@ -82,14 +88,23 @@ func (e SysMenuEdges) RolesOrErr() ([]*SysRole, error) {
 	return nil, &NotLoadedError{edge: "roles"}
 }
 
+// PackagesOrErr returns the Packages value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysMenuEdges) PackagesOrErr() ([]*SysPackage, error) {
+	if e.loadedTypes[1] {
+		return e.Packages, nil
+	}
+	return nil, &NotLoadedError{edge: "packages"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
 func (*SysMenu) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysmenu.FieldIsRedirect:
+		case sysmenu.FieldIsRedirect, sysmenu.FieldHidden:
 			values[i] = new(sql.NullBool)
-		case sysmenu.FieldID, sysmenu.FieldCreatedID, sysmenu.FieldUpdatedID, sysmenu.FieldDeletedID, sysmenu.FieldSort, sysmenu.FieldParentID:
+		case sysmenu.FieldID, sysmenu.FieldTenantID, sysmenu.FieldCreatedID, sysmenu.FieldUpdatedID, sysmenu.FieldDeletedID, sysmenu.FieldSort, sysmenu.FieldParentID:
 			values[i] = new(sql.NullInt64)
 		case sysmenu.FieldCreatedBy, sysmenu.FieldUpdatedBy, sysmenu.FieldDeletedBy, sysmenu.FieldStatus, sysmenu.FieldRemark, sysmenu.FieldMenuType, sysmenu.FieldName, sysmenu.FieldComponent, sysmenu.FieldPath, sysmenu.FieldIcon, sysmenu.FieldRedirect:
 			values[i] = new(sql.NullString)
@@ -116,6 +131,12 @@ func (_m *SysMenu) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case sysmenu.FieldTenantID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
+			} else if value.Valid {
+				_m.TenantID = value.Int64
+			}
 		case sysmenu.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -236,6 +257,12 @@ func (_m *SysMenu) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Redirect = value.String
 			}
+		case sysmenu.FieldHidden:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field hidden", values[i])
+			} else if value.Valid {
+				_m.Hidden = value.Bool
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -252,6 +279,11 @@ func (_m *SysMenu) Value(name string) (ent.Value, error) {
 // QueryRoles queries the "roles" edge of the SysMenu entity.
 func (_m *SysMenu) QueryRoles() *SysRoleQuery {
 	return NewSysMenuClient(_m.config).QueryRoles(_m)
+}
+
+// QueryPackages queries the "packages" edge of the SysMenu entity.
+func (_m *SysMenu) QueryPackages() *SysPackageQuery {
+	return NewSysMenuClient(_m.config).QueryPackages(_m)
 }
 
 // Update returns a builder for updating this SysMenu.
@@ -277,6 +309,9 @@ func (_m *SysMenu) String() string {
 	var builder strings.Builder
 	builder.WriteString("SysMenu(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenant_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
+	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
@@ -336,6 +371,9 @@ func (_m *SysMenu) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("redirect=")
 	builder.WriteString(_m.Redirect)
+	builder.WriteString(", ")
+	builder.WriteString("hidden=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Hidden))
 	builder.WriteByte(')')
 	return builder.String()
 }

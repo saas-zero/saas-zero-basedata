@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
@@ -46,6 +47,12 @@ func (_u *SysDictDataUpdate) SetNillableTenantID(v *int64) *SysDictDataUpdate {
 // AddTenantID adds value to the "tenant_id" field.
 func (_u *SysDictDataUpdate) AddTenantID(v int64) *SysDictDataUpdate {
 	_u.mutation.AddTenantID(v)
+	return _u
+}
+
+// ClearTenantID clears the value of the "tenant_id" field.
+func (_u *SysDictDataUpdate) ClearTenantID() *SysDictDataUpdate {
+	_u.mutation.ClearTenantID()
 	return _u
 }
 
@@ -243,7 +250,6 @@ func (_u *SysDictDataUpdate) SetNillableValue(v *string) *SysDictDataUpdate {
 
 // SetDictID sets the "dict_id" field.
 func (_u *SysDictDataUpdate) SetDictID(v int64) *SysDictDataUpdate {
-	_u.mutation.ResetDictID()
 	_u.mutation.SetDictID(v)
 	return _u
 }
@@ -256,15 +262,26 @@ func (_u *SysDictDataUpdate) SetNillableDictID(v *int64) *SysDictDataUpdate {
 	return _u
 }
 
-// AddDictID adds value to the "dict_id" field.
-func (_u *SysDictDataUpdate) AddDictID(v int64) *SysDictDataUpdate {
-	_u.mutation.AddDictID(v)
+// SetSysDictID sets the "sys_dict" edge to the SysDict entity by ID.
+func (_u *SysDictDataUpdate) SetSysDictID(id int64) *SysDictDataUpdate {
+	_u.mutation.SetSysDictID(id)
 	return _u
+}
+
+// SetSysDict sets the "sys_dict" edge to the SysDict entity.
+func (_u *SysDictDataUpdate) SetSysDict(v *SysDict) *SysDictDataUpdate {
+	return _u.SetSysDictID(v.ID)
 }
 
 // Mutation returns the SysDictDataMutation object of the builder.
 func (_u *SysDictDataUpdate) Mutation() *SysDictDataMutation {
 	return _u.mutation
+}
+
+// ClearSysDict clears the "sys_dict" edge to the SysDict entity.
+func (_u *SysDictDataUpdate) ClearSysDict() *SysDictDataUpdate {
+	_u.mutation.ClearSysDict()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -296,11 +313,6 @@ func (_u *SysDictDataUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysDictDataUpdate) check() error {
-	if v, ok := _u.mutation.TenantID(); ok {
-		if err := sysdictdata.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.tenant_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysdictdata.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.updated_id": %w`, err)}
@@ -346,6 +358,9 @@ func (_u *SysDictDataUpdate) check() error {
 			return &ValidationError{Name: "dict_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.dict_id": %w`, err)}
 		}
 	}
+	if _u.mutation.SysDictCleared() && len(_u.mutation.SysDictIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysDictData.sys_dict"`)
+	}
 	return nil
 }
 
@@ -366,6 +381,9 @@ func (_u *SysDictDataUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	}
 	if value, ok := _u.mutation.AddedTenantID(); ok {
 		_spec.AddField(sysdictdata.FieldTenantID, field.TypeInt64, value)
+	}
+	if _u.mutation.TenantIDCleared() {
+		_spec.ClearField(sysdictdata.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysdictdata.FieldUpdatedAt, field.TypeTime, value)
@@ -418,11 +436,34 @@ func (_u *SysDictDataUpdate) sqlSave(ctx context.Context) (_node int, err error)
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(sysdictdata.FieldValue, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DictID(); ok {
-		_spec.SetField(sysdictdata.FieldDictID, field.TypeInt64, value)
+	if _u.mutation.SysDictCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictdata.SysDictTable,
+			Columns: []string{sysdictdata.SysDictColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdict.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedDictID(); ok {
-		_spec.AddField(sysdictdata.FieldDictID, field.TypeInt64, value)
+	if nodes := _u.mutation.SysDictIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictdata.SysDictTable,
+			Columns: []string{sysdictdata.SysDictColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdict.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
@@ -462,6 +503,12 @@ func (_u *SysDictDataUpdateOne) SetNillableTenantID(v *int64) *SysDictDataUpdate
 // AddTenantID adds value to the "tenant_id" field.
 func (_u *SysDictDataUpdateOne) AddTenantID(v int64) *SysDictDataUpdateOne {
 	_u.mutation.AddTenantID(v)
+	return _u
+}
+
+// ClearTenantID clears the value of the "tenant_id" field.
+func (_u *SysDictDataUpdateOne) ClearTenantID() *SysDictDataUpdateOne {
+	_u.mutation.ClearTenantID()
 	return _u
 }
 
@@ -659,7 +706,6 @@ func (_u *SysDictDataUpdateOne) SetNillableValue(v *string) *SysDictDataUpdateOn
 
 // SetDictID sets the "dict_id" field.
 func (_u *SysDictDataUpdateOne) SetDictID(v int64) *SysDictDataUpdateOne {
-	_u.mutation.ResetDictID()
 	_u.mutation.SetDictID(v)
 	return _u
 }
@@ -672,15 +718,26 @@ func (_u *SysDictDataUpdateOne) SetNillableDictID(v *int64) *SysDictDataUpdateOn
 	return _u
 }
 
-// AddDictID adds value to the "dict_id" field.
-func (_u *SysDictDataUpdateOne) AddDictID(v int64) *SysDictDataUpdateOne {
-	_u.mutation.AddDictID(v)
+// SetSysDictID sets the "sys_dict" edge to the SysDict entity by ID.
+func (_u *SysDictDataUpdateOne) SetSysDictID(id int64) *SysDictDataUpdateOne {
+	_u.mutation.SetSysDictID(id)
 	return _u
+}
+
+// SetSysDict sets the "sys_dict" edge to the SysDict entity.
+func (_u *SysDictDataUpdateOne) SetSysDict(v *SysDict) *SysDictDataUpdateOne {
+	return _u.SetSysDictID(v.ID)
 }
 
 // Mutation returns the SysDictDataMutation object of the builder.
 func (_u *SysDictDataUpdateOne) Mutation() *SysDictDataMutation {
 	return _u.mutation
+}
+
+// ClearSysDict clears the "sys_dict" edge to the SysDict entity.
+func (_u *SysDictDataUpdateOne) ClearSysDict() *SysDictDataUpdateOne {
+	_u.mutation.ClearSysDict()
+	return _u
 }
 
 // Where appends a list predicates to the SysDictDataUpdate builder.
@@ -725,11 +782,6 @@ func (_u *SysDictDataUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysDictDataUpdateOne) check() error {
-	if v, ok := _u.mutation.TenantID(); ok {
-		if err := sysdictdata.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.tenant_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysdictdata.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.updated_id": %w`, err)}
@@ -775,6 +827,9 @@ func (_u *SysDictDataUpdateOne) check() error {
 			return &ValidationError{Name: "dict_id", err: fmt.Errorf(`ent: validator failed for field "SysDictData.dict_id": %w`, err)}
 		}
 	}
+	if _u.mutation.SysDictCleared() && len(_u.mutation.SysDictIDs()) > 0 {
+		return errors.New(`ent: clearing a required unique edge "SysDictData.sys_dict"`)
+	}
 	return nil
 }
 
@@ -812,6 +867,9 @@ func (_u *SysDictDataUpdateOne) sqlSave(ctx context.Context) (_node *SysDictData
 	}
 	if value, ok := _u.mutation.AddedTenantID(); ok {
 		_spec.AddField(sysdictdata.FieldTenantID, field.TypeInt64, value)
+	}
+	if _u.mutation.TenantIDCleared() {
+		_spec.ClearField(sysdictdata.FieldTenantID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysdictdata.FieldUpdatedAt, field.TypeTime, value)
@@ -864,11 +922,34 @@ func (_u *SysDictDataUpdateOne) sqlSave(ctx context.Context) (_node *SysDictData
 	if value, ok := _u.mutation.Value(); ok {
 		_spec.SetField(sysdictdata.FieldValue, field.TypeString, value)
 	}
-	if value, ok := _u.mutation.DictID(); ok {
-		_spec.SetField(sysdictdata.FieldDictID, field.TypeInt64, value)
+	if _u.mutation.SysDictCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictdata.SysDictTable,
+			Columns: []string{sysdictdata.SysDictColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdict.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if value, ok := _u.mutation.AddedDictID(); ok {
-		_spec.AddField(sysdictdata.FieldDictID, field.TypeInt64, value)
+	if nodes := _u.mutation.SysDictIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
+			Table:   sysdictdata.SysDictTable,
+			Columns: []string{sysdictdata.SysDictColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysdict.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &SysDictData{config: _u.config}
 	_spec.Assign = _node.assignValues

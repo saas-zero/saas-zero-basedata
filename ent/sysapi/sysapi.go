@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -31,19 +32,17 @@ const (
 	FieldAPIType = "api_type"
 	// FieldAPIPath holds the string denoting the api_path field in the database.
 	FieldAPIPath = "api_path"
-	// FieldServiceName holds the string denoting the service_name field in the database.
-	FieldServiceName = "service_name"
-	// FieldMethod holds the string denoting the method field in the database.
-	FieldMethod = "method"
-	// EdgeRoles holds the string denoting the roles edge name in mutations.
-	EdgeRoles = "roles"
+	// FieldAPIMethod holds the string denoting the api_method field in the database.
+	FieldAPIMethod = "api_method"
+	// EdgePackages holds the string denoting the packages edge name in mutations.
+	EdgePackages = "packages"
 	// Table holds the table name of the sysapi in the database.
 	Table = "sys_apis"
-	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
-	RolesTable = "sys_role_apis"
-	// RolesInverseTable is the table name for the SysRole entity.
-	// It exists in this package in order to avoid circular dependency with the "sysrole" package.
-	RolesInverseTable = "sys_roles"
+	// PackagesTable is the table that holds the packages relation/edge. The primary key declared below.
+	PackagesTable = "sys_package_apis"
+	// PackagesInverseTable is the table name for the SysPackage entity.
+	// It exists in this package in order to avoid circular dependency with the "syspackage" package.
+	PackagesInverseTable = "sys_packages"
 )
 
 // Columns holds all SQL columns for sysapi fields.
@@ -57,14 +56,13 @@ var Columns = []string{
 	FieldAPIName,
 	FieldAPIType,
 	FieldAPIPath,
-	FieldServiceName,
-	FieldMethod,
+	FieldAPIMethod,
 }
 
 var (
-	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
-	// primary key for the roles relation (M2M).
-	RolesPrimaryKey = []string{"sys_role_id", "sys_api_id"}
+	// PackagesPrimaryKey and PackagesColumn2 are the table columns denoting the
+	// primary key for the packages relation (M2M).
+	PackagesPrimaryKey = []string{"sys_package_id", "sys_api_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -77,7 +75,13 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [1]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -94,10 +98,6 @@ var (
 	DefaultAPIPath string
 	// APIPathValidator is a validator for the "api_path" field. It is called by the builders before save.
 	APIPathValidator func(string) error
-	// DefaultServiceName holds the default value on creation for the "service_name" field.
-	DefaultServiceName string
-	// ServiceNameValidator is a validator for the "service_name" field. It is called by the builders before save.
-	ServiceNameValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -155,28 +155,28 @@ func APITypeValidator(at APIType) error {
 	}
 }
 
-// Method defines the type for the "method" enum field.
-type Method string
+// APIMethod defines the type for the "api_method" enum field.
+type APIMethod string
 
-// Method values.
+// APIMethod values.
 const (
-	MethodGet    Method = "get"
-	MethodPost   Method = "post"
-	MethodPut    Method = "put"
-	MethodDelete Method = "delete"
+	APIMethodGet    APIMethod = "get"
+	APIMethodPost   APIMethod = "post"
+	APIMethodPut    APIMethod = "put"
+	APIMethodDelete APIMethod = "delete"
 )
 
-func (m Method) String() string {
-	return string(m)
+func (am APIMethod) String() string {
+	return string(am)
 }
 
-// MethodValidator is a validator for the "method" field enum values. It is called by the builders before save.
-func MethodValidator(m Method) error {
-	switch m {
-	case MethodGet, MethodPost, MethodPut, MethodDelete:
+// APIMethodValidator is a validator for the "api_method" field enum values. It is called by the builders before save.
+func APIMethodValidator(am APIMethod) error {
+	switch am {
+	case APIMethodGet, APIMethodPost, APIMethodPut, APIMethodDelete:
 		return nil
 	default:
-		return fmt.Errorf("sysapi: invalid enum value for method field: %q", m)
+		return fmt.Errorf("sysapi: invalid enum value for api_method field: %q", am)
 	}
 }
 
@@ -228,33 +228,28 @@ func ByAPIPath(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAPIPath, opts...).ToFunc()
 }
 
-// ByServiceName orders the results by the service_name field.
-func ByServiceName(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldServiceName, opts...).ToFunc()
+// ByAPIMethod orders the results by the api_method field.
+func ByAPIMethod(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAPIMethod, opts...).ToFunc()
 }
 
-// ByMethod orders the results by the method field.
-func ByMethod(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldMethod, opts...).ToFunc()
-}
-
-// ByRolesCount orders the results by roles count.
-func ByRolesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByPackagesCount orders the results by packages count.
+func ByPackagesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newRolesStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newPackagesStep(), opts...)
 	}
 }
 
-// ByRoles orders the results by roles terms.
-func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// ByPackages orders the results by packages terms.
+func ByPackages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newPackagesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newRolesStep() *sqlgraph.Step {
+func newPackagesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(RolesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
+		sqlgraph.To(PackagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, PackagesTable, PackagesPrimaryKey...),
 	)
 }

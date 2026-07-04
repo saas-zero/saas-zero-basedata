@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -45,15 +46,39 @@ const (
 	FieldAdminID = "admin_id"
 	// FieldParentID holds the string denoting the parent_id field in the database.
 	FieldParentID = "parent_id"
-	// EdgeRoles holds the string denoting the roles edge name in mutations.
-	EdgeRoles = "roles"
+	// FieldPackageID holds the string denoting the package_id field in the database.
+	FieldPackageID = "package_id"
+	// FieldExpiredAt holds the string denoting the expired_at field in the database.
+	FieldExpiredAt = "expired_at"
+	// EdgeSysUsers holds the string denoting the sys_users edge name in mutations.
+	EdgeSysUsers = "sys_users"
+	// EdgeSysDepts holds the string denoting the sys_depts edge name in mutations.
+	EdgeSysDepts = "sys_depts"
+	// EdgeSysPackage holds the string denoting the sys_package edge name in mutations.
+	EdgeSysPackage = "sys_package"
 	// Table holds the table name of the systenant in the database.
 	Table = "sys_tenants"
-	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
-	RolesTable = "sys_tenant_roles"
-	// RolesInverseTable is the table name for the SysRole entity.
-	// It exists in this package in order to avoid circular dependency with the "sysrole" package.
-	RolesInverseTable = "sys_roles"
+	// SysUsersTable is the table that holds the sys_users relation/edge.
+	SysUsersTable = "sys_users"
+	// SysUsersInverseTable is the table name for the SysUser entity.
+	// It exists in this package in order to avoid circular dependency with the "sysuser" package.
+	SysUsersInverseTable = "sys_users"
+	// SysUsersColumn is the table column denoting the sys_users relation/edge.
+	SysUsersColumn = "tenant_id"
+	// SysDeptsTable is the table that holds the sys_depts relation/edge.
+	SysDeptsTable = "sys_depts"
+	// SysDeptsInverseTable is the table name for the SysDept entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdept" package.
+	SysDeptsInverseTable = "sys_depts"
+	// SysDeptsColumn is the table column denoting the sys_depts relation/edge.
+	SysDeptsColumn = "tenant_id"
+	// SysPackageTable is the table that holds the sys_package relation/edge.
+	SysPackageTable = "sys_tenants"
+	// SysPackageInverseTable is the table name for the SysPackage entity.
+	// It exists in this package in order to avoid circular dependency with the "syspackage" package.
+	SysPackageInverseTable = "sys_packages"
+	// SysPackageColumn is the table column denoting the sys_package relation/edge.
+	SysPackageColumn = "package_id"
 )
 
 // Columns holds all SQL columns for systenant fields.
@@ -74,19 +99,9 @@ var Columns = []string{
 	FieldCode,
 	FieldAdminID,
 	FieldParentID,
+	FieldPackageID,
+	FieldExpiredAt,
 }
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "sys_tenants"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"sys_dept_sys_tenant",
-}
-
-var (
-	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
-	// primary key for the roles relation (M2M).
-	RolesPrimaryKey = []string{"sys_tenant_id", "sys_role_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -95,15 +110,16 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
-			return true
-		}
-	}
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [3]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -128,8 +144,8 @@ var (
 	AdminIDValidator func(int64) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
-	// ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
-	ParentIDValidator func(int64) error
+	// DefaultPackageID holds the default value on creation for the "package_id" field.
+	DefaultPackageID int64
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -244,23 +260,68 @@ func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
 }
 
-// ByRolesCount orders the results by roles count.
-func ByRolesCount(opts ...sql.OrderTermOption) OrderOption {
+// ByPackageID orders the results by the package_id field.
+func ByPackageID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPackageID, opts...).ToFunc()
+}
+
+// ByExpiredAt orders the results by the expired_at field.
+func ByExpiredAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldExpiredAt, opts...).ToFunc()
+}
+
+// BySysUsersCount orders the results by sys_users count.
+func BySysUsersCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newRolesStep(), opts...)
+		sqlgraph.OrderByNeighborsCount(s, newSysUsersStep(), opts...)
 	}
 }
 
-// ByRoles orders the results by roles terms.
-func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+// BySysUsers orders the results by sys_users terms.
+func BySysUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
+		sqlgraph.OrderByNeighborTerms(s, newSysUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-func newRolesStep() *sqlgraph.Step {
+
+// BySysDeptsCount orders the results by sys_depts count.
+func BySysDeptsCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newSysDeptsStep(), opts...)
+	}
+}
+
+// BySysDepts orders the results by sys_depts terms.
+func BySysDepts(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysDeptsStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// BySysPackageField orders the results by sys_package field.
+func BySysPackageField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysPackageStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newSysUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(RolesInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
+		sqlgraph.To(SysUsersInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SysUsersTable, SysUsersColumn),
+	)
+}
+func newSysDeptsStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysDeptsInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, SysDeptsTable, SysDeptsColumn),
+	)
+}
+func newSysPackageStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysPackageInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SysPackageTable, SysPackageColumn),
 	)
 }

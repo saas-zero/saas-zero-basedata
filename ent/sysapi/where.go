@@ -85,11 +85,6 @@ func APIPath(v string) predicate.SysApi {
 	return predicate.SysApi(sql.FieldEQ(FieldAPIPath, v))
 }
 
-// ServiceName applies equality check predicate on the "service_name" field. It's identical to ServiceNameEQ.
-func ServiceName(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldEQ(FieldServiceName, v))
-}
-
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.SysApi {
 	return predicate.SysApi(sql.FieldEQ(FieldCreatedAt, v))
@@ -480,106 +475,51 @@ func APIPathContainsFold(v string) predicate.SysApi {
 	return predicate.SysApi(sql.FieldContainsFold(FieldAPIPath, v))
 }
 
-// ServiceNameEQ applies the EQ predicate on the "service_name" field.
-func ServiceNameEQ(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldEQ(FieldServiceName, v))
+// APIMethodEQ applies the EQ predicate on the "api_method" field.
+func APIMethodEQ(v APIMethod) predicate.SysApi {
+	return predicate.SysApi(sql.FieldEQ(FieldAPIMethod, v))
 }
 
-// ServiceNameNEQ applies the NEQ predicate on the "service_name" field.
-func ServiceNameNEQ(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldNEQ(FieldServiceName, v))
+// APIMethodNEQ applies the NEQ predicate on the "api_method" field.
+func APIMethodNEQ(v APIMethod) predicate.SysApi {
+	return predicate.SysApi(sql.FieldNEQ(FieldAPIMethod, v))
 }
 
-// ServiceNameIn applies the In predicate on the "service_name" field.
-func ServiceNameIn(vs ...string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldIn(FieldServiceName, vs...))
+// APIMethodIn applies the In predicate on the "api_method" field.
+func APIMethodIn(vs ...APIMethod) predicate.SysApi {
+	return predicate.SysApi(sql.FieldIn(FieldAPIMethod, vs...))
 }
 
-// ServiceNameNotIn applies the NotIn predicate on the "service_name" field.
-func ServiceNameNotIn(vs ...string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldNotIn(FieldServiceName, vs...))
+// APIMethodNotIn applies the NotIn predicate on the "api_method" field.
+func APIMethodNotIn(vs ...APIMethod) predicate.SysApi {
+	return predicate.SysApi(sql.FieldNotIn(FieldAPIMethod, vs...))
 }
 
-// ServiceNameGT applies the GT predicate on the "service_name" field.
-func ServiceNameGT(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldGT(FieldServiceName, v))
+// APIMethodIsNil applies the IsNil predicate on the "api_method" field.
+func APIMethodIsNil() predicate.SysApi {
+	return predicate.SysApi(sql.FieldIsNull(FieldAPIMethod))
 }
 
-// ServiceNameGTE applies the GTE predicate on the "service_name" field.
-func ServiceNameGTE(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldGTE(FieldServiceName, v))
+// APIMethodNotNil applies the NotNil predicate on the "api_method" field.
+func APIMethodNotNil() predicate.SysApi {
+	return predicate.SysApi(sql.FieldNotNull(FieldAPIMethod))
 }
 
-// ServiceNameLT applies the LT predicate on the "service_name" field.
-func ServiceNameLT(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldLT(FieldServiceName, v))
-}
-
-// ServiceNameLTE applies the LTE predicate on the "service_name" field.
-func ServiceNameLTE(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldLTE(FieldServiceName, v))
-}
-
-// ServiceNameContains applies the Contains predicate on the "service_name" field.
-func ServiceNameContains(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldContains(FieldServiceName, v))
-}
-
-// ServiceNameHasPrefix applies the HasPrefix predicate on the "service_name" field.
-func ServiceNameHasPrefix(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldHasPrefix(FieldServiceName, v))
-}
-
-// ServiceNameHasSuffix applies the HasSuffix predicate on the "service_name" field.
-func ServiceNameHasSuffix(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldHasSuffix(FieldServiceName, v))
-}
-
-// ServiceNameEqualFold applies the EqualFold predicate on the "service_name" field.
-func ServiceNameEqualFold(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldEqualFold(FieldServiceName, v))
-}
-
-// ServiceNameContainsFold applies the ContainsFold predicate on the "service_name" field.
-func ServiceNameContainsFold(v string) predicate.SysApi {
-	return predicate.SysApi(sql.FieldContainsFold(FieldServiceName, v))
-}
-
-// MethodEQ applies the EQ predicate on the "method" field.
-func MethodEQ(v Method) predicate.SysApi {
-	return predicate.SysApi(sql.FieldEQ(FieldMethod, v))
-}
-
-// MethodNEQ applies the NEQ predicate on the "method" field.
-func MethodNEQ(v Method) predicate.SysApi {
-	return predicate.SysApi(sql.FieldNEQ(FieldMethod, v))
-}
-
-// MethodIn applies the In predicate on the "method" field.
-func MethodIn(vs ...Method) predicate.SysApi {
-	return predicate.SysApi(sql.FieldIn(FieldMethod, vs...))
-}
-
-// MethodNotIn applies the NotIn predicate on the "method" field.
-func MethodNotIn(vs ...Method) predicate.SysApi {
-	return predicate.SysApi(sql.FieldNotIn(FieldMethod, vs...))
-}
-
-// HasRoles applies the HasEdge predicate on the "roles" edge.
-func HasRoles() predicate.SysApi {
+// HasPackages applies the HasEdge predicate on the "packages" edge.
+func HasPackages() predicate.SysApi {
 	return predicate.SysApi(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.M2M, true, PackagesTable, PackagesPrimaryKey...),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasRolesWith applies the HasEdge predicate on the "roles" edge with a given conditions (other predicates).
-func HasRolesWith(preds ...predicate.SysRole) predicate.SysApi {
+// HasPackagesWith applies the HasEdge predicate on the "packages" edge with a given conditions (other predicates).
+func HasPackagesWith(preds ...predicate.SysPackage) predicate.SysApi {
 	return predicate.SysApi(func(s *sql.Selector) {
-		step := newRolesStep()
+		step := newPackagesStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

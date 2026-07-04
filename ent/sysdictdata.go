@@ -9,16 +9,17 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 )
 
-// dict data Table | 字典数据表
+// Dictionary Data Table | 字典数据表
 type SysDictData struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
-	// 租户ID，不能为空
+	// 租户ID | Tenant ID
 	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -42,15 +43,38 @@ type SysDictData struct {
 	Status sysdictdata.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// key，不能为空
+	// 键 | Key
 	Key string `json:"key,omitempty"`
-	// 值，不能为空
+	// 值 | Value
 	Value string `json:"value,omitempty"`
-	// 字典ID，不能为空
-	DictID       int64 `json:"dict_id,omitempty"`
+	// 字典ID | Dictionary ID
+	DictID int64 `json:"dict_id,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysDictDataQuery when eager-loading is set.
+	Edges        SysDictDataEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// SysDictDataEdges holds the relations/edges for other nodes in the graph.
+type SysDictDataEdges struct {
+	// SysDict holds the value of the sys_dict edge.
+	SysDict *SysDict `json:"sys_dict,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// SysDictOrErr returns the SysDict value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysDictDataEdges) SysDictOrErr() (*SysDict, error) {
+	if e.SysDict != nil {
+		return e.SysDict, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: sysdict.Label}
+	}
+	return nil, &NotLoadedError{edge: "sys_dict"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -192,6 +216,11 @@ func (_m *SysDictData) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *SysDictData) GetValue(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QuerySysDict queries the "sys_dict" edge of the SysDictData entity.
+func (_m *SysDictData) QuerySysDict() *SysDictQuery {
+	return NewSysDictDataClient(_m.config).QuerySysDict(_m)
 }
 
 // Update returns a builder for updating this SysDictData.

@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -46,8 +48,17 @@ const (
 	FieldValue = "value"
 	// FieldDictID holds the string denoting the dict_id field in the database.
 	FieldDictID = "dict_id"
+	// EdgeSysDict holds the string denoting the sys_dict edge name in mutations.
+	EdgeSysDict = "sys_dict"
 	// Table holds the table name of the sysdictdata in the database.
 	Table = "sys_dict_datas"
+	// SysDictTable is the table that holds the sys_dict relation/edge.
+	SysDictTable = "sys_dict_datas"
+	// SysDictInverseTable is the table name for the SysDict entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdict" package.
+	SysDictInverseTable = "sys_dicts"
+	// SysDictColumn is the table column denoting the sys_dict relation/edge.
+	SysDictColumn = "dict_id"
 )
 
 // Columns holds all SQL columns for sysdictdata fields.
@@ -81,9 +92,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
-	TenantIDValidator func(int64) error
+	Hooks [4]ent.Hook
+	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
+	DefaultTenantID int64
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -106,8 +123,6 @@ var (
 	KeyValidator func(string) error
 	// ValueValidator is a validator for the "value" field. It is called by the builders before save.
 	ValueValidator func(string) error
-	// DefaultDictID holds the default value on creation for the "dict_id" field.
-	DefaultDictID int64
 	// DictIDValidator is a validator for the "dict_id" field. It is called by the builders before save.
 	DictIDValidator func(int64) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -227,4 +242,18 @@ func ByValue(opts ...sql.OrderTermOption) OrderOption {
 // ByDictID orders the results by the dict_id field.
 func ByDictID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDictID, opts...).ToFunc()
+}
+
+// BySysDictField orders the results by sys_dict field.
+func BySysDictField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysDictStep(), sql.OrderByField(field, opts...))
+	}
+}
+func newSysDictStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysDictInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SysDictTable, SysDictColumn),
+	)
 }

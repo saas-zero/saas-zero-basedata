@@ -13,24 +13,20 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
-	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
 // SysRoleQuery is the builder for querying SysRole entities.
 type SysRoleQuery struct {
 	config
-	ctx         *QueryContext
-	order       []sysrole.OrderOption
-	inters      []Interceptor
-	predicates  []predicate.SysRole
-	withMenus   *SysMenuQuery
-	withApis    *SysApiQuery
-	withUsers   *SysUserQuery
-	withTenants *SysTenantQuery
+	ctx        *QueryContext
+	order      []sysrole.OrderOption
+	inters     []Interceptor
+	predicates []predicate.SysRole
+	withMenus  *SysMenuQuery
+	withUsers  *SysUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -89,28 +85,6 @@ func (_q *SysRoleQuery) QueryMenus() *SysMenuQuery {
 	return query
 }
 
-// QueryApis chains the current query on the "apis" edge.
-func (_q *SysRoleQuery) QueryApis() *SysApiQuery {
-	query := (&SysApiClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
-			sqlgraph.To(sysapi.Table, sysapi.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, sysrole.ApisTable, sysrole.ApisPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
 // QueryUsers chains the current query on the "users" edge.
 func (_q *SysRoleQuery) QueryUsers() *SysUserQuery {
 	query := (&SysUserClient{config: _q.config}).Query()
@@ -126,28 +100,6 @@ func (_q *SysRoleQuery) QueryUsers() *SysUserQuery {
 			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
 			sqlgraph.To(sysuser.Table, sysuser.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.UsersTable, sysrole.UsersPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryTenants chains the current query on the "tenants" edge.
-func (_q *SysRoleQuery) QueryTenants() *SysTenantQuery {
-	query := (&SysTenantClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
-			sqlgraph.To(systenant.Table, systenant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.TenantsTable, sysrole.TenantsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -342,15 +294,13 @@ func (_q *SysRoleQuery) Clone() *SysRoleQuery {
 		return nil
 	}
 	return &SysRoleQuery{
-		config:      _q.config,
-		ctx:         _q.ctx.Clone(),
-		order:       append([]sysrole.OrderOption{}, _q.order...),
-		inters:      append([]Interceptor{}, _q.inters...),
-		predicates:  append([]predicate.SysRole{}, _q.predicates...),
-		withMenus:   _q.withMenus.Clone(),
-		withApis:    _q.withApis.Clone(),
-		withUsers:   _q.withUsers.Clone(),
-		withTenants: _q.withTenants.Clone(),
+		config:     _q.config,
+		ctx:        _q.ctx.Clone(),
+		order:      append([]sysrole.OrderOption{}, _q.order...),
+		inters:     append([]Interceptor{}, _q.inters...),
+		predicates: append([]predicate.SysRole{}, _q.predicates...),
+		withMenus:  _q.withMenus.Clone(),
+		withUsers:  _q.withUsers.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
 		path: _q.path,
@@ -368,17 +318,6 @@ func (_q *SysRoleQuery) WithMenus(opts ...func(*SysMenuQuery)) *SysRoleQuery {
 	return _q
 }
 
-// WithApis tells the query-builder to eager-load the nodes that are connected to
-// the "apis" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *SysRoleQuery) WithApis(opts ...func(*SysApiQuery)) *SysRoleQuery {
-	query := (&SysApiClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withApis = query
-	return _q
-}
-
 // WithUsers tells the query-builder to eager-load the nodes that are connected to
 // the "users" edge. The optional arguments are used to configure the query builder of the edge.
 func (_q *SysRoleQuery) WithUsers(opts ...func(*SysUserQuery)) *SysRoleQuery {
@@ -390,29 +329,18 @@ func (_q *SysRoleQuery) WithUsers(opts ...func(*SysUserQuery)) *SysRoleQuery {
 	return _q
 }
 
-// WithTenants tells the query-builder to eager-load the nodes that are connected to
-// the "tenants" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *SysRoleQuery) WithTenants(opts ...func(*SysTenantQuery)) *SysRoleQuery {
-	query := (&SysTenantClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withTenants = query
-	return _q
-}
-
 // GroupBy is used to group vertices by one or more fields/columns.
 // It is often used with aggregate functions, like: count, max, mean, min, sum.
 //
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SysRole.Query().
-//		GroupBy(sysrole.FieldCreatedAt).
+//		GroupBy(sysrole.FieldTenantID).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *SysRoleQuery) GroupBy(field string, fields ...string) *SysRoleGroupBy {
@@ -430,11 +358,11 @@ func (_q *SysRoleQuery) GroupBy(field string, fields ...string) *SysRoleGroupBy 
 // Example:
 //
 //	var v []struct {
-//		CreatedAt time.Time `json:"created_at,omitempty"`
+//		TenantID int64 `json:"tenant_id,omitempty"`
 //	}
 //
 //	client.SysRole.Query().
-//		Select(sysrole.FieldCreatedAt).
+//		Select(sysrole.FieldTenantID).
 //		Scan(ctx, &v)
 func (_q *SysRoleQuery) Select(fields ...string) *SysRoleSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)
@@ -479,11 +407,9 @@ func (_q *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysR
 	var (
 		nodes       = []*SysRole{}
 		_spec       = _q.querySpec()
-		loadedTypes = [4]bool{
+		loadedTypes = [2]bool{
 			_q.withMenus != nil,
-			_q.withApis != nil,
 			_q.withUsers != nil,
-			_q.withTenants != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -511,24 +437,10 @@ func (_q *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysR
 			return nil, err
 		}
 	}
-	if query := _q.withApis; query != nil {
-		if err := _q.loadApis(ctx, query, nodes,
-			func(n *SysRole) { n.Edges.Apis = []*SysApi{} },
-			func(n *SysRole, e *SysApi) { n.Edges.Apis = append(n.Edges.Apis, e) }); err != nil {
-			return nil, err
-		}
-	}
 	if query := _q.withUsers; query != nil {
 		if err := _q.loadUsers(ctx, query, nodes,
 			func(n *SysRole) { n.Edges.Users = []*SysUser{} },
 			func(n *SysRole, e *SysUser) { n.Edges.Users = append(n.Edges.Users, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withTenants; query != nil {
-		if err := _q.loadTenants(ctx, query, nodes,
-			func(n *SysRole) { n.Edges.Tenants = []*SysTenant{} },
-			func(n *SysRole, e *SysTenant) { n.Edges.Tenants = append(n.Edges.Tenants, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -596,67 +508,6 @@ func (_q *SysRoleQuery) loadMenus(ctx context.Context, query *SysMenuQuery, node
 	}
 	return nil
 }
-func (_q *SysRoleQuery) loadApis(ctx context.Context, query *SysApiQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysApi)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int64]*SysRole)
-	nids := make(map[int64]map[*SysRole]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(sysrole.ApisTable)
-		s.Join(joinT).On(s.C(sysapi.FieldID), joinT.C(sysrole.ApisPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(sysrole.ApisPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(sysrole.ApisPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullInt64).Int64
-				inValue := values[1].(*sql.NullInt64).Int64
-				if nids[inValue] == nil {
-					nids[inValue] = map[*SysRole]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*SysApi](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "apis" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
 func (_q *SysRoleQuery) loadUsers(ctx context.Context, query *SysUserQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysUser)) error {
 	edgeIDs := make([]driver.Value, len(nodes))
 	byID := make(map[int64]*SysRole)
@@ -711,67 +562,6 @@ func (_q *SysRoleQuery) loadUsers(ctx context.Context, query *SysUserQuery, node
 		nodes, ok := nids[n.ID]
 		if !ok {
 			return fmt.Errorf(`unexpected "users" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
-	}
-	return nil
-}
-func (_q *SysRoleQuery) loadTenants(ctx context.Context, query *SysTenantQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysTenant)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int64]*SysRole)
-	nids := make(map[int64]map[*SysRole]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(sysrole.TenantsTable)
-		s.Join(joinT).On(s.C(systenant.FieldID), joinT.C(sysrole.TenantsPrimaryKey[0]))
-		s.Where(sql.InValues(joinT.C(sysrole.TenantsPrimaryKey[1]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(sysrole.TenantsPrimaryKey[1]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := values[0].(*sql.NullInt64).Int64
-				inValue := values[1].(*sql.NullInt64).Int64
-				if nids[inValue] == nil {
-					nids[inValue] = map[*SysRole]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*SysTenant](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "tenants" node returned %v`, n.ID)
 		}
 		for kn := range nodes {
 			assign(kn, n)

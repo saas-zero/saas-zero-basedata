@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -49,14 +50,40 @@ const (
 	FieldMobile = "mobile"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
-	// FieldAvatar holds the string denoting the avatar field in the database.
-	FieldAvatar = "avatar"
 	// FieldDeptID holds the string denoting the dept_id field in the database.
 	FieldDeptID = "dept_id"
+	// FieldLoginIP holds the string denoting the login_ip field in the database.
+	FieldLoginIP = "login_ip"
+	// FieldLoginAt holds the string denoting the login_at field in the database.
+	FieldLoginAt = "login_at"
+	// FieldLoginErrorCount holds the string denoting the login_error_count field in the database.
+	FieldLoginErrorCount = "login_error_count"
+	// FieldLockoutUntil holds the string denoting the lockout_until field in the database.
+	FieldLockoutUntil = "lockout_until"
+	// FieldPosition holds the string denoting the position field in the database.
+	FieldPosition = "position"
+	// EdgeSysTenant holds the string denoting the sys_tenant edge name in mutations.
+	EdgeSysTenant = "sys_tenant"
+	// EdgeSysDept holds the string denoting the sys_dept edge name in mutations.
+	EdgeSysDept = "sys_dept"
 	// EdgeRoles holds the string denoting the roles edge name in mutations.
 	EdgeRoles = "roles"
 	// Table holds the table name of the sysuser in the database.
 	Table = "sys_users"
+	// SysTenantTable is the table that holds the sys_tenant relation/edge.
+	SysTenantTable = "sys_users"
+	// SysTenantInverseTable is the table name for the SysTenant entity.
+	// It exists in this package in order to avoid circular dependency with the "systenant" package.
+	SysTenantInverseTable = "sys_tenants"
+	// SysTenantColumn is the table column denoting the sys_tenant relation/edge.
+	SysTenantColumn = "tenant_id"
+	// SysDeptTable is the table that holds the sys_dept relation/edge.
+	SysDeptTable = "sys_users"
+	// SysDeptInverseTable is the table name for the SysDept entity.
+	// It exists in this package in order to avoid circular dependency with the "sysdept" package.
+	SysDeptInverseTable = "sys_depts"
+	// SysDeptColumn is the table column denoting the sys_dept relation/edge.
+	SysDeptColumn = "dept_id"
 	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
 	RolesTable = "sys_user_roles"
 	// RolesInverseTable is the table name for the SysRole entity.
@@ -84,14 +111,12 @@ var Columns = []string{
 	FieldNickname,
 	FieldMobile,
 	FieldEmail,
-	FieldAvatar,
 	FieldDeptID,
-}
-
-// ForeignKeys holds the SQL foreign-keys that are owned by the "sys_users"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"sys_dept_sys_user",
+	FieldLoginIP,
+	FieldLoginAt,
+	FieldLoginErrorCount,
+	FieldLockoutUntil,
+	FieldPosition,
 }
 
 var (
@@ -107,15 +132,16 @@ func ValidColumn(column string) bool {
 			return true
 		}
 	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
-			return true
-		}
-	}
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [4]ent.Hook
 	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
 	TenantIDValidator func(int64) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
@@ -150,12 +176,18 @@ var (
 	DefaultEmail string
 	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	EmailValidator func(string) error
-	// DefaultAvatar holds the default value on creation for the "avatar" field.
-	DefaultAvatar string
 	// DefaultDeptID holds the default value on creation for the "dept_id" field.
 	DefaultDeptID int64
-	// DeptIDValidator is a validator for the "dept_id" field. It is called by the builders before save.
-	DeptIDValidator func(int64) error
+	// DefaultLoginIP holds the default value on creation for the "login_ip" field.
+	DefaultLoginIP string
+	// LoginIPValidator is a validator for the "login_ip" field. It is called by the builders before save.
+	LoginIPValidator func(string) error
+	// DefaultLoginErrorCount holds the default value on creation for the "login_error_count" field.
+	DefaultLoginErrorCount int32
+	// DefaultPosition holds the default value on creation for the "position" field.
+	DefaultPosition string
+	// PositionValidator is a validator for the "position" field. It is called by the builders before save.
+	PositionValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -280,14 +312,48 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
 }
 
-// ByAvatar orders the results by the avatar field.
-func ByAvatar(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldAvatar, opts...).ToFunc()
-}
-
 // ByDeptID orders the results by the dept_id field.
 func ByDeptID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDeptID, opts...).ToFunc()
+}
+
+// ByLoginIP orders the results by the login_ip field.
+func ByLoginIP(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLoginIP, opts...).ToFunc()
+}
+
+// ByLoginAt orders the results by the login_at field.
+func ByLoginAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLoginAt, opts...).ToFunc()
+}
+
+// ByLoginErrorCount orders the results by the login_error_count field.
+func ByLoginErrorCount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLoginErrorCount, opts...).ToFunc()
+}
+
+// ByLockoutUntil orders the results by the lockout_until field.
+func ByLockoutUntil(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLockoutUntil, opts...).ToFunc()
+}
+
+// ByPosition orders the results by the position field.
+func ByPosition(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPosition, opts...).ToFunc()
+}
+
+// BySysTenantField orders the results by sys_tenant field.
+func BySysTenantField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysTenantStep(), sql.OrderByField(field, opts...))
+	}
+}
+
+// BySysDeptField orders the results by sys_dept field.
+func BySysDeptField(field string, opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newSysDeptStep(), sql.OrderByField(field, opts...))
+	}
 }
 
 // ByRolesCount orders the results by roles count.
@@ -302,6 +368,20 @@ func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
+}
+func newSysTenantStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysTenantInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SysTenantTable, SysTenantColumn),
+	)
+}
+func newSysDeptStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(SysDeptInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2O, true, SysDeptTable, SysDeptColumn),
+	)
 }
 func newRolesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(

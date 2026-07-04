@@ -9,16 +9,18 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
-// user Table | 用户表
+// User Table | 用户表
 type SysUser struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
-	// 租户ID，不能为空
+	// 租户ID | Tenant ID
 	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
@@ -42,40 +44,73 @@ type SysUser struct {
 	Status sysuser.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 用户名 | Username
 	Username string `json:"username,omitempty"`
-	// 密码，不能为空
+	// 密码 | Password
 	Password string `json:"password,omitempty"`
-	// 昵称，不能为空
+	// 昵称 | Nickname
 	Nickname string `json:"nickname,omitempty"`
-	// 手机号码,注意国外的号码
+	// 手机号码 | Mobile
 	Mobile string `json:"mobile,omitempty"`
-	// 邮箱地址
+	// 邮箱 | Email
 	Email string `json:"email,omitempty"`
-	// 头像路径
-	Avatar string `json:"avatar,omitempty"`
-	// 部门ID，不能为空
+	// 部门ID | Department ID
 	DeptID int64 `json:"dept_id,omitempty"`
+	// 最后登录IP | Last Login IP
+	LoginIP string `json:"login_ip,omitempty"`
+	// 最后登录时间 | Last Login At
+	LoginAt time.Time `json:"login_at,omitempty"`
+	// 连续登录错误次数 | Login Error Count
+	LoginErrorCount int32 `json:"login_error_count,omitempty"`
+	// 锁定截止时间 | Lockout Until
+	LockoutUntil time.Time `json:"lockout_until,omitempty"`
+	// 岗位 | Position
+	Position string `json:"position,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysUserQuery when eager-loading is set.
-	Edges             SysUserEdges `json:"edges"`
-	sys_dept_sys_user *int64
-	selectValues      sql.SelectValues
+	Edges        SysUserEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // SysUserEdges holds the relations/edges for other nodes in the graph.
 type SysUserEdges struct {
+	// SysTenant holds the value of the sys_tenant edge.
+	SysTenant *SysTenant `json:"sys_tenant,omitempty"`
+	// SysDept holds the value of the sys_dept edge.
+	SysDept *SysDept `json:"sys_dept,omitempty"`
 	// Roles holds the value of the roles edge.
 	Roles []*SysRole `json:"roles,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
+}
+
+// SysTenantOrErr returns the SysTenant value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysUserEdges) SysTenantOrErr() (*SysTenant, error) {
+	if e.SysTenant != nil {
+		return e.SysTenant, nil
+	} else if e.loadedTypes[0] {
+		return nil, &NotFoundError{label: systenant.Label}
+	}
+	return nil, &NotLoadedError{edge: "sys_tenant"}
+}
+
+// SysDeptOrErr returns the SysDept value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysUserEdges) SysDeptOrErr() (*SysDept, error) {
+	if e.SysDept != nil {
+		return e.SysDept, nil
+	} else if e.loadedTypes[1] {
+		return nil, &NotFoundError{label: sysdept.Label}
+	}
+	return nil, &NotLoadedError{edge: "sys_dept"}
 }
 
 // RolesOrErr returns the Roles value or an error if the edge
 // was not loaded in eager-loading.
 func (e SysUserEdges) RolesOrErr() ([]*SysRole, error) {
-	if e.loadedTypes[0] {
+	if e.loadedTypes[2] {
 		return e.Roles, nil
 	}
 	return nil, &NotLoadedError{edge: "roles"}
@@ -86,14 +121,12 @@ func (*SysUser) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysuser.FieldID, sysuser.FieldTenantID, sysuser.FieldCreatedID, sysuser.FieldUpdatedID, sysuser.FieldDeletedID, sysuser.FieldDeptID:
+		case sysuser.FieldID, sysuser.FieldTenantID, sysuser.FieldCreatedID, sysuser.FieldUpdatedID, sysuser.FieldDeletedID, sysuser.FieldDeptID, sysuser.FieldLoginErrorCount:
 			values[i] = new(sql.NullInt64)
-		case sysuser.FieldCreatedBy, sysuser.FieldUpdatedBy, sysuser.FieldDeletedBy, sysuser.FieldStatus, sysuser.FieldRemark, sysuser.FieldUsername, sysuser.FieldPassword, sysuser.FieldNickname, sysuser.FieldMobile, sysuser.FieldEmail, sysuser.FieldAvatar:
+		case sysuser.FieldCreatedBy, sysuser.FieldUpdatedBy, sysuser.FieldDeletedBy, sysuser.FieldStatus, sysuser.FieldRemark, sysuser.FieldUsername, sysuser.FieldPassword, sysuser.FieldNickname, sysuser.FieldMobile, sysuser.FieldEmail, sysuser.FieldLoginIP, sysuser.FieldPosition:
 			values[i] = new(sql.NullString)
-		case sysuser.FieldCreatedAt, sysuser.FieldUpdatedAt, sysuser.FieldDeletedAt:
+		case sysuser.FieldCreatedAt, sysuser.FieldUpdatedAt, sysuser.FieldDeletedAt, sysuser.FieldLoginAt, sysuser.FieldLockoutUntil:
 			values[i] = new(sql.NullTime)
-		case sysuser.ForeignKeys[0]: // sys_dept_sys_user
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -217,24 +250,41 @@ func (_m *SysUser) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Email = value.String
 			}
-		case sysuser.FieldAvatar:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field avatar", values[i])
-			} else if value.Valid {
-				_m.Avatar = value.String
-			}
 		case sysuser.FieldDeptID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field dept_id", values[i])
 			} else if value.Valid {
 				_m.DeptID = value.Int64
 			}
-		case sysuser.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field sys_dept_sys_user", value)
+		case sysuser.FieldLoginIP:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field login_ip", values[i])
 			} else if value.Valid {
-				_m.sys_dept_sys_user = new(int64)
-				*_m.sys_dept_sys_user = int64(value.Int64)
+				_m.LoginIP = value.String
+			}
+		case sysuser.FieldLoginAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field login_at", values[i])
+			} else if value.Valid {
+				_m.LoginAt = value.Time
+			}
+		case sysuser.FieldLoginErrorCount:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field login_error_count", values[i])
+			} else if value.Valid {
+				_m.LoginErrorCount = int32(value.Int64)
+			}
+		case sysuser.FieldLockoutUntil:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field lockout_until", values[i])
+			} else if value.Valid {
+				_m.LockoutUntil = value.Time
+			}
+		case sysuser.FieldPosition:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field position", values[i])
+			} else if value.Valid {
+				_m.Position = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -247,6 +297,16 @@ func (_m *SysUser) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (_m *SysUser) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
+}
+
+// QuerySysTenant queries the "sys_tenant" edge of the SysUser entity.
+func (_m *SysUser) QuerySysTenant() *SysTenantQuery {
+	return NewSysUserClient(_m.config).QuerySysTenant(_m)
+}
+
+// QuerySysDept queries the "sys_dept" edge of the SysUser entity.
+func (_m *SysUser) QuerySysDept() *SysDeptQuery {
+	return NewSysUserClient(_m.config).QuerySysDept(_m)
 }
 
 // QueryRoles queries the "roles" edge of the SysUser entity.
@@ -328,11 +388,23 @@ func (_m *SysUser) String() string {
 	builder.WriteString("email=")
 	builder.WriteString(_m.Email)
 	builder.WriteString(", ")
-	builder.WriteString("avatar=")
-	builder.WriteString(_m.Avatar)
-	builder.WriteString(", ")
 	builder.WriteString("dept_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.DeptID))
+	builder.WriteString(", ")
+	builder.WriteString("login_ip=")
+	builder.WriteString(_m.LoginIP)
+	builder.WriteString(", ")
+	builder.WriteString("login_at=")
+	builder.WriteString(_m.LoginAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("login_error_count=")
+	builder.WriteString(fmt.Sprintf("%v", _m.LoginErrorCount))
+	builder.WriteString(", ")
+	builder.WriteString("lockout_until=")
+	builder.WriteString(_m.LockoutUntil.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("position=")
+	builder.WriteString(_m.Position)
 	builder.WriteByte(')')
 	return builder.String()
 }

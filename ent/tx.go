@@ -14,16 +14,20 @@ type Tx struct {
 	config
 	// SysApi is the client for interacting with the SysApi builders.
 	SysApi *SysApiClient
-	// SysConfig is the client for interacting with the SysConfig builders.
-	SysConfig *SysConfigClient
 	// SysDept is the client for interacting with the SysDept builders.
 	SysDept *SysDeptClient
 	// SysDict is the client for interacting with the SysDict builders.
 	SysDict *SysDictClient
 	// SysDictData is the client for interacting with the SysDictData builders.
 	SysDictData *SysDictDataClient
+	// SysLoginLog is the client for interacting with the SysLoginLog builders.
+	SysLoginLog *SysLoginLogClient
 	// SysMenu is the client for interacting with the SysMenu builders.
 	SysMenu *SysMenuClient
+	// SysOperationLog is the client for interacting with the SysOperationLog builders.
+	SysOperationLog *SysOperationLogClient
+	// SysPackage is the client for interacting with the SysPackage builders.
+	SysPackage *SysPackageClient
 	// SysRole is the client for interacting with the SysRole builders.
 	SysRole *SysRoleClient
 	// SysTenant is the client for interacting with the SysTenant builders.
@@ -162,11 +166,13 @@ func (tx *Tx) Client() *Client {
 
 func (tx *Tx) init() {
 	tx.SysApi = NewSysApiClient(tx.config)
-	tx.SysConfig = NewSysConfigClient(tx.config)
 	tx.SysDept = NewSysDeptClient(tx.config)
 	tx.SysDict = NewSysDictClient(tx.config)
 	tx.SysDictData = NewSysDictDataClient(tx.config)
+	tx.SysLoginLog = NewSysLoginLogClient(tx.config)
 	tx.SysMenu = NewSysMenuClient(tx.config)
+	tx.SysOperationLog = NewSysOperationLogClient(tx.config)
+	tx.SysPackage = NewSysPackageClient(tx.config)
 	tx.SysRole = NewSysRoleClient(tx.config)
 	tx.SysTenant = NewSysTenantClient(tx.config)
 	tx.SysUser = NewSysUserClient(tx.config)

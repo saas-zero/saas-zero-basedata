@@ -9,10 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 )
 
-// tenant Table | 租户表
+// Tenant Table | 租户表
 type SysTenant struct {
 	config `json:"-"`
 	// ID of the ent.
@@ -40,37 +41,64 @@ type SysTenant struct {
 	Status systenant.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// 编码，不能为空
+	// 编码 | Code
 	Code string `json:"code,omitempty"`
-	// 管理员id，不能为空，创建租户的时候顺便创建用户
+	// 管理员ID | Admin ID
 	AdminID int64 `json:"admin_id,omitempty"`
-	// 父级id，不能为空,0为第一级
+	// 父级ID | Parent ID
 	ParentID int64 `json:"parent_id,omitempty"`
+	// 套餐ID | Package ID
+	PackageID int64 `json:"package_id,omitempty"`
+	// 到期时间 | Expired At
+	ExpiredAt time.Time `json:"expired_at,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysTenantQuery when eager-loading is set.
-	Edges               SysTenantEdges `json:"edges"`
-	sys_dept_sys_tenant *int64
-	selectValues        sql.SelectValues
+	Edges        SysTenantEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // SysTenantEdges holds the relations/edges for other nodes in the graph.
 type SysTenantEdges struct {
-	// Roles holds the value of the roles edge.
-	Roles []*SysRole `json:"roles,omitempty"`
+	// SysUsers holds the value of the sys_users edge.
+	SysUsers []*SysUser `json:"sys_users,omitempty"`
+	// SysDepts holds the value of the sys_depts edge.
+	SysDepts []*SysDept `json:"sys_depts,omitempty"`
+	// SysPackage holds the value of the sys_package edge.
+	SysPackage *SysPackage `json:"sys_package,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [1]bool
+	loadedTypes [3]bool
 }
 
-// RolesOrErr returns the Roles value or an error if the edge
+// SysUsersOrErr returns the SysUsers value or an error if the edge
 // was not loaded in eager-loading.
-func (e SysTenantEdges) RolesOrErr() ([]*SysRole, error) {
+func (e SysTenantEdges) SysUsersOrErr() ([]*SysUser, error) {
 	if e.loadedTypes[0] {
-		return e.Roles, nil
+		return e.SysUsers, nil
 	}
-	return nil, &NotLoadedError{edge: "roles"}
+	return nil, &NotLoadedError{edge: "sys_users"}
+}
+
+// SysDeptsOrErr returns the SysDepts value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysTenantEdges) SysDeptsOrErr() ([]*SysDept, error) {
+	if e.loadedTypes[1] {
+		return e.SysDepts, nil
+	}
+	return nil, &NotLoadedError{edge: "sys_depts"}
+}
+
+// SysPackageOrErr returns the SysPackage value or an error if the edge
+// was not loaded in eager-loading, or loaded but was not found.
+func (e SysTenantEdges) SysPackageOrErr() (*SysPackage, error) {
+	if e.SysPackage != nil {
+		return e.SysPackage, nil
+	} else if e.loadedTypes[2] {
+		return nil, &NotFoundError{label: syspackage.Label}
+	}
+	return nil, &NotLoadedError{edge: "sys_package"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -78,14 +106,12 @@ func (*SysTenant) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case systenant.FieldID, systenant.FieldCreatedID, systenant.FieldUpdatedID, systenant.FieldDeletedID, systenant.FieldAdminID, systenant.FieldParentID:
+		case systenant.FieldID, systenant.FieldCreatedID, systenant.FieldUpdatedID, systenant.FieldDeletedID, systenant.FieldAdminID, systenant.FieldParentID, systenant.FieldPackageID:
 			values[i] = new(sql.NullInt64)
 		case systenant.FieldCreatedBy, systenant.FieldUpdatedBy, systenant.FieldDeletedBy, systenant.FieldStatus, systenant.FieldRemark, systenant.FieldName, systenant.FieldCode:
 			values[i] = new(sql.NullString)
-		case systenant.FieldCreatedAt, systenant.FieldUpdatedAt, systenant.FieldDeletedAt:
+		case systenant.FieldCreatedAt, systenant.FieldUpdatedAt, systenant.FieldDeletedAt, systenant.FieldExpiredAt:
 			values[i] = new(sql.NullTime)
-		case systenant.ForeignKeys[0]: // sys_dept_sys_tenant
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -197,12 +223,17 @@ func (_m *SysTenant) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ParentID = value.Int64
 			}
-		case systenant.ForeignKeys[0]:
+		case systenant.FieldPackageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field sys_dept_sys_tenant", value)
+				return fmt.Errorf("unexpected type %T for field package_id", values[i])
 			} else if value.Valid {
-				_m.sys_dept_sys_tenant = new(int64)
-				*_m.sys_dept_sys_tenant = int64(value.Int64)
+				_m.PackageID = value.Int64
+			}
+		case systenant.FieldExpiredAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field expired_at", values[i])
+			} else if value.Valid {
+				_m.ExpiredAt = value.Time
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -217,9 +248,19 @@ func (_m *SysTenant) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// QueryRoles queries the "roles" edge of the SysTenant entity.
-func (_m *SysTenant) QueryRoles() *SysRoleQuery {
-	return NewSysTenantClient(_m.config).QueryRoles(_m)
+// QuerySysUsers queries the "sys_users" edge of the SysTenant entity.
+func (_m *SysTenant) QuerySysUsers() *SysUserQuery {
+	return NewSysTenantClient(_m.config).QuerySysUsers(_m)
+}
+
+// QuerySysDepts queries the "sys_depts" edge of the SysTenant entity.
+func (_m *SysTenant) QuerySysDepts() *SysDeptQuery {
+	return NewSysTenantClient(_m.config).QuerySysDepts(_m)
+}
+
+// QuerySysPackage queries the "sys_package" edge of the SysTenant entity.
+func (_m *SysTenant) QuerySysPackage() *SysPackageQuery {
+	return NewSysTenantClient(_m.config).QuerySysPackage(_m)
 }
 
 // Update returns a builder for updating this SysTenant.
@@ -289,6 +330,12 @@ func (_m *SysTenant) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
+	builder.WriteString(", ")
+	builder.WriteString("package_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PackageID))
+	builder.WriteString(", ")
+	builder.WriteString("expired_at=")
+	builder.WriteString(_m.ExpiredAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 )
 
@@ -119,11 +120,6 @@ func Key(v string) predicate.SysDict {
 	return predicate.SysDict(sql.FieldEQ(FieldKey, v))
 }
 
-// IsPublic applies equality check predicate on the "is_public" field. It's identical to IsPublicEQ.
-func IsPublic(v bool) predicate.SysDict {
-	return predicate.SysDict(sql.FieldEQ(FieldIsPublic, v))
-}
-
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
 func TenantIDEQ(v int64) predicate.SysDict {
 	return predicate.SysDict(sql.FieldEQ(FieldTenantID, v))
@@ -162,6 +158,16 @@ func TenantIDLT(v int64) predicate.SysDict {
 // TenantIDLTE applies the LTE predicate on the "tenant_id" field.
 func TenantIDLTE(v int64) predicate.SysDict {
 	return predicate.SysDict(sql.FieldLTE(FieldTenantID, v))
+}
+
+// TenantIDIsNil applies the IsNil predicate on the "tenant_id" field.
+func TenantIDIsNil() predicate.SysDict {
+	return predicate.SysDict(sql.FieldIsNull(FieldTenantID))
+}
+
+// TenantIDNotNil applies the NotNil predicate on the "tenant_id" field.
+func TenantIDNotNil() predicate.SysDict {
+	return predicate.SysDict(sql.FieldNotNull(FieldTenantID))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -854,14 +860,27 @@ func KeyContainsFold(v string) predicate.SysDict {
 	return predicate.SysDict(sql.FieldContainsFold(FieldKey, v))
 }
 
-// IsPublicEQ applies the EQ predicate on the "is_public" field.
-func IsPublicEQ(v bool) predicate.SysDict {
-	return predicate.SysDict(sql.FieldEQ(FieldIsPublic, v))
+// HasSysDictDatas applies the HasEdge predicate on the "sys_dict_datas" edge.
+func HasSysDictDatas() predicate.SysDict {
+	return predicate.SysDict(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SysDictDatasTable, SysDictDatasColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
 }
 
-// IsPublicNEQ applies the NEQ predicate on the "is_public" field.
-func IsPublicNEQ(v bool) predicate.SysDict {
-	return predicate.SysDict(sql.FieldNEQ(FieldIsPublic, v))
+// HasSysDictDatasWith applies the HasEdge predicate on the "sys_dict_datas" edge with a given conditions (other predicates).
+func HasSysDictDatasWith(preds ...predicate.SysDictData) predicate.SysDict {
+	return predicate.SysDict(func(s *sql.Selector) {
+		step := newSysDictDatasStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
 }
 
 // And groups predicates with the AND operator between them.

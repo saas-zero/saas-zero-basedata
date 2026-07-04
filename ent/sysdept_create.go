@@ -218,19 +218,15 @@ func (_c *SysDeptCreate) SetID(v int64) *SysDeptCreate {
 	return _c
 }
 
-// AddSysTenantIDs adds the "sys_tenant" edge to the SysTenant entity by IDs.
-func (_c *SysDeptCreate) AddSysTenantIDs(ids ...int64) *SysDeptCreate {
-	_c.mutation.AddSysTenantIDs(ids...)
+// SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
+func (_c *SysDeptCreate) SetSysTenantID(id int64) *SysDeptCreate {
+	_c.mutation.SetSysTenantID(id)
 	return _c
 }
 
-// AddSysTenant adds the "sys_tenant" edges to the SysTenant entity.
-func (_c *SysDeptCreate) AddSysTenant(v ...*SysTenant) *SysDeptCreate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _c.AddSysTenantIDs(ids...)
+// SetSysTenant sets the "sys_tenant" edge to the SysTenant entity.
+func (_c *SysDeptCreate) SetSysTenant(v *SysTenant) *SysDeptCreate {
+	return _c.SetSysTenantID(v.ID)
 }
 
 // SetLeader sets the "leader" edge to the SysUser entity.
@@ -238,14 +234,14 @@ func (_c *SysDeptCreate) SetLeader(v *SysUser) *SysDeptCreate {
 	return _c.SetLeaderID(v.ID)
 }
 
-// AddSysUserIDs adds the "sys_user" edge to the SysUser entity by IDs.
+// AddSysUserIDs adds the "sys_users" edge to the SysUser entity by IDs.
 func (_c *SysDeptCreate) AddSysUserIDs(ids ...int64) *SysDeptCreate {
 	_c.mutation.AddSysUserIDs(ids...)
 	return _c
 }
 
-// AddSysUser adds the "sys_user" edges to the SysUser entity.
-func (_c *SysDeptCreate) AddSysUser(v ...*SysUser) *SysDeptCreate {
+// AddSysUsers adds the "sys_users" edges to the SysUser entity.
+func (_c *SysDeptCreate) AddSysUsers(v ...*SysUser) *SysDeptCreate {
 	ids := make([]int64, len(v))
 	for i := range v {
 		ids[i] = v[i].ID
@@ -260,7 +256,9 @@ func (_c *SysDeptCreate) Mutation() *SysDeptMutation {
 
 // Save creates the SysDept in the database.
 func (_c *SysDeptCreate) Save(ctx context.Context) (*SysDept, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -287,12 +285,18 @@ func (_c *SysDeptCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysDeptCreate) defaults() {
+func (_c *SysDeptCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysdept.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdept.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdept.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysdept.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysdept.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysdept.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -320,6 +324,7 @@ func (_c *SysDeptCreate) defaults() {
 		v := sysdept.DefaultParentID
 		_c.mutation.SetParentID(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -399,19 +404,21 @@ func (_c *SysDeptCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysDept.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.LeaderID(); !ok {
-		return &ValidationError{Name: "leader_id", err: errors.New(`ent: missing required field "SysDept.leader_id"`)}
-	}
-	if v, ok := _c.mutation.LeaderID(); ok {
-		if err := sysdept.LeaderIDValidator(v); err != nil {
-			return &ValidationError{Name: "leader_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.leader_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Mobile(); !ok {
 		return &ValidationError{Name: "mobile", err: errors.New(`ent: missing required field "SysDept.mobile"`)}
 	}
+	if v, ok := _c.mutation.Mobile(); ok {
+		if err := sysdept.MobileValidator(v); err != nil {
+			return &ValidationError{Name: "mobile", err: fmt.Errorf(`ent: validator failed for field "SysDept.mobile": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Email(); !ok {
 		return &ValidationError{Name: "email", err: errors.New(`ent: missing required field "SysDept.email"`)}
+	}
+	if v, ok := _c.mutation.Email(); ok {
+		if err := sysdept.EmailValidator(v); err != nil {
+			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
+		}
 	}
 	if _, ok := _c.mutation.ParentID(); !ok {
 		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "SysDept.parent_id"`)}
@@ -426,8 +433,8 @@ func (_c *SysDeptCreate) check() error {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "SysDept.id": %w`, err)}
 		}
 	}
-	if len(_c.mutation.LeaderIDs()) == 0 {
-		return &ValidationError{Name: "leader", err: errors.New(`ent: missing required edge "SysDept.leader"`)}
+	if len(_c.mutation.SysTenantIDs()) == 0 {
+		return &ValidationError{Name: "sys_tenant", err: errors.New(`ent: missing required edge "SysDept.sys_tenant"`)}
 	}
 	return nil
 }
@@ -460,10 +467,6 @@ func (_c *SysDeptCreate) createSpec() (*SysDept, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(sysdept.FieldTenantID, field.TypeInt64, value)
-		_node.TenantID = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sysdept.FieldCreatedAt, field.TypeTime, value)
@@ -527,8 +530,8 @@ func (_c *SysDeptCreate) createSpec() (*SysDept, *sqlgraph.CreateSpec) {
 	}
 	if nodes := _c.mutation.SysTenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2M,
-			Inverse: false,
+			Rel:     sqlgraph.M2O,
+			Inverse: true,
 			Table:   sysdept.SysTenantTable,
 			Columns: []string{sysdept.SysTenantColumn},
 			Bidi:    false,
@@ -539,6 +542,7 @@ func (_c *SysDeptCreate) createSpec() (*SysDept, *sqlgraph.CreateSpec) {
 		for _, k := range nodes {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
+		_node.TenantID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	if nodes := _c.mutation.LeaderIDs(); len(nodes) > 0 {
@@ -558,12 +562,12 @@ func (_c *SysDeptCreate) createSpec() (*SysDept, *sqlgraph.CreateSpec) {
 		_node.LeaderID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := _c.mutation.SysUserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.SysUsersIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.O2M,
 			Inverse: false,
-			Table:   sysdept.SysUserTable,
-			Columns: []string{sysdept.SysUserColumn},
+			Table:   sysdept.SysUsersTable,
+			Columns: []string{sysdept.SysUsersColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),

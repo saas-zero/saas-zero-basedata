@@ -16,11 +16,13 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysloginlog"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysoperationlog"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -33,16 +35,20 @@ type Client struct {
 	Schema *migrate.Schema
 	// SysApi is the client for interacting with the SysApi builders.
 	SysApi *SysApiClient
-	// SysConfig is the client for interacting with the SysConfig builders.
-	SysConfig *SysConfigClient
 	// SysDept is the client for interacting with the SysDept builders.
 	SysDept *SysDeptClient
 	// SysDict is the client for interacting with the SysDict builders.
 	SysDict *SysDictClient
 	// SysDictData is the client for interacting with the SysDictData builders.
 	SysDictData *SysDictDataClient
+	// SysLoginLog is the client for interacting with the SysLoginLog builders.
+	SysLoginLog *SysLoginLogClient
 	// SysMenu is the client for interacting with the SysMenu builders.
 	SysMenu *SysMenuClient
+	// SysOperationLog is the client for interacting with the SysOperationLog builders.
+	SysOperationLog *SysOperationLogClient
+	// SysPackage is the client for interacting with the SysPackage builders.
+	SysPackage *SysPackageClient
 	// SysRole is the client for interacting with the SysRole builders.
 	SysRole *SysRoleClient
 	// SysTenant is the client for interacting with the SysTenant builders.
@@ -61,11 +67,13 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.SysApi = NewSysApiClient(c.config)
-	c.SysConfig = NewSysConfigClient(c.config)
 	c.SysDept = NewSysDeptClient(c.config)
 	c.SysDict = NewSysDictClient(c.config)
 	c.SysDictData = NewSysDictDataClient(c.config)
+	c.SysLoginLog = NewSysLoginLogClient(c.config)
 	c.SysMenu = NewSysMenuClient(c.config)
+	c.SysOperationLog = NewSysOperationLogClient(c.config)
+	c.SysPackage = NewSysPackageClient(c.config)
 	c.SysRole = NewSysRoleClient(c.config)
 	c.SysTenant = NewSysTenantClient(c.config)
 	c.SysUser = NewSysUserClient(c.config)
@@ -159,17 +167,19 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		SysApi:      NewSysApiClient(cfg),
-		SysConfig:   NewSysConfigClient(cfg),
-		SysDept:     NewSysDeptClient(cfg),
-		SysDict:     NewSysDictClient(cfg),
-		SysDictData: NewSysDictDataClient(cfg),
-		SysMenu:     NewSysMenuClient(cfg),
-		SysRole:     NewSysRoleClient(cfg),
-		SysTenant:   NewSysTenantClient(cfg),
-		SysUser:     NewSysUserClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		SysApi:          NewSysApiClient(cfg),
+		SysDept:         NewSysDeptClient(cfg),
+		SysDict:         NewSysDictClient(cfg),
+		SysDictData:     NewSysDictDataClient(cfg),
+		SysLoginLog:     NewSysLoginLogClient(cfg),
+		SysMenu:         NewSysMenuClient(cfg),
+		SysOperationLog: NewSysOperationLogClient(cfg),
+		SysPackage:      NewSysPackageClient(cfg),
+		SysRole:         NewSysRoleClient(cfg),
+		SysTenant:       NewSysTenantClient(cfg),
+		SysUser:         NewSysUserClient(cfg),
 	}, nil
 }
 
@@ -187,17 +197,19 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:         ctx,
-		config:      cfg,
-		SysApi:      NewSysApiClient(cfg),
-		SysConfig:   NewSysConfigClient(cfg),
-		SysDept:     NewSysDeptClient(cfg),
-		SysDict:     NewSysDictClient(cfg),
-		SysDictData: NewSysDictDataClient(cfg),
-		SysMenu:     NewSysMenuClient(cfg),
-		SysRole:     NewSysRoleClient(cfg),
-		SysTenant:   NewSysTenantClient(cfg),
-		SysUser:     NewSysUserClient(cfg),
+		ctx:             ctx,
+		config:          cfg,
+		SysApi:          NewSysApiClient(cfg),
+		SysDept:         NewSysDeptClient(cfg),
+		SysDict:         NewSysDictClient(cfg),
+		SysDictData:     NewSysDictDataClient(cfg),
+		SysLoginLog:     NewSysLoginLogClient(cfg),
+		SysMenu:         NewSysMenuClient(cfg),
+		SysOperationLog: NewSysOperationLogClient(cfg),
+		SysPackage:      NewSysPackageClient(cfg),
+		SysRole:         NewSysRoleClient(cfg),
+		SysTenant:       NewSysTenantClient(cfg),
+		SysUser:         NewSysUserClient(cfg),
 	}, nil
 }
 
@@ -227,8 +239,8 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	for _, n := range []interface{ Use(...Hook) }{
-		c.SysApi, c.SysConfig, c.SysDept, c.SysDict, c.SysDictData, c.SysMenu,
-		c.SysRole, c.SysTenant, c.SysUser,
+		c.SysApi, c.SysDept, c.SysDict, c.SysDictData, c.SysLoginLog, c.SysMenu,
+		c.SysOperationLog, c.SysPackage, c.SysRole, c.SysTenant, c.SysUser,
 	} {
 		n.Use(hooks...)
 	}
@@ -238,8 +250,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.SysApi, c.SysConfig, c.SysDept, c.SysDict, c.SysDictData, c.SysMenu,
-		c.SysRole, c.SysTenant, c.SysUser,
+		c.SysApi, c.SysDept, c.SysDict, c.SysDictData, c.SysLoginLog, c.SysMenu,
+		c.SysOperationLog, c.SysPackage, c.SysRole, c.SysTenant, c.SysUser,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -250,16 +262,20 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *SysApiMutation:
 		return c.SysApi.mutate(ctx, m)
-	case *SysConfigMutation:
-		return c.SysConfig.mutate(ctx, m)
 	case *SysDeptMutation:
 		return c.SysDept.mutate(ctx, m)
 	case *SysDictMutation:
 		return c.SysDict.mutate(ctx, m)
 	case *SysDictDataMutation:
 		return c.SysDictData.mutate(ctx, m)
+	case *SysLoginLogMutation:
+		return c.SysLoginLog.mutate(ctx, m)
 	case *SysMenuMutation:
 		return c.SysMenu.mutate(ctx, m)
+	case *SysOperationLogMutation:
+		return c.SysOperationLog.mutate(ctx, m)
+	case *SysPackageMutation:
+		return c.SysPackage.mutate(ctx, m)
 	case *SysRoleMutation:
 		return c.SysRole.mutate(ctx, m)
 	case *SysTenantMutation:
@@ -379,15 +395,15 @@ func (c *SysApiClient) GetX(ctx context.Context, id int64) *SysApi {
 	return obj
 }
 
-// QueryRoles queries the roles edge of a SysApi.
-func (c *SysApiClient) QueryRoles(_m *SysApi) *SysRoleQuery {
-	query := (&SysRoleClient{config: c.config}).Query()
+// QueryPackages queries the packages edge of a SysApi.
+func (c *SysApiClient) QueryPackages(_m *SysApi) *SysPackageQuery {
+	query := (&SysPackageClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sysapi.Table, sysapi.FieldID, id),
-			sqlgraph.To(sysrole.Table, sysrole.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, sysapi.RolesTable, sysapi.RolesPrimaryKey...),
+			sqlgraph.To(syspackage.Table, syspackage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysapi.PackagesTable, sysapi.PackagesPrimaryKey...),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -397,7 +413,8 @@ func (c *SysApiClient) QueryRoles(_m *SysApi) *SysRoleQuery {
 
 // Hooks returns the client hooks.
 func (c *SysApiClient) Hooks() []Hook {
-	return c.hooks.SysApi
+	hooks := c.hooks.SysApi
+	return append(hooks[:len(hooks):len(hooks)], sysapi.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -417,139 +434,6 @@ func (c *SysApiClient) mutate(ctx context.Context, m *SysApiMutation) (Value, er
 		return (&SysApiDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown SysApi mutation op: %q", m.Op())
-	}
-}
-
-// SysConfigClient is a client for the SysConfig schema.
-type SysConfigClient struct {
-	config
-}
-
-// NewSysConfigClient returns a client for the SysConfig from the given config.
-func NewSysConfigClient(c config) *SysConfigClient {
-	return &SysConfigClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `sysconfig.Hooks(f(g(h())))`.
-func (c *SysConfigClient) Use(hooks ...Hook) {
-	c.hooks.SysConfig = append(c.hooks.SysConfig, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `sysconfig.Intercept(f(g(h())))`.
-func (c *SysConfigClient) Intercept(interceptors ...Interceptor) {
-	c.inters.SysConfig = append(c.inters.SysConfig, interceptors...)
-}
-
-// Create returns a builder for creating a SysConfig entity.
-func (c *SysConfigClient) Create() *SysConfigCreate {
-	mutation := newSysConfigMutation(c.config, OpCreate)
-	return &SysConfigCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of SysConfig entities.
-func (c *SysConfigClient) CreateBulk(builders ...*SysConfigCreate) *SysConfigCreateBulk {
-	return &SysConfigCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *SysConfigClient) MapCreateBulk(slice any, setFunc func(*SysConfigCreate, int)) *SysConfigCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &SysConfigCreateBulk{err: fmt.Errorf("calling to SysConfigClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*SysConfigCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &SysConfigCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for SysConfig.
-func (c *SysConfigClient) Update() *SysConfigUpdate {
-	mutation := newSysConfigMutation(c.config, OpUpdate)
-	return &SysConfigUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *SysConfigClient) UpdateOne(_m *SysConfig) *SysConfigUpdateOne {
-	mutation := newSysConfigMutation(c.config, OpUpdateOne, withSysConfig(_m))
-	return &SysConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *SysConfigClient) UpdateOneID(id int64) *SysConfigUpdateOne {
-	mutation := newSysConfigMutation(c.config, OpUpdateOne, withSysConfigID(id))
-	return &SysConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for SysConfig.
-func (c *SysConfigClient) Delete() *SysConfigDelete {
-	mutation := newSysConfigMutation(c.config, OpDelete)
-	return &SysConfigDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *SysConfigClient) DeleteOne(_m *SysConfig) *SysConfigDeleteOne {
-	return c.DeleteOneID(_m.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *SysConfigClient) DeleteOneID(id int64) *SysConfigDeleteOne {
-	builder := c.Delete().Where(sysconfig.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &SysConfigDeleteOne{builder}
-}
-
-// Query returns a query builder for SysConfig.
-func (c *SysConfigClient) Query() *SysConfigQuery {
-	return &SysConfigQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeSysConfig},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a SysConfig entity by its id.
-func (c *SysConfigClient) Get(ctx context.Context, id int64) (*SysConfig, error) {
-	return c.Query().Where(sysconfig.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *SysConfigClient) GetX(ctx context.Context, id int64) *SysConfig {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// Hooks returns the client hooks.
-func (c *SysConfigClient) Hooks() []Hook {
-	return c.hooks.SysConfig
-}
-
-// Interceptors returns the client interceptors.
-func (c *SysConfigClient) Interceptors() []Interceptor {
-	return c.inters.SysConfig
-}
-
-func (c *SysConfigClient) mutate(ctx context.Context, m *SysConfigMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&SysConfigCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&SysConfigUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&SysConfigUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&SysConfigDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown SysConfig mutation op: %q", m.Op())
 	}
 }
 
@@ -669,7 +553,7 @@ func (c *SysDeptClient) QuerySysTenant(_m *SysDept) *SysTenantQuery {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sysdept.Table, sysdept.FieldID, id),
 			sqlgraph.To(systenant.Table, systenant.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, sysdept.SysTenantTable, sysdept.SysTenantColumn),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysdept.SysTenantTable, sysdept.SysTenantColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -693,15 +577,15 @@ func (c *SysDeptClient) QueryLeader(_m *SysDept) *SysUserQuery {
 	return query
 }
 
-// QuerySysUser queries the sys_user edge of a SysDept.
-func (c *SysDeptClient) QuerySysUser(_m *SysDept) *SysUserQuery {
+// QuerySysUsers queries the sys_users edge of a SysDept.
+func (c *SysDeptClient) QuerySysUsers(_m *SysDept) *SysUserQuery {
 	query := (&SysUserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(sysdept.Table, sysdept.FieldID, id),
 			sqlgraph.To(sysuser.Table, sysuser.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, sysdept.SysUserTable, sysdept.SysUserColumn),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysdept.SysUsersTable, sysdept.SysUsersColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -711,7 +595,8 @@ func (c *SysDeptClient) QuerySysUser(_m *SysDept) *SysUserQuery {
 
 // Hooks returns the client hooks.
 func (c *SysDeptClient) Hooks() []Hook {
-	return c.hooks.SysDept
+	hooks := c.hooks.SysDept
+	return append(hooks[:len(hooks):len(hooks)], sysdept.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -842,9 +727,26 @@ func (c *SysDictClient) GetX(ctx context.Context, id int64) *SysDict {
 	return obj
 }
 
+// QuerySysDictDatas queries the sys_dict_datas edge of a SysDict.
+func (c *SysDictClient) QuerySysDictDatas(_m *SysDict) *SysDictDataQuery {
+	query := (&SysDictDataClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdict.Table, sysdict.FieldID, id),
+			sqlgraph.To(sysdictdata.Table, sysdictdata.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, sysdict.SysDictDatasTable, sysdict.SysDictDatasColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysDictClient) Hooks() []Hook {
-	return c.hooks.SysDict
+	hooks := c.hooks.SysDict
+	return append(hooks[:len(hooks):len(hooks)], sysdict.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -975,9 +877,26 @@ func (c *SysDictDataClient) GetX(ctx context.Context, id int64) *SysDictData {
 	return obj
 }
 
+// QuerySysDict queries the sys_dict edge of a SysDictData.
+func (c *SysDictDataClient) QuerySysDict(_m *SysDictData) *SysDictQuery {
+	query := (&SysDictClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysdictdata.Table, sysdictdata.FieldID, id),
+			sqlgraph.To(sysdict.Table, sysdict.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysdictdata.SysDictTable, sysdictdata.SysDictColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysDictDataClient) Hooks() []Hook {
-	return c.hooks.SysDictData
+	hooks := c.hooks.SysDictData
+	return append(hooks[:len(hooks):len(hooks)], sysdictdata.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -997,6 +916,139 @@ func (c *SysDictDataClient) mutate(ctx context.Context, m *SysDictDataMutation) 
 		return (&SysDictDataDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown SysDictData mutation op: %q", m.Op())
+	}
+}
+
+// SysLoginLogClient is a client for the SysLoginLog schema.
+type SysLoginLogClient struct {
+	config
+}
+
+// NewSysLoginLogClient returns a client for the SysLoginLog from the given config.
+func NewSysLoginLogClient(c config) *SysLoginLogClient {
+	return &SysLoginLogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sysloginlog.Hooks(f(g(h())))`.
+func (c *SysLoginLogClient) Use(hooks ...Hook) {
+	c.hooks.SysLoginLog = append(c.hooks.SysLoginLog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sysloginlog.Intercept(f(g(h())))`.
+func (c *SysLoginLogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SysLoginLog = append(c.inters.SysLoginLog, interceptors...)
+}
+
+// Create returns a builder for creating a SysLoginLog entity.
+func (c *SysLoginLogClient) Create() *SysLoginLogCreate {
+	mutation := newSysLoginLogMutation(c.config, OpCreate)
+	return &SysLoginLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SysLoginLog entities.
+func (c *SysLoginLogClient) CreateBulk(builders ...*SysLoginLogCreate) *SysLoginLogCreateBulk {
+	return &SysLoginLogCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SysLoginLogClient) MapCreateBulk(slice any, setFunc func(*SysLoginLogCreate, int)) *SysLoginLogCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SysLoginLogCreateBulk{err: fmt.Errorf("calling to SysLoginLogClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SysLoginLogCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SysLoginLogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SysLoginLog.
+func (c *SysLoginLogClient) Update() *SysLoginLogUpdate {
+	mutation := newSysLoginLogMutation(c.config, OpUpdate)
+	return &SysLoginLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SysLoginLogClient) UpdateOne(_m *SysLoginLog) *SysLoginLogUpdateOne {
+	mutation := newSysLoginLogMutation(c.config, OpUpdateOne, withSysLoginLog(_m))
+	return &SysLoginLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SysLoginLogClient) UpdateOneID(id int64) *SysLoginLogUpdateOne {
+	mutation := newSysLoginLogMutation(c.config, OpUpdateOne, withSysLoginLogID(id))
+	return &SysLoginLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SysLoginLog.
+func (c *SysLoginLogClient) Delete() *SysLoginLogDelete {
+	mutation := newSysLoginLogMutation(c.config, OpDelete)
+	return &SysLoginLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SysLoginLogClient) DeleteOne(_m *SysLoginLog) *SysLoginLogDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SysLoginLogClient) DeleteOneID(id int64) *SysLoginLogDeleteOne {
+	builder := c.Delete().Where(sysloginlog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SysLoginLogDeleteOne{builder}
+}
+
+// Query returns a query builder for SysLoginLog.
+func (c *SysLoginLogClient) Query() *SysLoginLogQuery {
+	return &SysLoginLogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSysLoginLog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SysLoginLog entity by its id.
+func (c *SysLoginLogClient) Get(ctx context.Context, id int64) (*SysLoginLog, error) {
+	return c.Query().Where(sysloginlog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SysLoginLogClient) GetX(ctx context.Context, id int64) *SysLoginLog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SysLoginLogClient) Hooks() []Hook {
+	return c.hooks.SysLoginLog
+}
+
+// Interceptors returns the client interceptors.
+func (c *SysLoginLogClient) Interceptors() []Interceptor {
+	return c.inters.SysLoginLog
+}
+
+func (c *SysLoginLogClient) mutate(ctx context.Context, m *SysLoginLogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SysLoginLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SysLoginLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SysLoginLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SysLoginLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SysLoginLog mutation op: %q", m.Op())
 	}
 }
 
@@ -1124,9 +1176,26 @@ func (c *SysMenuClient) QueryRoles(_m *SysMenu) *SysRoleQuery {
 	return query
 }
 
+// QueryPackages queries the packages edge of a SysMenu.
+func (c *SysMenuClient) QueryPackages(_m *SysMenu) *SysPackageQuery {
+	query := (&SysPackageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysmenu.Table, sysmenu.FieldID, id),
+			sqlgraph.To(syspackage.Table, syspackage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, true, sysmenu.PackagesTable, sysmenu.PackagesPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // Hooks returns the client hooks.
 func (c *SysMenuClient) Hooks() []Hook {
-	return c.hooks.SysMenu
+	hooks := c.hooks.SysMenu
+	return append(hooks[:len(hooks):len(hooks)], sysmenu.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1146,6 +1215,321 @@ func (c *SysMenuClient) mutate(ctx context.Context, m *SysMenuMutation) (Value, 
 		return (&SysMenuDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown SysMenu mutation op: %q", m.Op())
+	}
+}
+
+// SysOperationLogClient is a client for the SysOperationLog schema.
+type SysOperationLogClient struct {
+	config
+}
+
+// NewSysOperationLogClient returns a client for the SysOperationLog from the given config.
+func NewSysOperationLogClient(c config) *SysOperationLogClient {
+	return &SysOperationLogClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `sysoperationlog.Hooks(f(g(h())))`.
+func (c *SysOperationLogClient) Use(hooks ...Hook) {
+	c.hooks.SysOperationLog = append(c.hooks.SysOperationLog, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `sysoperationlog.Intercept(f(g(h())))`.
+func (c *SysOperationLogClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SysOperationLog = append(c.inters.SysOperationLog, interceptors...)
+}
+
+// Create returns a builder for creating a SysOperationLog entity.
+func (c *SysOperationLogClient) Create() *SysOperationLogCreate {
+	mutation := newSysOperationLogMutation(c.config, OpCreate)
+	return &SysOperationLogCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SysOperationLog entities.
+func (c *SysOperationLogClient) CreateBulk(builders ...*SysOperationLogCreate) *SysOperationLogCreateBulk {
+	return &SysOperationLogCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SysOperationLogClient) MapCreateBulk(slice any, setFunc func(*SysOperationLogCreate, int)) *SysOperationLogCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SysOperationLogCreateBulk{err: fmt.Errorf("calling to SysOperationLogClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SysOperationLogCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SysOperationLogCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SysOperationLog.
+func (c *SysOperationLogClient) Update() *SysOperationLogUpdate {
+	mutation := newSysOperationLogMutation(c.config, OpUpdate)
+	return &SysOperationLogUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SysOperationLogClient) UpdateOne(_m *SysOperationLog) *SysOperationLogUpdateOne {
+	mutation := newSysOperationLogMutation(c.config, OpUpdateOne, withSysOperationLog(_m))
+	return &SysOperationLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SysOperationLogClient) UpdateOneID(id int64) *SysOperationLogUpdateOne {
+	mutation := newSysOperationLogMutation(c.config, OpUpdateOne, withSysOperationLogID(id))
+	return &SysOperationLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SysOperationLog.
+func (c *SysOperationLogClient) Delete() *SysOperationLogDelete {
+	mutation := newSysOperationLogMutation(c.config, OpDelete)
+	return &SysOperationLogDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SysOperationLogClient) DeleteOne(_m *SysOperationLog) *SysOperationLogDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SysOperationLogClient) DeleteOneID(id int64) *SysOperationLogDeleteOne {
+	builder := c.Delete().Where(sysoperationlog.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SysOperationLogDeleteOne{builder}
+}
+
+// Query returns a query builder for SysOperationLog.
+func (c *SysOperationLogClient) Query() *SysOperationLogQuery {
+	return &SysOperationLogQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSysOperationLog},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SysOperationLog entity by its id.
+func (c *SysOperationLogClient) Get(ctx context.Context, id int64) (*SysOperationLog, error) {
+	return c.Query().Where(sysoperationlog.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SysOperationLogClient) GetX(ctx context.Context, id int64) *SysOperationLog {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Hooks returns the client hooks.
+func (c *SysOperationLogClient) Hooks() []Hook {
+	return c.hooks.SysOperationLog
+}
+
+// Interceptors returns the client interceptors.
+func (c *SysOperationLogClient) Interceptors() []Interceptor {
+	return c.inters.SysOperationLog
+}
+
+func (c *SysOperationLogClient) mutate(ctx context.Context, m *SysOperationLogMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SysOperationLogCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SysOperationLogUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SysOperationLogUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SysOperationLogDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SysOperationLog mutation op: %q", m.Op())
+	}
+}
+
+// SysPackageClient is a client for the SysPackage schema.
+type SysPackageClient struct {
+	config
+}
+
+// NewSysPackageClient returns a client for the SysPackage from the given config.
+func NewSysPackageClient(c config) *SysPackageClient {
+	return &SysPackageClient{config: c}
+}
+
+// Use adds a list of mutation hooks to the hooks stack.
+// A call to `Use(f, g, h)` equals to `syspackage.Hooks(f(g(h())))`.
+func (c *SysPackageClient) Use(hooks ...Hook) {
+	c.hooks.SysPackage = append(c.hooks.SysPackage, hooks...)
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `syspackage.Intercept(f(g(h())))`.
+func (c *SysPackageClient) Intercept(interceptors ...Interceptor) {
+	c.inters.SysPackage = append(c.inters.SysPackage, interceptors...)
+}
+
+// Create returns a builder for creating a SysPackage entity.
+func (c *SysPackageClient) Create() *SysPackageCreate {
+	mutation := newSysPackageMutation(c.config, OpCreate)
+	return &SysPackageCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// CreateBulk returns a builder for creating a bulk of SysPackage entities.
+func (c *SysPackageClient) CreateBulk(builders ...*SysPackageCreate) *SysPackageCreateBulk {
+	return &SysPackageCreateBulk{config: c.config, builders: builders}
+}
+
+// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
+// a builder and applies setFunc on it.
+func (c *SysPackageClient) MapCreateBulk(slice any, setFunc func(*SysPackageCreate, int)) *SysPackageCreateBulk {
+	rv := reflect.ValueOf(slice)
+	if rv.Kind() != reflect.Slice {
+		return &SysPackageCreateBulk{err: fmt.Errorf("calling to SysPackageClient.MapCreateBulk with wrong type %T, need slice", slice)}
+	}
+	builders := make([]*SysPackageCreate, rv.Len())
+	for i := 0; i < rv.Len(); i++ {
+		builders[i] = c.Create()
+		setFunc(builders[i], i)
+	}
+	return &SysPackageCreateBulk{config: c.config, builders: builders}
+}
+
+// Update returns an update builder for SysPackage.
+func (c *SysPackageClient) Update() *SysPackageUpdate {
+	mutation := newSysPackageMutation(c.config, OpUpdate)
+	return &SysPackageUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOne returns an update builder for the given entity.
+func (c *SysPackageClient) UpdateOne(_m *SysPackage) *SysPackageUpdateOne {
+	mutation := newSysPackageMutation(c.config, OpUpdateOne, withSysPackage(_m))
+	return &SysPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// UpdateOneID returns an update builder for the given id.
+func (c *SysPackageClient) UpdateOneID(id int64) *SysPackageUpdateOne {
+	mutation := newSysPackageMutation(c.config, OpUpdateOne, withSysPackageID(id))
+	return &SysPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// Delete returns a delete builder for SysPackage.
+func (c *SysPackageClient) Delete() *SysPackageDelete {
+	mutation := newSysPackageMutation(c.config, OpDelete)
+	return &SysPackageDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
+}
+
+// DeleteOne returns a builder for deleting the given entity.
+func (c *SysPackageClient) DeleteOne(_m *SysPackage) *SysPackageDeleteOne {
+	return c.DeleteOneID(_m.ID)
+}
+
+// DeleteOneID returns a builder for deleting the given entity by its id.
+func (c *SysPackageClient) DeleteOneID(id int64) *SysPackageDeleteOne {
+	builder := c.Delete().Where(syspackage.ID(id))
+	builder.mutation.id = &id
+	builder.mutation.op = OpDeleteOne
+	return &SysPackageDeleteOne{builder}
+}
+
+// Query returns a query builder for SysPackage.
+func (c *SysPackageClient) Query() *SysPackageQuery {
+	return &SysPackageQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeSysPackage},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a SysPackage entity by its id.
+func (c *SysPackageClient) Get(ctx context.Context, id int64) (*SysPackage, error) {
+	return c.Query().Where(syspackage.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *SysPackageClient) GetX(ctx context.Context, id int64) *SysPackage {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// QueryMenus queries the menus edge of a SysPackage.
+func (c *SysPackageClient) QueryMenus(_m *SysPackage) *SysMenuQuery {
+	query := (&SysMenuClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(syspackage.Table, syspackage.FieldID, id),
+			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, syspackage.MenusTable, syspackage.MenusPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryApis queries the apis edge of a SysPackage.
+func (c *SysPackageClient) QueryApis(_m *SysPackage) *SysApiQuery {
+	query := (&SysApiClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(syspackage.Table, syspackage.FieldID, id),
+			sqlgraph.To(sysapi.Table, sysapi.FieldID),
+			sqlgraph.Edge(sqlgraph.M2M, false, syspackage.ApisTable, syspackage.ApisPrimaryKey...),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QueryTenants queries the tenants edge of a SysPackage.
+func (c *SysPackageClient) QueryTenants(_m *SysPackage) *SysTenantQuery {
+	query := (&SysTenantClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(syspackage.Table, syspackage.FieldID, id),
+			sqlgraph.To(systenant.Table, systenant.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, syspackage.TenantsTable, syspackage.TenantsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// Hooks returns the client hooks.
+func (c *SysPackageClient) Hooks() []Hook {
+	hooks := c.hooks.SysPackage
+	return append(hooks[:len(hooks):len(hooks)], syspackage.Hooks[:]...)
+}
+
+// Interceptors returns the client interceptors.
+func (c *SysPackageClient) Interceptors() []Interceptor {
+	return c.inters.SysPackage
+}
+
+func (c *SysPackageClient) mutate(ctx context.Context, m *SysPackageMutation) (Value, error) {
+	switch m.Op() {
+	case OpCreate:
+		return (&SysPackageCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdate:
+		return (&SysPackageUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpUpdateOne:
+		return (&SysPackageUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
+	case OpDelete, OpDeleteOne:
+		return (&SysPackageDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
+	default:
+		return nil, fmt.Errorf("ent: unknown SysPackage mutation op: %q", m.Op())
 	}
 }
 
@@ -1273,22 +1657,6 @@ func (c *SysRoleClient) QueryMenus(_m *SysRole) *SysMenuQuery {
 	return query
 }
 
-// QueryApis queries the apis edge of a SysRole.
-func (c *SysRoleClient) QueryApis(_m *SysRole) *SysApiQuery {
-	query := (&SysApiClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, id),
-			sqlgraph.To(sysapi.Table, sysapi.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, sysrole.ApisTable, sysrole.ApisPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryUsers queries the users edge of a SysRole.
 func (c *SysRoleClient) QueryUsers(_m *SysRole) *SysUserQuery {
 	query := (&SysUserClient{config: c.config}).Query()
@@ -1305,25 +1673,10 @@ func (c *SysRoleClient) QueryUsers(_m *SysRole) *SysUserQuery {
 	return query
 }
 
-// QueryTenants queries the tenants edge of a SysRole.
-func (c *SysRoleClient) QueryTenants(_m *SysRole) *SysTenantQuery {
-	query := (&SysTenantClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, id),
-			sqlgraph.To(systenant.Table, systenant.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, true, sysrole.TenantsTable, sysrole.TenantsPrimaryKey...),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *SysRoleClient) Hooks() []Hook {
-	return c.hooks.SysRole
+	hooks := c.hooks.SysRole
+	return append(hooks[:len(hooks):len(hooks)], sysrole.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1454,15 +1807,47 @@ func (c *SysTenantClient) GetX(ctx context.Context, id int64) *SysTenant {
 	return obj
 }
 
-// QueryRoles queries the roles edge of a SysTenant.
-func (c *SysTenantClient) QueryRoles(_m *SysTenant) *SysRoleQuery {
-	query := (&SysRoleClient{config: c.config}).Query()
+// QuerySysUsers queries the sys_users edge of a SysTenant.
+func (c *SysTenantClient) QuerySysUsers(_m *SysTenant) *SysUserQuery {
+	query := (&SysUserClient{config: c.config}).Query()
 	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
 		id := _m.ID
 		step := sqlgraph.NewStep(
 			sqlgraph.From(systenant.Table, systenant.FieldID, id),
-			sqlgraph.To(sysrole.Table, sysrole.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, systenant.RolesTable, systenant.RolesPrimaryKey...),
+			sqlgraph.To(sysuser.Table, sysuser.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, systenant.SysUsersTable, systenant.SysUsersColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySysDepts queries the sys_depts edge of a SysTenant.
+func (c *SysTenantClient) QuerySysDepts(_m *SysTenant) *SysDeptQuery {
+	query := (&SysDeptClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(systenant.Table, systenant.FieldID, id),
+			sqlgraph.To(sysdept.Table, sysdept.FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, systenant.SysDeptsTable, systenant.SysDeptsColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySysPackage queries the sys_package edge of a SysTenant.
+func (c *SysTenantClient) QuerySysPackage(_m *SysTenant) *SysPackageQuery {
+	query := (&SysPackageClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(systenant.Table, systenant.FieldID, id),
+			sqlgraph.To(syspackage.Table, syspackage.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, systenant.SysPackageTable, systenant.SysPackageColumn),
 		)
 		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
 		return fromV, nil
@@ -1472,7 +1857,8 @@ func (c *SysTenantClient) QueryRoles(_m *SysTenant) *SysRoleQuery {
 
 // Hooks returns the client hooks.
 func (c *SysTenantClient) Hooks() []Hook {
-	return c.hooks.SysTenant
+	hooks := c.hooks.SysTenant
+	return append(hooks[:len(hooks):len(hooks)], systenant.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1603,6 +1989,38 @@ func (c *SysUserClient) GetX(ctx context.Context, id int64) *SysUser {
 	return obj
 }
 
+// QuerySysTenant queries the sys_tenant edge of a SysUser.
+func (c *SysUserClient) QuerySysTenant(_m *SysUser) *SysTenantQuery {
+	query := (&SysTenantClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysuser.Table, sysuser.FieldID, id),
+			sqlgraph.To(systenant.Table, systenant.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysuser.SysTenantTable, sysuser.SysTenantColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
+// QuerySysDept queries the sys_dept edge of a SysUser.
+func (c *SysUserClient) QuerySysDept(_m *SysUser) *SysDeptQuery {
+	query := (&SysDeptClient{config: c.config}).Query()
+	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
+		id := _m.ID
+		step := sqlgraph.NewStep(
+			sqlgraph.From(sysuser.Table, sysuser.FieldID, id),
+			sqlgraph.To(sysdept.Table, sysdept.FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, sysuser.SysDeptTable, sysuser.SysDeptColumn),
+		)
+		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
+		return fromV, nil
+	}
+	return query
+}
+
 // QueryRoles queries the roles edge of a SysUser.
 func (c *SysUserClient) QueryRoles(_m *SysUser) *SysRoleQuery {
 	query := (&SysRoleClient{config: c.config}).Query()
@@ -1621,7 +2039,8 @@ func (c *SysUserClient) QueryRoles(_m *SysUser) *SysRoleQuery {
 
 // Hooks returns the client hooks.
 func (c *SysUserClient) Hooks() []Hook {
-	return c.hooks.SysUser
+	hooks := c.hooks.SysUser
+	return append(hooks[:len(hooks):len(hooks)], sysuser.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1647,11 +2066,11 @@ func (c *SysUserClient) mutate(ctx context.Context, m *SysUserMutation) (Value, 
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		SysApi, SysConfig, SysDept, SysDict, SysDictData, SysMenu, SysRole, SysTenant,
-		SysUser []ent.Hook
+		SysApi, SysDept, SysDict, SysDictData, SysLoginLog, SysMenu, SysOperationLog,
+		SysPackage, SysRole, SysTenant, SysUser []ent.Hook
 	}
 	inters struct {
-		SysApi, SysConfig, SysDept, SysDict, SysDictData, SysMenu, SysRole, SysTenant,
-		SysUser []ent.Interceptor
+		SysApi, SysDept, SysDict, SysDictData, SysLoginLog, SysMenu, SysOperationLog,
+		SysPackage, SysRole, SysTenant, SysUser []ent.Interceptor
 	}
 )

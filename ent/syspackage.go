@@ -9,11 +9,11 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysconfig"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 )
 
-// config Table | 配置表
-type SysConfig struct {
+// Package Table | 套餐表
+type SysPackage struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
@@ -31,28 +31,71 @@ type SysConfig struct {
 	// updated Name | 更新人名称
 	UpdatedBy string `json:"updated_by,omitempty"`
 	// 状态：active-有效，inactive-无效，suspended-暂停
-	Status sysconfig.Status `json:"status,omitempty"`
+	Status syspackage.Status `json:"status,omitempty"`
+	// Sort Number | 排序编号
+	Sort uint32 `json:"sort,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 套餐名称 | Package Name
 	Name string `json:"name,omitempty"`
-	// key，不能为空
-	Key string `json:"key,omitempty"`
-	// 值，不能为空
-	Value        string `json:"value,omitempty"`
+	// 套餐编码 | Package Code
+	Code string `json:"code,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the SysPackageQuery when eager-loading is set.
+	Edges        SysPackageEdges `json:"edges"`
 	selectValues sql.SelectValues
 }
 
+// SysPackageEdges holds the relations/edges for other nodes in the graph.
+type SysPackageEdges struct {
+	// Menus holds the value of the menus edge.
+	Menus []*SysMenu `json:"menus,omitempty"`
+	// Apis holds the value of the apis edge.
+	Apis []*SysApi `json:"apis,omitempty"`
+	// Tenants holds the value of the tenants edge.
+	Tenants []*SysTenant `json:"tenants,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [3]bool
+}
+
+// MenusOrErr returns the Menus value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysPackageEdges) MenusOrErr() ([]*SysMenu, error) {
+	if e.loadedTypes[0] {
+		return e.Menus, nil
+	}
+	return nil, &NotLoadedError{edge: "menus"}
+}
+
+// ApisOrErr returns the Apis value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysPackageEdges) ApisOrErr() ([]*SysApi, error) {
+	if e.loadedTypes[1] {
+		return e.Apis, nil
+	}
+	return nil, &NotLoadedError{edge: "apis"}
+}
+
+// TenantsOrErr returns the Tenants value or an error if the edge
+// was not loaded in eager-loading.
+func (e SysPackageEdges) TenantsOrErr() ([]*SysTenant, error) {
+	if e.loadedTypes[2] {
+		return e.Tenants, nil
+	}
+	return nil, &NotLoadedError{edge: "tenants"}
+}
+
 // scanValues returns the types for scanning values from sql.Rows.
-func (*SysConfig) scanValues(columns []string) ([]any, error) {
+func (*SysPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysconfig.FieldID, sysconfig.FieldCreatedID, sysconfig.FieldUpdatedID:
+		case syspackage.FieldID, syspackage.FieldCreatedID, syspackage.FieldUpdatedID, syspackage.FieldSort:
 			values[i] = new(sql.NullInt64)
-		case sysconfig.FieldCreatedBy, sysconfig.FieldUpdatedBy, sysconfig.FieldStatus, sysconfig.FieldRemark, sysconfig.FieldName, sysconfig.FieldKey, sysconfig.FieldValue:
+		case syspackage.FieldCreatedBy, syspackage.FieldUpdatedBy, syspackage.FieldStatus, syspackage.FieldRemark, syspackage.FieldName, syspackage.FieldCode:
 			values[i] = new(sql.NullString)
-		case sysconfig.FieldCreatedAt, sysconfig.FieldUpdatedAt:
+		case syspackage.FieldCreatedAt, syspackage.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -62,84 +105,84 @@ func (*SysConfig) scanValues(columns []string) ([]any, error) {
 }
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
-// to the SysConfig fields.
-func (_m *SysConfig) assignValues(columns []string, values []any) error {
+// to the SysPackage fields.
+func (_m *SysPackage) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
 	for i := range columns {
 		switch columns[i] {
-		case sysconfig.FieldID:
+		case syspackage.FieldID:
 			value, ok := values[i].(*sql.NullInt64)
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case sysconfig.FieldCreatedAt:
+		case syspackage.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
 				_m.CreatedAt = value.Time
 			}
-		case sysconfig.FieldCreatedID:
+		case syspackage.FieldCreatedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field created_id", values[i])
 			} else if value.Valid {
 				_m.CreatedID = value.Int64
 			}
-		case sysconfig.FieldCreatedBy:
+		case syspackage.FieldCreatedBy:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field created_by", values[i])
 			} else if value.Valid {
 				_m.CreatedBy = value.String
 			}
-		case sysconfig.FieldUpdatedAt:
+		case syspackage.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
 				_m.UpdatedAt = value.Time
 			}
-		case sysconfig.FieldUpdatedID:
+		case syspackage.FieldUpdatedID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_id", values[i])
 			} else if value.Valid {
 				_m.UpdatedID = value.Int64
 			}
-		case sysconfig.FieldUpdatedBy:
+		case syspackage.FieldUpdatedBy:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
 				_m.UpdatedBy = value.String
 			}
-		case sysconfig.FieldStatus:
+		case syspackage.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
 			} else if value.Valid {
-				_m.Status = sysconfig.Status(value.String)
+				_m.Status = syspackage.Status(value.String)
 			}
-		case sysconfig.FieldRemark:
+		case syspackage.FieldSort:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field sort", values[i])
+			} else if value.Valid {
+				_m.Sort = uint32(value.Int64)
+			}
+		case syspackage.FieldRemark:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field remark", values[i])
 			} else if value.Valid {
 				_m.Remark = value.String
 			}
-		case sysconfig.FieldName:
+		case syspackage.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
 				_m.Name = value.String
 			}
-		case sysconfig.FieldKey:
+		case syspackage.FieldCode:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field key", values[i])
+				return fmt.Errorf("unexpected type %T for field code", values[i])
 			} else if value.Valid {
-				_m.Key = value.String
-			}
-		case sysconfig.FieldValue:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field value", values[i])
-			} else if value.Valid {
-				_m.Value = value.String
+				_m.Code = value.String
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -148,34 +191,49 @@ func (_m *SysConfig) assignValues(columns []string, values []any) error {
 	return nil
 }
 
-// GetValue returns the ent.Value that was dynamically selected and assigned to the SysConfig.
+// Value returns the ent.Value that was dynamically selected and assigned to the SysPackage.
 // This includes values selected through modifiers, order, etc.
-func (_m *SysConfig) GetValue(name string) (ent.Value, error) {
+func (_m *SysPackage) Value(name string) (ent.Value, error) {
 	return _m.selectValues.Get(name)
 }
 
-// Update returns a builder for updating this SysConfig.
-// Note that you need to call SysConfig.Unwrap() before calling this method if this SysConfig
-// was returned from a transaction, and the transaction was committed or rolled back.
-func (_m *SysConfig) Update() *SysConfigUpdateOne {
-	return NewSysConfigClient(_m.config).UpdateOne(_m)
+// QueryMenus queries the "menus" edge of the SysPackage entity.
+func (_m *SysPackage) QueryMenus() *SysMenuQuery {
+	return NewSysPackageClient(_m.config).QueryMenus(_m)
 }
 
-// Unwrap unwraps the SysConfig entity that was returned from a transaction after it was closed,
+// QueryApis queries the "apis" edge of the SysPackage entity.
+func (_m *SysPackage) QueryApis() *SysApiQuery {
+	return NewSysPackageClient(_m.config).QueryApis(_m)
+}
+
+// QueryTenants queries the "tenants" edge of the SysPackage entity.
+func (_m *SysPackage) QueryTenants() *SysTenantQuery {
+	return NewSysPackageClient(_m.config).QueryTenants(_m)
+}
+
+// Update returns a builder for updating this SysPackage.
+// Note that you need to call SysPackage.Unwrap() before calling this method if this SysPackage
+// was returned from a transaction, and the transaction was committed or rolled back.
+func (_m *SysPackage) Update() *SysPackageUpdateOne {
+	return NewSysPackageClient(_m.config).UpdateOne(_m)
+}
+
+// Unwrap unwraps the SysPackage entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (_m *SysConfig) Unwrap() *SysConfig {
+func (_m *SysPackage) Unwrap() *SysPackage {
 	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
-		panic("ent: SysConfig is not a transactional entity")
+		panic("ent: SysPackage is not a transactional entity")
 	}
 	_m.config.driver = _tx.drv
 	return _m
 }
 
 // String implements the fmt.Stringer.
-func (_m *SysConfig) String() string {
+func (_m *SysPackage) String() string {
 	var builder strings.Builder
-	builder.WriteString("SysConfig(")
+	builder.WriteString("SysPackage(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
@@ -198,20 +256,20 @@ func (_m *SysConfig) String() string {
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))
 	builder.WriteString(", ")
+	builder.WriteString("sort=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Sort))
+	builder.WriteString(", ")
 	builder.WriteString("remark=")
 	builder.WriteString(_m.Remark)
 	builder.WriteString(", ")
 	builder.WriteString("name=")
 	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
-	builder.WriteString("key=")
-	builder.WriteString(_m.Key)
-	builder.WriteString(", ")
-	builder.WriteString("value=")
-	builder.WriteString(_m.Value)
+	builder.WriteString("code=")
+	builder.WriteString(_m.Code)
 	builder.WriteByte(')')
 	return builder.String()
 }
 
-// SysConfigs is a parsable slice of SysConfig.
-type SysConfigs []*SysConfig
+// SysPackages is a parsable slice of SysPackage.
+type SysPackages []*SysPackage

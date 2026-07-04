@@ -12,12 +12,14 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
-// role Table | 角色表
+// Role Table | 角色表
 type SysRole struct {
 	config `json:"-"`
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
+	// 租户ID | Tenant ID
+	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Creator ID | 创建人ID
@@ -42,9 +44,9 @@ type SysRole struct {
 	Sort uint32 `json:"sort,omitempty"`
 	// Remark holds the value of the "remark" field.
 	Remark string `json:"remark,omitempty"`
-	// 名称，不能为空
+	// 名称 | Name
 	Name string `json:"name,omitempty"`
-	// code，不能为空
+	// 编码 | Code
 	Code string `json:"code,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysRoleQuery when eager-loading is set.
@@ -56,15 +58,11 @@ type SysRole struct {
 type SysRoleEdges struct {
 	// Menus holds the value of the menus edge.
 	Menus []*SysMenu `json:"menus,omitempty"`
-	// Apis holds the value of the apis edge.
-	Apis []*SysApi `json:"apis,omitempty"`
 	// Users holds the value of the users edge.
 	Users []*SysUser `json:"users,omitempty"`
-	// Tenants holds the value of the tenants edge.
-	Tenants []*SysTenant `json:"tenants,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [4]bool
+	loadedTypes [2]bool
 }
 
 // MenusOrErr returns the Menus value or an error if the edge
@@ -76,31 +74,13 @@ func (e SysRoleEdges) MenusOrErr() ([]*SysMenu, error) {
 	return nil, &NotLoadedError{edge: "menus"}
 }
 
-// ApisOrErr returns the Apis value or an error if the edge
-// was not loaded in eager-loading.
-func (e SysRoleEdges) ApisOrErr() ([]*SysApi, error) {
-	if e.loadedTypes[1] {
-		return e.Apis, nil
-	}
-	return nil, &NotLoadedError{edge: "apis"}
-}
-
 // UsersOrErr returns the Users value or an error if the edge
 // was not loaded in eager-loading.
 func (e SysRoleEdges) UsersOrErr() ([]*SysUser, error) {
-	if e.loadedTypes[2] {
+	if e.loadedTypes[1] {
 		return e.Users, nil
 	}
 	return nil, &NotLoadedError{edge: "users"}
-}
-
-// TenantsOrErr returns the Tenants value or an error if the edge
-// was not loaded in eager-loading.
-func (e SysRoleEdges) TenantsOrErr() ([]*SysTenant, error) {
-	if e.loadedTypes[3] {
-		return e.Tenants, nil
-	}
-	return nil, &NotLoadedError{edge: "tenants"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -108,7 +88,7 @@ func (*SysRole) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysrole.FieldID, sysrole.FieldCreatedID, sysrole.FieldUpdatedID, sysrole.FieldDeletedID, sysrole.FieldSort:
+		case sysrole.FieldID, sysrole.FieldTenantID, sysrole.FieldCreatedID, sysrole.FieldUpdatedID, sysrole.FieldDeletedID, sysrole.FieldSort:
 			values[i] = new(sql.NullInt64)
 		case sysrole.FieldCreatedBy, sysrole.FieldUpdatedBy, sysrole.FieldDeletedBy, sysrole.FieldStatus, sysrole.FieldRemark, sysrole.FieldName, sysrole.FieldCode:
 			values[i] = new(sql.NullString)
@@ -135,6 +115,12 @@ func (_m *SysRole) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
+		case sysrole.FieldTenantID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
+			} else if value.Valid {
+				_m.TenantID = value.Int64
+			}
 		case sysrole.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -237,19 +223,9 @@ func (_m *SysRole) QueryMenus() *SysMenuQuery {
 	return NewSysRoleClient(_m.config).QueryMenus(_m)
 }
 
-// QueryApis queries the "apis" edge of the SysRole entity.
-func (_m *SysRole) QueryApis() *SysApiQuery {
-	return NewSysRoleClient(_m.config).QueryApis(_m)
-}
-
 // QueryUsers queries the "users" edge of the SysRole entity.
 func (_m *SysRole) QueryUsers() *SysUserQuery {
 	return NewSysRoleClient(_m.config).QueryUsers(_m)
-}
-
-// QueryTenants queries the "tenants" edge of the SysRole entity.
-func (_m *SysRole) QueryTenants() *SysTenantQuery {
-	return NewSysRoleClient(_m.config).QueryTenants(_m)
 }
 
 // Update returns a builder for updating this SysRole.
@@ -275,6 +251,9 @@ func (_m *SysRole) String() string {
 	var builder strings.Builder
 	builder.WriteString("SysRole(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
+	builder.WriteString("tenant_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
+	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")

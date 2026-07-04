@@ -125,6 +125,16 @@ func ParentID(v int64) predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldEQ(FieldParentID, v))
 }
 
+// PackageID applies equality check predicate on the "package_id" field. It's identical to PackageIDEQ.
+func PackageID(v int64) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldPackageID, v))
+}
+
+// ExpiredAt applies equality check predicate on the "expired_at" field. It's identical to ExpiredAtEQ.
+func ExpiredAt(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldExpiredAt, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldEQ(FieldCreatedAt, v))
@@ -895,21 +905,157 @@ func ParentIDLTE(v int64) predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldLTE(FieldParentID, v))
 }
 
-// HasRoles applies the HasEdge predicate on the "roles" edge.
-func HasRoles() predicate.SysTenant {
+// ParentIDIsNil applies the IsNil predicate on the "parent_id" field.
+func ParentIDIsNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIsNull(FieldParentID))
+}
+
+// ParentIDNotNil applies the NotNil predicate on the "parent_id" field.
+func ParentIDNotNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotNull(FieldParentID))
+}
+
+// PackageIDEQ applies the EQ predicate on the "package_id" field.
+func PackageIDEQ(v int64) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldPackageID, v))
+}
+
+// PackageIDNEQ applies the NEQ predicate on the "package_id" field.
+func PackageIDNEQ(v int64) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNEQ(FieldPackageID, v))
+}
+
+// PackageIDIn applies the In predicate on the "package_id" field.
+func PackageIDIn(vs ...int64) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIn(FieldPackageID, vs...))
+}
+
+// PackageIDNotIn applies the NotIn predicate on the "package_id" field.
+func PackageIDNotIn(vs ...int64) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotIn(FieldPackageID, vs...))
+}
+
+// PackageIDIsNil applies the IsNil predicate on the "package_id" field.
+func PackageIDIsNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIsNull(FieldPackageID))
+}
+
+// PackageIDNotNil applies the NotNil predicate on the "package_id" field.
+func PackageIDNotNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotNull(FieldPackageID))
+}
+
+// ExpiredAtEQ applies the EQ predicate on the "expired_at" field.
+func ExpiredAtEQ(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldExpiredAt, v))
+}
+
+// ExpiredAtNEQ applies the NEQ predicate on the "expired_at" field.
+func ExpiredAtNEQ(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNEQ(FieldExpiredAt, v))
+}
+
+// ExpiredAtIn applies the In predicate on the "expired_at" field.
+func ExpiredAtIn(vs ...time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIn(FieldExpiredAt, vs...))
+}
+
+// ExpiredAtNotIn applies the NotIn predicate on the "expired_at" field.
+func ExpiredAtNotIn(vs ...time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotIn(FieldExpiredAt, vs...))
+}
+
+// ExpiredAtGT applies the GT predicate on the "expired_at" field.
+func ExpiredAtGT(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldGT(FieldExpiredAt, v))
+}
+
+// ExpiredAtGTE applies the GTE predicate on the "expired_at" field.
+func ExpiredAtGTE(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldGTE(FieldExpiredAt, v))
+}
+
+// ExpiredAtLT applies the LT predicate on the "expired_at" field.
+func ExpiredAtLT(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldLT(FieldExpiredAt, v))
+}
+
+// ExpiredAtLTE applies the LTE predicate on the "expired_at" field.
+func ExpiredAtLTE(v time.Time) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldLTE(FieldExpiredAt, v))
+}
+
+// ExpiredAtIsNil applies the IsNil predicate on the "expired_at" field.
+func ExpiredAtIsNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIsNull(FieldExpiredAt))
+}
+
+// ExpiredAtNotNil applies the NotNil predicate on the "expired_at" field.
+func ExpiredAtNotNil() predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotNull(FieldExpiredAt))
+}
+
+// HasSysUsers applies the HasEdge predicate on the "sys_users" edge.
+func HasSysUsers() predicate.SysTenant {
 	return predicate.SysTenant(func(s *sql.Selector) {
 		step := sqlgraph.NewStep(
 			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, RolesTable, RolesPrimaryKey...),
+			sqlgraph.Edge(sqlgraph.O2M, false, SysUsersTable, SysUsersColumn),
 		)
 		sqlgraph.HasNeighbors(s, step)
 	})
 }
 
-// HasRolesWith applies the HasEdge predicate on the "roles" edge with a given conditions (other predicates).
-func HasRolesWith(preds ...predicate.SysRole) predicate.SysTenant {
+// HasSysUsersWith applies the HasEdge predicate on the "sys_users" edge with a given conditions (other predicates).
+func HasSysUsersWith(preds ...predicate.SysUser) predicate.SysTenant {
 	return predicate.SysTenant(func(s *sql.Selector) {
-		step := newRolesStep()
+		step := newSysUsersStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSysDepts applies the HasEdge predicate on the "sys_depts" edge.
+func HasSysDepts() predicate.SysTenant {
+	return predicate.SysTenant(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, SysDeptsTable, SysDeptsColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSysDeptsWith applies the HasEdge predicate on the "sys_depts" edge with a given conditions (other predicates).
+func HasSysDeptsWith(preds ...predicate.SysDept) predicate.SysTenant {
+	return predicate.SysTenant(func(s *sql.Selector) {
+		step := newSysDeptsStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasSysPackage applies the HasEdge predicate on the "sys_package" edge.
+func HasSysPackage() predicate.SysTenant {
+	return predicate.SysTenant(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.M2O, true, SysPackageTable, SysPackageColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasSysPackageWith applies the HasEdge predicate on the "sys_package" edge with a given conditions (other predicates).
+func HasSysPackageWith(preds ...predicate.SysPackage) predicate.SysTenant {
+	return predicate.SysTenant(func(s *sql.Selector) {
+		step := newSysPackageStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

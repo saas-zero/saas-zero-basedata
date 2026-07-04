@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -15,6 +16,8 @@ const (
 	Label = "sys_menu"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantID holds the string denoting the tenant_id field in the database.
+	FieldTenantID = "tenant_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldCreatedID holds the string denoting the created_id field in the database.
@@ -55,8 +58,12 @@ const (
 	FieldIsRedirect = "is_redirect"
 	// FieldRedirect holds the string denoting the redirect field in the database.
 	FieldRedirect = "redirect"
+	// FieldHidden holds the string denoting the hidden field in the database.
+	FieldHidden = "hidden"
 	// EdgeRoles holds the string denoting the roles edge name in mutations.
 	EdgeRoles = "roles"
+	// EdgePackages holds the string denoting the packages edge name in mutations.
+	EdgePackages = "packages"
 	// Table holds the table name of the sysmenu in the database.
 	Table = "sys_menus"
 	// RolesTable is the table that holds the roles relation/edge. The primary key declared below.
@@ -64,11 +71,17 @@ const (
 	// RolesInverseTable is the table name for the SysRole entity.
 	// It exists in this package in order to avoid circular dependency with the "sysrole" package.
 	RolesInverseTable = "sys_roles"
+	// PackagesTable is the table that holds the packages relation/edge. The primary key declared below.
+	PackagesTable = "sys_package_menus"
+	// PackagesInverseTable is the table name for the SysPackage entity.
+	// It exists in this package in order to avoid circular dependency with the "syspackage" package.
+	PackagesInverseTable = "sys_packages"
 )
 
 // Columns holds all SQL columns for sysmenu fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantID,
 	FieldCreatedAt,
 	FieldCreatedID,
 	FieldCreatedBy,
@@ -89,12 +102,16 @@ var Columns = []string{
 	FieldIcon,
 	FieldIsRedirect,
 	FieldRedirect,
+	FieldHidden,
 }
 
 var (
 	// RolesPrimaryKey and RolesColumn2 are the table columns denoting the
 	// primary key for the roles relation (M2M).
 	RolesPrimaryKey = []string{"sys_role_id", "sys_menu_id"}
+	// PackagesPrimaryKey and PackagesColumn2 are the table columns denoting the
+	// primary key for the packages relation (M2M).
+	PackagesPrimaryKey = []string{"sys_package_id", "sys_menu_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -107,7 +124,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [4]ent.Hook
+	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
+	TenantIDValidator func(int64) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -138,10 +163,14 @@ var (
 	DefaultComponent string
 	// DefaultPath holds the default value on creation for the "path" field.
 	DefaultPath string
+	// DefaultIcon holds the default value on creation for the "icon" field.
+	DefaultIcon string
 	// DefaultIsRedirect holds the default value on creation for the "is_redirect" field.
 	DefaultIsRedirect bool
 	// DefaultRedirect holds the default value on creation for the "redirect" field.
 	DefaultRedirect string
+	// DefaultHidden holds the default value on creation for the "hidden" field.
+	DefaultHidden bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -206,6 +235,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByTenantID orders the results by the tenant_id field.
+func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
@@ -308,6 +342,11 @@ func ByRedirect(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldRedirect, opts...).ToFunc()
 }
 
+// ByHidden orders the results by the hidden field.
+func ByHidden(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldHidden, opts...).ToFunc()
+}
+
 // ByRolesCount orders the results by roles count.
 func ByRolesCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -321,10 +360,31 @@ func ByRoles(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newRolesStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
+
+// ByPackagesCount orders the results by packages count.
+func ByPackagesCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newPackagesStep(), opts...)
+	}
+}
+
+// ByPackages orders the results by packages terms.
+func ByPackages(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newPackagesStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
 func newRolesStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(RolesInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, RolesTable, RolesPrimaryKey...),
+	)
+}
+func newPackagesStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(PackagesInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, PackagesTable, PackagesPrimaryKey...),
 	)
 }

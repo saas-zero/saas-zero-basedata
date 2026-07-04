@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -15,6 +16,8 @@ const (
 	Label = "sys_role"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldTenantID holds the string denoting the tenant_id field in the database.
+	FieldTenantID = "tenant_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldCreatedID holds the string denoting the created_id field in the database.
@@ -45,12 +48,8 @@ const (
 	FieldCode = "code"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
-	// EdgeApis holds the string denoting the apis edge name in mutations.
-	EdgeApis = "apis"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
-	// EdgeTenants holds the string denoting the tenants edge name in mutations.
-	EdgeTenants = "tenants"
 	// Table holds the table name of the sysrole in the database.
 	Table = "sys_roles"
 	// MenusTable is the table that holds the menus relation/edge. The primary key declared below.
@@ -58,26 +57,17 @@ const (
 	// MenusInverseTable is the table name for the SysMenu entity.
 	// It exists in this package in order to avoid circular dependency with the "sysmenu" package.
 	MenusInverseTable = "sys_menus"
-	// ApisTable is the table that holds the apis relation/edge. The primary key declared below.
-	ApisTable = "sys_role_apis"
-	// ApisInverseTable is the table name for the SysApi entity.
-	// It exists in this package in order to avoid circular dependency with the "sysapi" package.
-	ApisInverseTable = "sys_apis"
 	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
 	UsersTable = "sys_user_roles"
 	// UsersInverseTable is the table name for the SysUser entity.
 	// It exists in this package in order to avoid circular dependency with the "sysuser" package.
 	UsersInverseTable = "sys_users"
-	// TenantsTable is the table that holds the tenants relation/edge. The primary key declared below.
-	TenantsTable = "sys_tenant_roles"
-	// TenantsInverseTable is the table name for the SysTenant entity.
-	// It exists in this package in order to avoid circular dependency with the "systenant" package.
-	TenantsInverseTable = "sys_tenants"
 )
 
 // Columns holds all SQL columns for sysrole fields.
 var Columns = []string{
 	FieldID,
+	FieldTenantID,
 	FieldCreatedAt,
 	FieldCreatedID,
 	FieldCreatedBy,
@@ -98,15 +88,9 @@ var (
 	// MenusPrimaryKey and MenusColumn2 are the table columns denoting the
 	// primary key for the menus relation (M2M).
 	MenusPrimaryKey = []string{"sys_role_id", "sys_menu_id"}
-	// ApisPrimaryKey and ApisColumn2 are the table columns denoting the
-	// primary key for the apis relation (M2M).
-	ApisPrimaryKey = []string{"sys_role_id", "sys_api_id"}
 	// UsersPrimaryKey and UsersColumn2 are the table columns denoting the
 	// primary key for the users relation (M2M).
 	UsersPrimaryKey = []string{"sys_user_id", "sys_role_id"}
-	// TenantsPrimaryKey and TenantsColumn2 are the table columns denoting the
-	// primary key for the tenants relation (M2M).
-	TenantsPrimaryKey = []string{"sys_tenant_id", "sys_role_id"}
 )
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -119,7 +103,15 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+// Note that the variables below are initialized by the runtime
+// package on the initialization of the application. Therefore,
+// it should be imported in the main as follows:
+//
+//	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
+	Hooks [4]ent.Hook
+	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
+	TenantIDValidator func(int64) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -181,6 +173,11 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByTenantID orders the results by the tenant_id field.
+func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.
@@ -267,20 +264,6 @@ func ByMenus(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	}
 }
 
-// ByApisCount orders the results by apis count.
-func ByApisCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newApisStep(), opts...)
-	}
-}
-
-// ByApis orders the results by apis terms.
-func ByApis(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newApisStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
-
 // ByUsersCount orders the results by users count.
 func ByUsersCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -294,20 +277,6 @@ func ByUsers(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newUsersStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// ByTenantsCount orders the results by tenants count.
-func ByTenantsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newTenantsStep(), opts...)
-	}
-}
-
-// ByTenants orders the results by tenants terms.
-func ByTenants(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newTenantsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newMenusStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
@@ -315,24 +284,10 @@ func newMenusStep() *sqlgraph.Step {
 		sqlgraph.Edge(sqlgraph.M2M, false, MenusTable, MenusPrimaryKey...),
 	)
 }
-func newApisStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(ApisInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, ApisTable, ApisPrimaryKey...),
-	)
-}
 func newUsersStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(UsersInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, true, UsersTable, UsersPrimaryKey...),
-	)
-}
-func newTenantsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(TenantsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, true, TenantsTable, TenantsPrimaryKey...),
 	)
 }

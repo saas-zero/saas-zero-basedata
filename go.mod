@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.5
 	github.com/go-sql-driver/mysql v1.9.0
 	github.com/lib/pq v1.10.9
-	github.com/saas-zero/saas-zero-common v1.0.0
+	github.com/saas-zero/saas-zero-common v1.0.3
 	github.com/zeromicro/go-zero v1.9.2
 	google.golang.org/grpc v1.76.0
 	google.golang.org/protobuf v1.36.10
@@ -104,3 +104,4 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
+

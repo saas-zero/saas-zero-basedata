@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 )
 
@@ -19,6 +20,12 @@ type SysMenuCreate struct {
 	config
 	mutation *SysMenuMutation
 	hooks    []Hook
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_c *SysMenuCreate) SetTenantID(v int64) *SysMenuCreate {
+	_c.mutation.SetTenantID(v)
+	return _c
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -225,6 +232,14 @@ func (_c *SysMenuCreate) SetIcon(v string) *SysMenuCreate {
 	return _c
 }
 
+// SetNillableIcon sets the "icon" field if the given value is not nil.
+func (_c *SysMenuCreate) SetNillableIcon(v *string) *SysMenuCreate {
+	if v != nil {
+		_c.SetIcon(*v)
+	}
+	return _c
+}
+
 // SetIsRedirect sets the "is_redirect" field.
 func (_c *SysMenuCreate) SetIsRedirect(v bool) *SysMenuCreate {
 	_c.mutation.SetIsRedirect(v)
@@ -253,6 +268,20 @@ func (_c *SysMenuCreate) SetNillableRedirect(v *string) *SysMenuCreate {
 	return _c
 }
 
+// SetHidden sets the "hidden" field.
+func (_c *SysMenuCreate) SetHidden(v bool) *SysMenuCreate {
+	_c.mutation.SetHidden(v)
+	return _c
+}
+
+// SetNillableHidden sets the "hidden" field if the given value is not nil.
+func (_c *SysMenuCreate) SetNillableHidden(v *bool) *SysMenuCreate {
+	if v != nil {
+		_c.SetHidden(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysMenuCreate) SetID(v int64) *SysMenuCreate {
 	_c.mutation.SetID(v)
@@ -274,6 +303,21 @@ func (_c *SysMenuCreate) AddRoles(v ...*SysRole) *SysMenuCreate {
 	return _c.AddRoleIDs(ids...)
 }
 
+// AddPackageIDs adds the "packages" edge to the SysPackage entity by IDs.
+func (_c *SysMenuCreate) AddPackageIDs(ids ...int64) *SysMenuCreate {
+	_c.mutation.AddPackageIDs(ids...)
+	return _c
+}
+
+// AddPackages adds the "packages" edges to the SysPackage entity.
+func (_c *SysMenuCreate) AddPackages(v ...*SysPackage) *SysMenuCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddPackageIDs(ids...)
+}
+
 // Mutation returns the SysMenuMutation object of the builder.
 func (_c *SysMenuCreate) Mutation() *SysMenuMutation {
 	return _c.mutation
@@ -281,7 +325,9 @@ func (_c *SysMenuCreate) Mutation() *SysMenuMutation {
 
 // Save creates the SysMenu in the database.
 func (_c *SysMenuCreate) Save(ctx context.Context) (*SysMenu, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -308,12 +354,18 @@ func (_c *SysMenuCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysMenuCreate) defaults() {
+func (_c *SysMenuCreate) defaults() error {
 	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysmenu.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysmenu.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysmenu.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
 	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysmenu.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysmenu.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
 		v := sysmenu.DefaultUpdatedAt()
 		_c.mutation.SetUpdatedAt(v)
 	}
@@ -341,6 +393,10 @@ func (_c *SysMenuCreate) defaults() {
 		v := sysmenu.DefaultPath
 		_c.mutation.SetPath(v)
 	}
+	if _, ok := _c.mutation.Icon(); !ok {
+		v := sysmenu.DefaultIcon
+		_c.mutation.SetIcon(v)
+	}
 	if _, ok := _c.mutation.IsRedirect(); !ok {
 		v := sysmenu.DefaultIsRedirect
 		_c.mutation.SetIsRedirect(v)
@@ -349,10 +405,23 @@ func (_c *SysMenuCreate) defaults() {
 		v := sysmenu.DefaultRedirect
 		_c.mutation.SetRedirect(v)
 	}
+	if _, ok := _c.mutation.Hidden(); !ok {
+		v := sysmenu.DefaultHidden
+		_c.mutation.SetHidden(v)
+	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysMenuCreate) check() error {
+	if _, ok := _c.mutation.TenantID(); !ok {
+		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "SysMenu.tenant_id"`)}
+	}
+	if v, ok := _c.mutation.TenantID(); ok {
+		if err := sysmenu.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysMenu.created_at"`)}
 	}
@@ -447,6 +516,9 @@ func (_c *SysMenuCreate) check() error {
 	if _, ok := _c.mutation.IsRedirect(); !ok {
 		return &ValidationError{Name: "is_redirect", err: errors.New(`ent: missing required field "SysMenu.is_redirect"`)}
 	}
+	if _, ok := _c.mutation.Hidden(); !ok {
+		return &ValidationError{Name: "hidden", err: errors.New(`ent: missing required field "SysMenu.hidden"`)}
+	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysmenu.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.id": %w`, err)}
@@ -483,6 +555,10 @@ func (_c *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
+	}
+	if value, ok := _c.mutation.TenantID(); ok {
+		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
+		_node.TenantID = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sysmenu.FieldCreatedAt, field.TypeTime, value)
@@ -564,6 +640,10 @@ func (_c *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysmenu.FieldRedirect, field.TypeString, value)
 		_node.Redirect = value
 	}
+	if value, ok := _c.mutation.Hidden(); ok {
+		_spec.SetField(sysmenu.FieldHidden, field.TypeBool, value)
+		_node.Hidden = value
+	}
 	if nodes := _c.mutation.RolesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -573,6 +653,22 @@ func (_c *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysrole.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.PackagesIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: true,
+			Table:   sysmenu.PackagesTable,
+			Columns: sysmenu.PackagesPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(syspackage.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

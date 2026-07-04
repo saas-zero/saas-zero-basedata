@@ -12,10 +12,8 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
-	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 )
 
@@ -29,6 +27,27 @@ type SysRoleUpdate struct {
 // Where appends a list predicates to the SysRoleUpdate builder.
 func (_u *SysRoleUpdate) Where(ps ...predicate.SysRole) *SysRoleUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_u *SysRoleUpdate) SetTenantID(v int64) *SysRoleUpdate {
+	_u.mutation.ResetTenantID()
+	_u.mutation.SetTenantID(v)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_u *SysRoleUpdate) SetNillableTenantID(v *int64) *SysRoleUpdate {
+	if v != nil {
+		_u.SetTenantID(*v)
+	}
+	return _u
+}
+
+// AddTenantID adds value to the "tenant_id" field.
+func (_u *SysRoleUpdate) AddTenantID(v int64) *SysRoleUpdate {
+	_u.mutation.AddTenantID(v)
 	return _u
 }
 
@@ -246,21 +265,6 @@ func (_u *SysRoleUpdate) AddMenus(v ...*SysMenu) *SysRoleUpdate {
 	return _u.AddMenuIDs(ids...)
 }
 
-// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
-func (_u *SysRoleUpdate) AddAPIIDs(ids ...int64) *SysRoleUpdate {
-	_u.mutation.AddAPIIDs(ids...)
-	return _u
-}
-
-// AddApis adds the "apis" edges to the SysApi entity.
-func (_u *SysRoleUpdate) AddApis(v ...*SysApi) *SysRoleUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddAPIIDs(ids...)
-}
-
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
 func (_u *SysRoleUpdate) AddUserIDs(ids ...int64) *SysRoleUpdate {
 	_u.mutation.AddUserIDs(ids...)
@@ -274,21 +278,6 @@ func (_u *SysRoleUpdate) AddUsers(v ...*SysUser) *SysRoleUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddUserIDs(ids...)
-}
-
-// AddTenantIDs adds the "tenants" edge to the SysTenant entity by IDs.
-func (_u *SysRoleUpdate) AddTenantIDs(ids ...int64) *SysRoleUpdate {
-	_u.mutation.AddTenantIDs(ids...)
-	return _u
-}
-
-// AddTenants adds the "tenants" edges to the SysTenant entity.
-func (_u *SysRoleUpdate) AddTenants(v ...*SysTenant) *SysRoleUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddTenantIDs(ids...)
 }
 
 // Mutation returns the SysRoleMutation object of the builder.
@@ -317,27 +306,6 @@ func (_u *SysRoleUpdate) RemoveMenus(v ...*SysMenu) *SysRoleUpdate {
 	return _u.RemoveMenuIDs(ids...)
 }
 
-// ClearApis clears all "apis" edges to the SysApi entity.
-func (_u *SysRoleUpdate) ClearApis() *SysRoleUpdate {
-	_u.mutation.ClearApis()
-	return _u
-}
-
-// RemoveAPIIDs removes the "apis" edge to SysApi entities by IDs.
-func (_u *SysRoleUpdate) RemoveAPIIDs(ids ...int64) *SysRoleUpdate {
-	_u.mutation.RemoveAPIIDs(ids...)
-	return _u
-}
-
-// RemoveApis removes "apis" edges to SysApi entities.
-func (_u *SysRoleUpdate) RemoveApis(v ...*SysApi) *SysRoleUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveAPIIDs(ids...)
-}
-
 // ClearUsers clears all "users" edges to the SysUser entity.
 func (_u *SysRoleUpdate) ClearUsers() *SysRoleUpdate {
 	_u.mutation.ClearUsers()
@@ -357,27 +325,6 @@ func (_u *SysRoleUpdate) RemoveUsers(v ...*SysUser) *SysRoleUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveUserIDs(ids...)
-}
-
-// ClearTenants clears all "tenants" edges to the SysTenant entity.
-func (_u *SysRoleUpdate) ClearTenants() *SysRoleUpdate {
-	_u.mutation.ClearTenants()
-	return _u
-}
-
-// RemoveTenantIDs removes the "tenants" edge to SysTenant entities by IDs.
-func (_u *SysRoleUpdate) RemoveTenantIDs(ids ...int64) *SysRoleUpdate {
-	_u.mutation.RemoveTenantIDs(ids...)
-	return _u
-}
-
-// RemoveTenants removes "tenants" edges to SysTenant entities.
-func (_u *SysRoleUpdate) RemoveTenants(v ...*SysTenant) *SysRoleUpdate {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveTenantIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -409,6 +356,11 @@ func (_u *SysRoleUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysRoleUpdate) check() error {
+	if v, ok := _u.mutation.TenantID(); ok {
+		if err := sysrole.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysRole.tenant_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysrole.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysRole.updated_id": %w`, err)}
@@ -463,6 +415,12 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.TenantID(); ok {
+		_spec.SetField(sysrole.FieldTenantID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedTenantID(); ok {
+		_spec.AddField(sysrole.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysrole.FieldUpdatedAt, field.TypeTime, value)
@@ -563,51 +521,6 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ApisCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedApisIDs(); len(nodes) > 0 && !_u.mutation.ApisCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ApisIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -653,51 +566,6 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.TenantsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedTenantsIDs(); len(nodes) > 0 && !_u.mutation.TenantsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{sysrole.Label}
@@ -716,6 +584,27 @@ type SysRoleUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SysRoleMutation
+}
+
+// SetTenantID sets the "tenant_id" field.
+func (_u *SysRoleUpdateOne) SetTenantID(v int64) *SysRoleUpdateOne {
+	_u.mutation.ResetTenantID()
+	_u.mutation.SetTenantID(v)
+	return _u
+}
+
+// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
+func (_u *SysRoleUpdateOne) SetNillableTenantID(v *int64) *SysRoleUpdateOne {
+	if v != nil {
+		_u.SetTenantID(*v)
+	}
+	return _u
+}
+
+// AddTenantID adds value to the "tenant_id" field.
+func (_u *SysRoleUpdateOne) AddTenantID(v int64) *SysRoleUpdateOne {
+	_u.mutation.AddTenantID(v)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -932,21 +821,6 @@ func (_u *SysRoleUpdateOne) AddMenus(v ...*SysMenu) *SysRoleUpdateOne {
 	return _u.AddMenuIDs(ids...)
 }
 
-// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
-func (_u *SysRoleUpdateOne) AddAPIIDs(ids ...int64) *SysRoleUpdateOne {
-	_u.mutation.AddAPIIDs(ids...)
-	return _u
-}
-
-// AddApis adds the "apis" edges to the SysApi entity.
-func (_u *SysRoleUpdateOne) AddApis(v ...*SysApi) *SysRoleUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddAPIIDs(ids...)
-}
-
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
 func (_u *SysRoleUpdateOne) AddUserIDs(ids ...int64) *SysRoleUpdateOne {
 	_u.mutation.AddUserIDs(ids...)
@@ -960,21 +834,6 @@ func (_u *SysRoleUpdateOne) AddUsers(v ...*SysUser) *SysRoleUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.AddUserIDs(ids...)
-}
-
-// AddTenantIDs adds the "tenants" edge to the SysTenant entity by IDs.
-func (_u *SysRoleUpdateOne) AddTenantIDs(ids ...int64) *SysRoleUpdateOne {
-	_u.mutation.AddTenantIDs(ids...)
-	return _u
-}
-
-// AddTenants adds the "tenants" edges to the SysTenant entity.
-func (_u *SysRoleUpdateOne) AddTenants(v ...*SysTenant) *SysRoleUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.AddTenantIDs(ids...)
 }
 
 // Mutation returns the SysRoleMutation object of the builder.
@@ -1003,27 +862,6 @@ func (_u *SysRoleUpdateOne) RemoveMenus(v ...*SysMenu) *SysRoleUpdateOne {
 	return _u.RemoveMenuIDs(ids...)
 }
 
-// ClearApis clears all "apis" edges to the SysApi entity.
-func (_u *SysRoleUpdateOne) ClearApis() *SysRoleUpdateOne {
-	_u.mutation.ClearApis()
-	return _u
-}
-
-// RemoveAPIIDs removes the "apis" edge to SysApi entities by IDs.
-func (_u *SysRoleUpdateOne) RemoveAPIIDs(ids ...int64) *SysRoleUpdateOne {
-	_u.mutation.RemoveAPIIDs(ids...)
-	return _u
-}
-
-// RemoveApis removes "apis" edges to SysApi entities.
-func (_u *SysRoleUpdateOne) RemoveApis(v ...*SysApi) *SysRoleUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveAPIIDs(ids...)
-}
-
 // ClearUsers clears all "users" edges to the SysUser entity.
 func (_u *SysRoleUpdateOne) ClearUsers() *SysRoleUpdateOne {
 	_u.mutation.ClearUsers()
@@ -1043,27 +881,6 @@ func (_u *SysRoleUpdateOne) RemoveUsers(v ...*SysUser) *SysRoleUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveUserIDs(ids...)
-}
-
-// ClearTenants clears all "tenants" edges to the SysTenant entity.
-func (_u *SysRoleUpdateOne) ClearTenants() *SysRoleUpdateOne {
-	_u.mutation.ClearTenants()
-	return _u
-}
-
-// RemoveTenantIDs removes the "tenants" edge to SysTenant entities by IDs.
-func (_u *SysRoleUpdateOne) RemoveTenantIDs(ids ...int64) *SysRoleUpdateOne {
-	_u.mutation.RemoveTenantIDs(ids...)
-	return _u
-}
-
-// RemoveTenants removes "tenants" edges to SysTenant entities.
-func (_u *SysRoleUpdateOne) RemoveTenants(v ...*SysTenant) *SysRoleUpdateOne {
-	ids := make([]int64, len(v))
-	for i := range v {
-		ids[i] = v[i].ID
-	}
-	return _u.RemoveTenantIDs(ids...)
 }
 
 // Where appends a list predicates to the SysRoleUpdate builder.
@@ -1108,6 +925,11 @@ func (_u *SysRoleUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysRoleUpdateOne) check() error {
+	if v, ok := _u.mutation.TenantID(); ok {
+		if err := sysrole.TenantIDValidator(v); err != nil {
+			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysRole.tenant_id": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysrole.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysRole.updated_id": %w`, err)}
@@ -1179,6 +1001,12 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.TenantID(); ok {
+		_spec.SetField(sysrole.FieldTenantID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedTenantID(); ok {
+		_spec.AddField(sysrole.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysrole.FieldUpdatedAt, field.TypeTime, value)
@@ -1279,51 +1107,6 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if _u.mutation.ApisCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedApisIDs(); len(nodes) > 0 && !_u.mutation.ApisCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.ApisIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   sysrole.ApisTable,
-			Columns: sysrole.ApisPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
 	if _u.mutation.UsersCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -1362,51 +1145,6 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysuser.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if _u.mutation.TenantsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.RemovedTenantsIDs(); len(nodes) > 0 && !_u.mutation.TenantsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := _u.mutation.TenantsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: true,
-			Table:   sysrole.TenantsTable,
-			Columns: sysrole.TenantsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(systenant.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
