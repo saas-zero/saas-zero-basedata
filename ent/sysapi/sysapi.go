@@ -77,12 +77,6 @@ var Columns = []string{
 	FieldAPIMethod,
 }
 
-// ForeignKeys holds the SQL foreign-keys that are owned by the "sys_apis"
-// table and are not defined as standalone fields in the schema.
-var ForeignKeys = []string{
-	"sys_role_apis",
-}
-
 var (
 	// PackagesPrimaryKey and PackagesColumn2 are the table columns denoting the
 	// primary key for the packages relation (M2M).
@@ -93,11 +87,6 @@ var (
 func ValidColumn(column string) bool {
 	for i := range Columns {
 		if column == Columns[i] {
-			return true
-		}
-	}
-	for i := range ForeignKeys {
-		if column == ForeignKeys[i] {
 			return true
 		}
 	}

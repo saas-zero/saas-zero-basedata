@@ -25,7 +25,6 @@ type SysApiQuery struct {
 	inters       []Interceptor
 	predicates   []predicate.SysApi
 	withPackages *SysPackageQuery
-	withFKs      bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -371,15 +370,11 @@ func (_q *SysApiQuery) prepareQuery(ctx context.Context) error {
 func (_q *SysApiQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysApi, error) {
 	var (
 		nodes       = []*SysApi{}
-		withFKs     = _q.withFKs
 		_spec       = _q.querySpec()
 		loadedTypes = [1]bool{
 			_q.withPackages != nil,
 		}
 	)
-	if withFKs {
-		_spec.Node.Columns = append(_spec.Node.Columns, sysapi.ForeignKeys...)
-	}
 	_spec.ScanValues = func(columns []string) ([]any, error) {
 		return (*SysApi).scanValues(nil, columns)
 	}

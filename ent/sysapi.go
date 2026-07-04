@@ -50,9 +50,8 @@ type SysApi struct {
 	APIMethod sysapi.APIMethod `json:"api_method,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysApiQuery when eager-loading is set.
-	Edges         SysApiEdges `json:"edges"`
-	sys_role_apis *int64
-	selectValues  sql.SelectValues
+	Edges        SysApiEdges `json:"edges"`
+	selectValues sql.SelectValues
 }
 
 // SysApiEdges holds the relations/edges for other nodes in the graph.
@@ -84,8 +83,6 @@ func (*SysApi) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullString)
 		case sysapi.FieldCreatedAt, sysapi.FieldUpdatedAt, sysapi.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
-		case sysapi.ForeignKeys[0]: // sys_role_apis
-			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -196,13 +193,6 @@ func (_m *SysApi) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field api_method", values[i])
 			} else if value.Valid {
 				_m.APIMethod = sysapi.APIMethod(value.String)
-			}
-		case sysapi.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field sys_role_apis", value)
-			} else if value.Valid {
-				_m.sys_role_apis = new(int64)
-				*_m.sys_role_apis = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])

@@ -11247,14 +11247,10 @@ type SysRoleMutation struct {
 	remark        *string
 	name          *string
 	code          *string
-	is_system     *bool
 	clearedFields map[string]struct{}
 	menus         map[int64]struct{}
 	removedmenus  map[int64]struct{}
 	clearedmenus  bool
-	apis          map[int64]struct{}
-	removedapis   map[int64]struct{}
-	clearedapis   bool
 	users         map[int64]struct{}
 	removedusers  map[int64]struct{}
 	clearedusers  bool
@@ -12060,42 +12056,6 @@ func (m *SysRoleMutation) ResetCode() {
 	m.code = nil
 }
 
-// SetIsSystem sets the "is_system" field.
-func (m *SysRoleMutation) SetIsSystem(b bool) {
-	m.is_system = &b
-}
-
-// IsSystem returns the value of the "is_system" field in the mutation.
-func (m *SysRoleMutation) IsSystem() (r bool, exists bool) {
-	v := m.is_system
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldIsSystem returns the old "is_system" field's value of the SysRole entity.
-// If the SysRole object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SysRoleMutation) OldIsSystem(ctx context.Context) (v bool, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIsSystem is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIsSystem requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIsSystem: %w", err)
-	}
-	return oldValue.IsSystem, nil
-}
-
-// ResetIsSystem resets all changes to the "is_system" field.
-func (m *SysRoleMutation) ResetIsSystem() {
-	m.is_system = nil
-}
-
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by ids.
 func (m *SysRoleMutation) AddMenuIDs(ids ...int64) {
 	if m.menus == nil {
@@ -12148,60 +12108,6 @@ func (m *SysRoleMutation) ResetMenus() {
 	m.menus = nil
 	m.clearedmenus = false
 	m.removedmenus = nil
-}
-
-// AddAPIIDs adds the "apis" edge to the SysApi entity by ids.
-func (m *SysRoleMutation) AddAPIIDs(ids ...int64) {
-	if m.apis == nil {
-		m.apis = make(map[int64]struct{})
-	}
-	for i := range ids {
-		m.apis[ids[i]] = struct{}{}
-	}
-}
-
-// ClearApis clears the "apis" edge to the SysApi entity.
-func (m *SysRoleMutation) ClearApis() {
-	m.clearedapis = true
-}
-
-// ApisCleared reports if the "apis" edge to the SysApi entity was cleared.
-func (m *SysRoleMutation) ApisCleared() bool {
-	return m.clearedapis
-}
-
-// RemoveAPIIDs removes the "apis" edge to the SysApi entity by IDs.
-func (m *SysRoleMutation) RemoveAPIIDs(ids ...int64) {
-	if m.removedapis == nil {
-		m.removedapis = make(map[int64]struct{})
-	}
-	for i := range ids {
-		delete(m.apis, ids[i])
-		m.removedapis[ids[i]] = struct{}{}
-	}
-}
-
-// RemovedApis returns the removed IDs of the "apis" edge to the SysApi entity.
-func (m *SysRoleMutation) RemovedApisIDs() (ids []int64) {
-	for id := range m.removedapis {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ApisIDs returns the "apis" edge IDs in the mutation.
-func (m *SysRoleMutation) ApisIDs() (ids []int64) {
-	for id := range m.apis {
-		ids = append(ids, id)
-	}
-	return
-}
-
-// ResetApis resets all changes to the "apis" edge.
-func (m *SysRoleMutation) ResetApis() {
-	m.apis = nil
-	m.clearedapis = false
-	m.removedapis = nil
 }
 
 // AddUserIDs adds the "users" edge to the SysUser entity by ids.
@@ -12292,7 +12198,7 @@ func (m *SysRoleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysRoleMutation) Fields() []string {
-	fields := make([]string, 0, 16)
+	fields := make([]string, 0, 15)
 	if m.tenant_id != nil {
 		fields = append(fields, sysrole.FieldTenantID)
 	}
@@ -12338,9 +12244,6 @@ func (m *SysRoleMutation) Fields() []string {
 	if m.code != nil {
 		fields = append(fields, sysrole.FieldCode)
 	}
-	if m.is_system != nil {
-		fields = append(fields, sysrole.FieldIsSystem)
-	}
 	return fields
 }
 
@@ -12379,8 +12282,6 @@ func (m *SysRoleMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case sysrole.FieldCode:
 		return m.Code()
-	case sysrole.FieldIsSystem:
-		return m.IsSystem()
 	}
 	return nil, false
 }
@@ -12420,8 +12321,6 @@ func (m *SysRoleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldName(ctx)
 	case sysrole.FieldCode:
 		return m.OldCode(ctx)
-	case sysrole.FieldIsSystem:
-		return m.OldIsSystem(ctx)
 	}
 	return nil, fmt.Errorf("unknown SysRole field %s", name)
 }
@@ -12535,13 +12434,6 @@ func (m *SysRoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
-		return nil
-	case sysrole.FieldIsSystem:
-		v, ok := value.(bool)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetIsSystem(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
@@ -12727,21 +12619,15 @@ func (m *SysRoleMutation) ResetField(name string) error {
 	case sysrole.FieldCode:
 		m.ResetCode()
 		return nil
-	case sysrole.FieldIsSystem:
-		m.ResetIsSystem()
-		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SysRoleMutation) AddedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.menus != nil {
 		edges = append(edges, sysrole.EdgeMenus)
-	}
-	if m.apis != nil {
-		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.users != nil {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -12759,12 +12645,6 @@ func (m *SysRoleMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case sysrole.EdgeApis:
-		ids := make([]ent.Value, 0, len(m.apis))
-		for id := range m.apis {
-			ids = append(ids, id)
-		}
-		return ids
 	case sysrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.users))
 		for id := range m.users {
@@ -12777,12 +12657,9 @@ func (m *SysRoleMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SysRoleMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.removedmenus != nil {
 		edges = append(edges, sysrole.EdgeMenus)
-	}
-	if m.removedapis != nil {
-		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.removedusers != nil {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -12800,12 +12677,6 @@ func (m *SysRoleMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
-	case sysrole.EdgeApis:
-		ids := make([]ent.Value, 0, len(m.removedapis))
-		for id := range m.removedapis {
-			ids = append(ids, id)
-		}
-		return ids
 	case sysrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.removedusers))
 		for id := range m.removedusers {
@@ -12818,12 +12689,9 @@ func (m *SysRoleMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SysRoleMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 3)
+	edges := make([]string, 0, 2)
 	if m.clearedmenus {
 		edges = append(edges, sysrole.EdgeMenus)
-	}
-	if m.clearedapis {
-		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.clearedusers {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -12837,8 +12705,6 @@ func (m *SysRoleMutation) EdgeCleared(name string) bool {
 	switch name {
 	case sysrole.EdgeMenus:
 		return m.clearedmenus
-	case sysrole.EdgeApis:
-		return m.clearedapis
 	case sysrole.EdgeUsers:
 		return m.clearedusers
 	}
@@ -12859,9 +12725,6 @@ func (m *SysRoleMutation) ResetEdge(name string) error {
 	switch name {
 	case sysrole.EdgeMenus:
 		m.ResetMenus()
-		return nil
-	case sysrole.EdgeApis:
-		m.ResetApis()
 		return nil
 	case sysrole.EdgeUsers:
 		m.ResetUsers()

@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
-	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -27,7 +26,6 @@ type SysRoleQuery struct {
 	inters     []Interceptor
 	predicates []predicate.SysRole
 	withMenus  *SysMenuQuery
-	withApis   *SysApiQuery
 	withUsers  *SysUserQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
@@ -80,28 +78,6 @@ func (_q *SysRoleQuery) QueryMenus() *SysMenuQuery {
 			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
 			sqlgraph.To(sysmenu.Table, sysmenu.FieldID),
 			sqlgraph.Edge(sqlgraph.M2M, false, sysrole.MenusTable, sysrole.MenusPrimaryKey...),
-		)
-		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryApis chains the current query on the "apis" edge.
-func (_q *SysRoleQuery) QueryApis() *SysApiQuery {
-	query := (&SysApiClient{config: _q.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := _q.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := _q.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, selector),
-			sqlgraph.To(sysapi.Table, sysapi.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, sysrole.ApisTable, sysrole.ApisColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(_q.driver.Dialect(), step)
 		return fromU, nil
@@ -324,7 +300,6 @@ func (_q *SysRoleQuery) Clone() *SysRoleQuery {
 		inters:     append([]Interceptor{}, _q.inters...),
 		predicates: append([]predicate.SysRole{}, _q.predicates...),
 		withMenus:  _q.withMenus.Clone(),
-		withApis:   _q.withApis.Clone(),
 		withUsers:  _q.withUsers.Clone(),
 		// clone intermediate query.
 		sql:  _q.sql.Clone(),
@@ -340,17 +315,6 @@ func (_q *SysRoleQuery) WithMenus(opts ...func(*SysMenuQuery)) *SysRoleQuery {
 		opt(query)
 	}
 	_q.withMenus = query
-	return _q
-}
-
-// WithApis tells the query-builder to eager-load the nodes that are connected to
-// the "apis" edge. The optional arguments are used to configure the query builder of the edge.
-func (_q *SysRoleQuery) WithApis(opts ...func(*SysApiQuery)) *SysRoleQuery {
-	query := (&SysApiClient{config: _q.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	_q.withApis = query
 	return _q
 }
 
@@ -443,9 +407,8 @@ func (_q *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysR
 	var (
 		nodes       = []*SysRole{}
 		_spec       = _q.querySpec()
-		loadedTypes = [3]bool{
+		loadedTypes = [2]bool{
 			_q.withMenus != nil,
-			_q.withApis != nil,
 			_q.withUsers != nil,
 		}
 	)
@@ -471,13 +434,6 @@ func (_q *SysRoleQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*SysR
 		if err := _q.loadMenus(ctx, query, nodes,
 			func(n *SysRole) { n.Edges.Menus = []*SysMenu{} },
 			func(n *SysRole, e *SysMenu) { n.Edges.Menus = append(n.Edges.Menus, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := _q.withApis; query != nil {
-		if err := _q.loadApis(ctx, query, nodes,
-			func(n *SysRole) { n.Edges.Apis = []*SysApi{} },
-			func(n *SysRole, e *SysApi) { n.Edges.Apis = append(n.Edges.Apis, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -549,37 +505,6 @@ func (_q *SysRoleQuery) loadMenus(ctx context.Context, query *SysMenuQuery, node
 		for kn := range nodes {
 			assign(kn, n)
 		}
-	}
-	return nil
-}
-func (_q *SysRoleQuery) loadApis(ctx context.Context, query *SysApiQuery, nodes []*SysRole, init func(*SysRole), assign func(*SysRole, *SysApi)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int64]*SysRole)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-		if init != nil {
-			init(nodes[i])
-		}
-	}
-	query.withFKs = true
-	query.Where(predicate.SysApi(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(sysrole.ApisColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.sys_role_apis
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "sys_role_apis" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "sys_role_apis" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
 	}
 	return nil
 }

@@ -1054,10 +1054,6 @@ func init() {
 			return nil
 		}
 	}()
-	// sysroleDescIsSystem is the schema descriptor for is_system field.
-	sysroleDescIsSystem := sysroleFields[2].Descriptor()
-	// sysrole.DefaultIsSystem holds the default value on creation for the is_system field.
-	sysrole.DefaultIsSystem = sysroleDescIsSystem.Default.(bool)
 	// sysroleDescID is the schema descriptor for id field.
 	sysroleDescID := sysroleMixinFields0[0].Descriptor()
 	// sysrole.IDValidator is a validator for the "id" field. It is called by the builders before save.

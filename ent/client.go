@@ -1657,22 +1657,6 @@ func (c *SysRoleClient) QueryMenus(_m *SysRole) *SysMenuQuery {
 	return query
 }
 
-// QueryApis queries the apis edge of a SysRole.
-func (c *SysRoleClient) QueryApis(_m *SysRole) *SysApiQuery {
-	query := (&SysApiClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := _m.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(sysrole.Table, sysrole.FieldID, id),
-			sqlgraph.To(sysapi.Table, sysapi.FieldID),
-			sqlgraph.Edge(sqlgraph.O2M, false, sysrole.ApisTable, sysrole.ApisColumn),
-		)
-		fromV = sqlgraph.Neighbors(_m.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // QueryUsers queries the users edge of a SysRole.
 func (c *SysRoleClient) QueryUsers(_m *SysRole) *SysUserQuery {
 	query := (&SysUserClient{config: c.config}).Query()
