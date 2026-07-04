@@ -69,7 +69,7 @@ var (
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
 		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "部门电话 | Department Phone", Default: ""},
 		{Name: "email", Type: field.TypeString, Size: 64, Comment: "部门邮箱 | Department Email", Default: ""},
-		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
 		{Name: "leader_id", Type: field.TypeInt64, Nullable: true, Comment: "负责人ID | Leader ID", Default: 0},
 		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
@@ -268,7 +268,6 @@ var (
 	// SysMenusColumns holds the columns for the "sys_menus" table.
 	SysMenusColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt64, Increment: true, Comment: "Primary Key | 主键ID，可自定义雪花ID"},
-		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
@@ -283,7 +282,7 @@ var (
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
 		{Name: "menu_type", Type: field.TypeEnum, Comment: "类型：directory-目录 menu-菜单 button-按钮 | Menu Type", Enums: []string{"directory", "menu", "button"}, Default: "directory"},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
-		{Name: "parent_id", Type: field.TypeInt64, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
 		{Name: "component", Type: field.TypeString, Nullable: true, Comment: "组件路径 | Component Path", Default: ""},
 		{Name: "path", Type: field.TypeString, Nullable: true, Comment: "路由路径 | Route Path", Default: ""},
 		{Name: "icon", Type: field.TypeString, Comment: "图标 | Icon", Default: ""},
@@ -299,34 +298,29 @@ var (
 		PrimaryKey: []*schema.Column{SysMenusColumns[0]},
 		Indexes: []*schema.Index{
 			{
-				Name:    "sysmenu_tenant_id",
-				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[1]},
-			},
-			{
 				Name:    "sysmenu_parent_id_sort",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[16], SysMenusColumns[13]},
+				Columns: []*schema.Column{SysMenusColumns[15], SysMenusColumns[12]},
 			},
 			{
 				Name:    "sysmenu_path",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[18]},
+				Columns: []*schema.Column{SysMenusColumns[17]},
 			},
 			{
 				Name:    "sysmenu_name",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[15]},
+				Columns: []*schema.Column{SysMenusColumns[14]},
 			},
 			{
 				Name:    "sysmenu_parent_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[16]},
+				Columns: []*schema.Column{SysMenusColumns[15]},
 			},
 			{
 				Name:    "sysmenu_menu_type_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysMenusColumns[14], SysMenusColumns[11]},
+				Columns: []*schema.Column{SysMenusColumns[13], SysMenusColumns[10]},
 			},
 		},
 	}
@@ -429,7 +423,7 @@ var (
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码 | Code"},
+		{Name: "code", Type: field.TypeString, Size: 128, Comment: "编码 | Code"},
 	}
 	// SysRolesTable holds the schema information for the "sys_roles" table.
 	SysRolesTable = &schema.Table{
@@ -444,14 +438,19 @@ var (
 				Columns: []*schema.Column{SysRolesColumns[1]},
 			},
 			{
+				Name:    "sysrole_tenant_id_code",
+				Unique:  true,
+				Columns: []*schema.Column{SysRolesColumns[1], SysRolesColumns[15]},
+			},
+			{
+				Name:    "sysrole_tenant_id_status",
+				Unique:  false,
+				Columns: []*schema.Column{SysRolesColumns[1], SysRolesColumns[11]},
+			},
+			{
 				Name:    "sysrole_sort",
 				Unique:  false,
 				Columns: []*schema.Column{SysRolesColumns[12]},
-			},
-			{
-				Name:    "sysrole_status",
-				Unique:  false,
-				Columns: []*schema.Column{SysRolesColumns[11]},
 			},
 		},
 	}

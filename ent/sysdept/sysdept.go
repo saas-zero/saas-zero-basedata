@@ -154,8 +154,6 @@ var (
 	EmailValidator func(string) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
-	// ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
-	ParentIDValidator func(int64) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )

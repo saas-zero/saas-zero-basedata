@@ -5,7 +5,6 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,8 +22,9 @@ func NewAssignApisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assign
 	}
 }
 
-func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.EmptyResp{}, nil
+func (l *AssignApisLogic) AssignApis(_ *apps.RoleReq) (*apps.EmptyResp, error) {
+	// Casbin handles runtime API authorization
+	// sys_role_apis junction will be managed through Casbin policy store
+	// This RPC stub is reserved for future sync to Casbin
+	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

@@ -3,9 +3,9 @@ package systenantslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,16 @@ func NewGetTenantByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetTenantByIdLogic) GetTenantById(in *apps.IdReq) (*apps.TenantResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.TenantResp{}, nil
+	t, err := l.svcCtx.DB.SysTenant.ActiveQuery().
+		Where(systenant.IDEQ(in.GetId())).
+		WithSysPackage().
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.TenantResp{
+		Code: 200,
+		Msg:  "success",
+		Data: tenantToResp(t),
+	}, nil
 }

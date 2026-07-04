@@ -55,11 +55,6 @@ func IDLTE(id int64) predicate.SysMenu {
 	return predicate.SysMenu(sql.FieldLTE(FieldID, id))
 }
 
-// TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
-func TenantID(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldEQ(FieldTenantID, v))
-}
-
 // CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
 func CreatedAt(v time.Time) predicate.SysMenu {
 	return predicate.SysMenu(sql.FieldEQ(FieldCreatedAt, v))
@@ -153,46 +148,6 @@ func Redirect(v string) predicate.SysMenu {
 // Hidden applies equality check predicate on the "hidden" field. It's identical to HiddenEQ.
 func Hidden(v bool) predicate.SysMenu {
 	return predicate.SysMenu(sql.FieldEQ(FieldHidden, v))
-}
-
-// TenantIDEQ applies the EQ predicate on the "tenant_id" field.
-func TenantIDEQ(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldEQ(FieldTenantID, v))
-}
-
-// TenantIDNEQ applies the NEQ predicate on the "tenant_id" field.
-func TenantIDNEQ(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldNEQ(FieldTenantID, v))
-}
-
-// TenantIDIn applies the In predicate on the "tenant_id" field.
-func TenantIDIn(vs ...int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldIn(FieldTenantID, vs...))
-}
-
-// TenantIDNotIn applies the NotIn predicate on the "tenant_id" field.
-func TenantIDNotIn(vs ...int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldNotIn(FieldTenantID, vs...))
-}
-
-// TenantIDGT applies the GT predicate on the "tenant_id" field.
-func TenantIDGT(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldGT(FieldTenantID, v))
-}
-
-// TenantIDGTE applies the GTE predicate on the "tenant_id" field.
-func TenantIDGTE(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldGTE(FieldTenantID, v))
-}
-
-// TenantIDLT applies the LT predicate on the "tenant_id" field.
-func TenantIDLT(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldLT(FieldTenantID, v))
-}
-
-// TenantIDLTE applies the LTE predicate on the "tenant_id" field.
-func TenantIDLTE(v int64) predicate.SysMenu {
-	return predicate.SysMenu(sql.FieldLTE(FieldTenantID, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -918,6 +873,16 @@ func ParentIDLT(v int64) predicate.SysMenu {
 // ParentIDLTE applies the LTE predicate on the "parent_id" field.
 func ParentIDLTE(v int64) predicate.SysMenu {
 	return predicate.SysMenu(sql.FieldLTE(FieldParentID, v))
+}
+
+// ParentIDIsNil applies the IsNil predicate on the "parent_id" field.
+func ParentIDIsNil() predicate.SysMenu {
+	return predicate.SysMenu(sql.FieldIsNull(FieldParentID))
+}
+
+// ParentIDNotNil applies the NotNil predicate on the "parent_id" field.
+func ParentIDNotNil() predicate.SysMenu {
+	return predicate.SysMenu(sql.FieldNotNull(FieldParentID))
 }
 
 // ComponentEQ applies the EQ predicate on the "component" field.

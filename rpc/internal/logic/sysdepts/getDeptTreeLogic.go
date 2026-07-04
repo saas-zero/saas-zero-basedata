@@ -3,9 +3,11 @@ package sysdeptslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,8 +25,21 @@ func NewGetDeptTreeLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetDe
 	}
 }
 
-func (l *GetDeptTreeLogic) GetDeptTree(in *apps.EmptyReq) (*apps.DeptTreeResp, error) {
-	// todo: add your logic here and delete this line
+func (l *GetDeptTreeLogic) GetDeptTree(_ *apps.EmptyReq) (*apps.DeptTreeResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 
-	return &apps.DeptTreeResp{}, nil
+	allDepts, err := l.svcCtx.DB.SysDept.TenantQuery(tenantId).
+		Order(ent.Asc(sysdept.FieldSort)).
+		WithLeader().
+		All(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	tree := buildDeptTree(allDepts, 0)
+	return &apps.DeptTreeResp{
+		Code: 200,
+		Msg:  "success",
+		Data: tree,
+	}, nil
 }

@@ -176,8 +176,6 @@ type MenuInfo struct {
 	Status      string      `json:"status"`
 	Sort        int32       `json:"sort"`
 	Remark      string      `json:"remark"`
-	TenantId    int64       `json:"tenantId"`
-	TenantIdStr string      `json:"tenantIdStr"`
 	Children    []*MenuInfo `json:"children"`
 	CreatedAt   string      `json:"createdAt"`
 	CreatedBy   string      `json:"createdBy"`

@@ -5,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type ResetPasswordLogic struct {
@@ -24,7 +25,21 @@ func NewResetPasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Res
 }
 
 func (l *ResetPasswordLogic) ResetPassword(in *apps.UserReq) (*apps.EmptyResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.EmptyResp{}, nil
+	hash, err := bcrypt.GenerateFromPassword([]byte(in.GetPassword()), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, err
+	}
+
+	err = l.svcCtx.DB.SysUser.UpdateOneID(in.GetId()).
+		SetPassword(string(hash)).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

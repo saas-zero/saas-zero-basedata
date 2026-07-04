@@ -17,7 +17,7 @@ type SysRole struct {
 func (SysRole) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty().MaxLen(128).Comment("名称 | Name"),
-		field.String("code").Unique().NotEmpty().MaxLen(128).Comment("编码 | Code"),
+		field.String("code").NotEmpty().MaxLen(128).Comment("编码 | Code"),
 	}
 }
 
@@ -51,7 +51,8 @@ func (SysRole) Annotations() []schema.Annotation {
 
 func (SysRole) Indexes() []ent.Index {
 	return []ent.Index{
+		index.Fields("tenant_id", "code").Unique(),
+		index.Fields("tenant_id", "status"),
 		index.Fields("sort"),
-		index.Fields("status"),
 	}
 }

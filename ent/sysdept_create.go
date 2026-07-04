@@ -420,14 +420,6 @@ func (_c *SysDeptCreate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ParentID(); !ok {
-		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "SysDept.parent_id"`)}
-	}
-	if v, ok := _c.mutation.ParentID(); ok {
-		if err := sysdept.ParentIDValidator(v); err != nil {
-			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_id": %w`, err)}
-		}
-	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysdept.IDValidator(v); err != nil {
 			return &ValidationError{Name: "id", err: fmt.Errorf(`ent: validator failed for field "SysDept.id": %w`, err)}

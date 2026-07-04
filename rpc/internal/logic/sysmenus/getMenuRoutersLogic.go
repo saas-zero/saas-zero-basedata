@@ -3,9 +3,10 @@ package sysmenuslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -23,8 +24,18 @@ func NewGetMenuRoutersLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 	}
 }
 
-func (l *GetMenuRoutersLogic) GetMenuRouters(in *apps.EmptyReq) (*apps.MenuTreeResp, error) {
-	// todo: add your logic here and delete this line
+func (l *GetMenuRoutersLogic) GetMenuRouters(_ *apps.EmptyReq) (*apps.MenuTreeResp, error) {
+	allMenus, err := l.svcCtx.DB.SysMenu.ActiveQuery().
+		Order(ent.Asc(sysmenu.FieldSort)).
+		All(l.ctx)
+	if err != nil {
+		return nil, err
+	}
 
-	return &apps.MenuTreeResp{}, nil
+	tree := buildRouterTree(allMenus, 0)
+	return &apps.MenuTreeResp{
+		Code: 200,
+		Msg:  "success",
+		Data: tree,
+	}, nil
 }

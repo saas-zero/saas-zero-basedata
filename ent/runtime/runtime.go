@@ -249,8 +249,6 @@ func init() {
 	sysdeptDescParentID := sysdeptFields[4].Descriptor()
 	// sysdept.DefaultParentID holds the default value on creation for the parent_id field.
 	sysdept.DefaultParentID = sysdeptDescParentID.Default.(int64)
-	// sysdept.ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
-	sysdept.ParentIDValidator = sysdeptDescParentID.Validators[0].(func(int64) error)
 	// sysdeptDescID is the schema descriptor for id field.
 	sysdeptDescID := sysdeptMixinFields0[0].Descriptor()
 	// sysdept.IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -586,11 +584,9 @@ func init() {
 	sysmenuMixinHooks1 := sysmenuMixin[1].Hooks()
 	sysmenuMixinHooks2 := sysmenuMixin[2].Hooks()
 	sysmenuMixinHooks3 := sysmenuMixin[3].Hooks()
-	sysmenuMixinHooks4 := sysmenuMixin[4].Hooks()
 	sysmenu.Hooks[0] = sysmenuMixinHooks1[0]
 	sysmenu.Hooks[1] = sysmenuMixinHooks2[0]
 	sysmenu.Hooks[2] = sysmenuMixinHooks3[0]
-	sysmenu.Hooks[3] = sysmenuMixinHooks4[0]
 	sysmenuMixinFields0 := sysmenuMixin[0].Fields()
 	_ = sysmenuMixinFields0
 	sysmenuMixinFields1 := sysmenuMixin[1].Fields()
@@ -605,24 +601,18 @@ func init() {
 	_ = sysmenuMixinFields5
 	sysmenuMixinFields6 := sysmenuMixin[6].Fields()
 	_ = sysmenuMixinFields6
-	sysmenuMixinFields7 := sysmenuMixin[7].Fields()
-	_ = sysmenuMixinFields7
 	sysmenuFields := schema.SysMenu{}.Fields()
 	_ = sysmenuFields
-	// sysmenuDescTenantID is the schema descriptor for tenant_id field.
-	sysmenuDescTenantID := sysmenuMixinFields1[0].Descriptor()
-	// sysmenu.TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
-	sysmenu.TenantIDValidator = sysmenuDescTenantID.Validators[0].(func(int64) error)
 	// sysmenuDescCreatedAt is the schema descriptor for created_at field.
-	sysmenuDescCreatedAt := sysmenuMixinFields2[0].Descriptor()
+	sysmenuDescCreatedAt := sysmenuMixinFields1[0].Descriptor()
 	// sysmenu.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sysmenu.DefaultCreatedAt = sysmenuDescCreatedAt.Default.(func() time.Time)
 	// sysmenuDescCreatedID is the schema descriptor for created_id field.
-	sysmenuDescCreatedID := sysmenuMixinFields2[1].Descriptor()
+	sysmenuDescCreatedID := sysmenuMixinFields1[1].Descriptor()
 	// sysmenu.CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
 	sysmenu.CreatedIDValidator = sysmenuDescCreatedID.Validators[0].(func(int64) error)
 	// sysmenuDescCreatedBy is the schema descriptor for created_by field.
-	sysmenuDescCreatedBy := sysmenuMixinFields2[2].Descriptor()
+	sysmenuDescCreatedBy := sysmenuMixinFields1[2].Descriptor()
 	// sysmenu.CreatedByValidator is a validator for the "created_by" field. It is called by the builders before save.
 	sysmenu.CreatedByValidator = func() func(string) error {
 		validators := sysmenuDescCreatedBy.Validators
@@ -640,15 +630,15 @@ func init() {
 		}
 	}()
 	// sysmenuDescUpdatedAt is the schema descriptor for updated_at field.
-	sysmenuDescUpdatedAt := sysmenuMixinFields3[0].Descriptor()
+	sysmenuDescUpdatedAt := sysmenuMixinFields2[0].Descriptor()
 	// sysmenu.DefaultUpdatedAt holds the default value on creation for the updated_at field.
 	sysmenu.DefaultUpdatedAt = sysmenuDescUpdatedAt.Default.(func() time.Time)
 	// sysmenuDescUpdatedID is the schema descriptor for updated_id field.
-	sysmenuDescUpdatedID := sysmenuMixinFields3[1].Descriptor()
+	sysmenuDescUpdatedID := sysmenuMixinFields2[1].Descriptor()
 	// sysmenu.UpdatedIDValidator is a validator for the "updated_id" field. It is called by the builders before save.
 	sysmenu.UpdatedIDValidator = sysmenuDescUpdatedID.Validators[0].(func(int64) error)
 	// sysmenuDescUpdatedBy is the schema descriptor for updated_by field.
-	sysmenuDescUpdatedBy := sysmenuMixinFields3[2].Descriptor()
+	sysmenuDescUpdatedBy := sysmenuMixinFields2[2].Descriptor()
 	// sysmenu.UpdatedByValidator is a validator for the "updated_by" field. It is called by the builders before save.
 	sysmenu.UpdatedByValidator = func() func(string) error {
 		validators := sysmenuDescUpdatedBy.Validators
@@ -666,15 +656,15 @@ func init() {
 		}
 	}()
 	// sysmenuDescDeletedBy is the schema descriptor for deleted_by field.
-	sysmenuDescDeletedBy := sysmenuMixinFields4[2].Descriptor()
+	sysmenuDescDeletedBy := sysmenuMixinFields3[2].Descriptor()
 	// sysmenu.DeletedByValidator is a validator for the "deleted_by" field. It is called by the builders before save.
 	sysmenu.DeletedByValidator = sysmenuDescDeletedBy.Validators[0].(func(string) error)
 	// sysmenuDescRemark is the schema descriptor for remark field.
-	sysmenuDescRemark := sysmenuMixinFields6[0].Descriptor()
+	sysmenuDescRemark := sysmenuMixinFields5[0].Descriptor()
 	// sysmenu.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
 	sysmenu.RemarkValidator = sysmenuDescRemark.Validators[0].(func(string) error)
 	// sysmenuDescSort is the schema descriptor for sort field.
-	sysmenuDescSort := sysmenuMixinFields7[0].Descriptor()
+	sysmenuDescSort := sysmenuMixinFields6[0].Descriptor()
 	// sysmenu.DefaultSort holds the default value on creation for the sort field.
 	sysmenu.DefaultSort = sysmenuDescSort.Default.(uint32)
 	// sysmenu.SortValidator is a validator for the "sort" field. It is called by the builders before save.
@@ -701,8 +691,6 @@ func init() {
 	sysmenuDescParentID := sysmenuFields[2].Descriptor()
 	// sysmenu.DefaultParentID holds the default value on creation for the parent_id field.
 	sysmenu.DefaultParentID = sysmenuDescParentID.Default.(int64)
-	// sysmenu.ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
-	sysmenu.ParentIDValidator = sysmenuDescParentID.Validators[0].(func(int64) error)
 	// sysmenuDescComponent is the schema descriptor for component field.
 	sysmenuDescComponent := sysmenuFields[3].Descriptor()
 	// sysmenu.DefaultComponent holds the default value on creation for the component field.

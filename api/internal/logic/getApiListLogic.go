@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,8 +23,27 @@ func NewGetApiListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetApi
 	}
 }
 
-func (l *GetApiListLogic) GetApiList(req *types.ApiPageReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *GetApiListLogic) GetApiList(req *types.ApiPageReq) (*types.BaseResp, error) {
+	rpcReq := &apps.ApiPageReq{Page: int32(req.Page), Size: int32(req.Size)}
+	if req.ApiName != "" {
+		rpcReq.ApiName = &req.ApiName
+	}
+	if req.ApiPath != "" {
+		rpcReq.ApiPath = &req.ApiPath
+	}
+	if req.ApiType != "" {
+		rpcReq.ApiType = &req.ApiType
+	}
+	if req.Status != "" {
+		rpcReq.Status = &req.Status
+	}
+	resp, err := l.svcCtx.SysApis.GetApiList(l.ctx, rpcReq)
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{
+		Code: int(resp.Code),
+		Msg:  resp.Msg,
+		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+	}, nil
 }

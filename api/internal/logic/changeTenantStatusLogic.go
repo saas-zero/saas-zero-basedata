@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type ChangeTenantStatusLogic struct {
@@ -26,8 +24,13 @@ func NewChangeTenantStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-func (l *ChangeTenantStatusLogic) ChangeTenantStatus(req *types.TenantReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *ChangeTenantStatusLogic) ChangeTenantStatus(req *types.TenantReq) (*types.BaseResp, error) {
+	resp, err := l.svcCtx.SysTenants.ChangeTenantStatus(l.ctx, &apps.TenantReq{
+		Id:     proto.Int64(req.Id),
+		Status: proto.String(req.Status),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg}, nil
 }

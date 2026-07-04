@@ -21,7 +21,7 @@ func (SysMenu) Fields() []ent.Field {
 			Default("directory").
 			Comment("类型：directory-目录 menu-菜单 button-按钮 | Menu Type"),
 		field.String("name").NotEmpty().MaxLen(128).Comment("名称 | Name"),
-		field.Int64("parent_id").Positive().Default(0).Comment("父级ID | Parent ID"),
+		field.Int64("parent_id").Default(0).Optional().Comment("父级ID | Parent ID"),
 		field.String("component").Optional().Default("").Comment("组件路径 | Component Path"),
 		field.String("path").Optional().Default("").Comment("路由路径 | Route Path"),
 		field.String("icon").Default("").Comment("图标 | Icon"),
@@ -41,7 +41,6 @@ func (SysMenu) Edges() []ent.Edge {
 func (SysMenu) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.BaseMixin{},
-		mixins.TenantMixin{},
 		mixins.CreatedMixin{},
 		mixins.UpdatedMixin{},
 		mixins.DeletedMixin{},

@@ -335,12 +335,12 @@ func (_q *SysMenuQuery) WithPackages(opts ...func(*SysPackageQuery)) *SysMenuQue
 // Example:
 //
 //	var v []struct {
-//		TenantID int64 `json:"tenant_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.SysMenu.Query().
-//		GroupBy(sysmenu.FieldTenantID).
+//		GroupBy(sysmenu.FieldCreatedAt).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (_q *SysMenuQuery) GroupBy(field string, fields ...string) *SysMenuGroupBy {
@@ -358,11 +358,11 @@ func (_q *SysMenuQuery) GroupBy(field string, fields ...string) *SysMenuGroupBy 
 // Example:
 //
 //	var v []struct {
-//		TenantID int64 `json:"tenant_id,omitempty"`
+//		CreatedAt time.Time `json:"created_at,omitempty"`
 //	}
 //
 //	client.SysMenu.Query().
-//		Select(sysmenu.FieldTenantID).
+//		Select(sysmenu.FieldCreatedAt).
 //		Scan(ctx, &v)
 func (_q *SysMenuQuery) Select(fields ...string) *SysMenuSelect {
 	_q.ctx.Fields = append(_q.ctx.Fields, fields...)

@@ -18,8 +18,6 @@ type SysMenu struct {
 	// ID of the ent.
 	// Primary Key | 主键ID，可自定义雪花ID
 	ID int64 `json:"id,omitempty"`
-	// 租户ID | Tenant ID
-	TenantID int64 `json:"tenant_id,omitempty"`
 	// Create Time | 创建时间
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	// Creator ID | 创建人ID
@@ -104,7 +102,7 @@ func (*SysMenu) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sysmenu.FieldIsRedirect, sysmenu.FieldHidden:
 			values[i] = new(sql.NullBool)
-		case sysmenu.FieldID, sysmenu.FieldTenantID, sysmenu.FieldCreatedID, sysmenu.FieldUpdatedID, sysmenu.FieldDeletedID, sysmenu.FieldSort, sysmenu.FieldParentID:
+		case sysmenu.FieldID, sysmenu.FieldCreatedID, sysmenu.FieldUpdatedID, sysmenu.FieldDeletedID, sysmenu.FieldSort, sysmenu.FieldParentID:
 			values[i] = new(sql.NullInt64)
 		case sysmenu.FieldCreatedBy, sysmenu.FieldUpdatedBy, sysmenu.FieldDeletedBy, sysmenu.FieldStatus, sysmenu.FieldRemark, sysmenu.FieldMenuType, sysmenu.FieldName, sysmenu.FieldComponent, sysmenu.FieldPath, sysmenu.FieldIcon, sysmenu.FieldRedirect:
 			values[i] = new(sql.NullString)
@@ -131,12 +129,6 @@ func (_m *SysMenu) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			_m.ID = int64(value.Int64)
-		case sysmenu.FieldTenantID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for field tenant_id", values[i])
-			} else if value.Valid {
-				_m.TenantID = value.Int64
-			}
 		case sysmenu.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
@@ -309,9 +301,6 @@ func (_m *SysMenu) String() string {
 	var builder strings.Builder
 	builder.WriteString("SysMenu(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
-	builder.WriteString("tenant_id=")
-	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
-	builder.WriteString(", ")
 	builder.WriteString("created_at=")
 	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")

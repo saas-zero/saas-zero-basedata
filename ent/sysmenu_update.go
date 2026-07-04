@@ -30,27 +30,6 @@ func (_u *SysMenuUpdate) Where(ps ...predicate.SysMenu) *SysMenuUpdate {
 	return _u
 }
 
-// SetTenantID sets the "tenant_id" field.
-func (_u *SysMenuUpdate) SetTenantID(v int64) *SysMenuUpdate {
-	_u.mutation.ResetTenantID()
-	_u.mutation.SetTenantID(v)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_u *SysMenuUpdate) SetNillableTenantID(v *int64) *SysMenuUpdate {
-	if v != nil {
-		_u.SetTenantID(*v)
-	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysMenuUpdate) AddTenantID(v int64) *SysMenuUpdate {
-	_u.mutation.AddTenantID(v)
-	return _u
-}
-
 // SetUpdatedAt sets the "updated_at" field.
 func (_u *SysMenuUpdate) SetUpdatedAt(v time.Time) *SysMenuUpdate {
 	_u.mutation.SetUpdatedAt(v)
@@ -271,6 +250,12 @@ func (_u *SysMenuUpdate) AddParentID(v int64) *SysMenuUpdate {
 	return _u
 }
 
+// ClearParentID clears the value of the "parent_id" field.
+func (_u *SysMenuUpdate) ClearParentID() *SysMenuUpdate {
+	_u.mutation.ClearParentID()
+	return _u
+}
+
 // SetComponent sets the "component" field.
 func (_u *SysMenuUpdate) SetComponent(v string) *SysMenuUpdate {
 	_u.mutation.SetComponent(v)
@@ -479,11 +464,6 @@ func (_u *SysMenuUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysMenuUpdate) check() error {
-	if v, ok := _u.mutation.TenantID(); ok {
-		if err := sysmenu.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysmenu.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.updated_id": %w`, err)}
@@ -524,11 +504,6 @@ func (_u *SysMenuUpdate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysMenu.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ParentID(); ok {
-		if err := sysmenu.ParentIDValidator(v); err != nil {
-			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.parent_id": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -543,12 +518,6 @@ func (_u *SysMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysmenu.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysmenu.FieldUpdatedAt, field.TypeTime, value)
@@ -609,6 +578,9 @@ func (_u *SysMenuUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.AddedParentID(); ok {
 		_spec.AddField(sysmenu.FieldParentID, field.TypeInt64, value)
+	}
+	if _u.mutation.ParentIDCleared() {
+		_spec.ClearField(sysmenu.FieldParentID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Component(); ok {
 		_spec.SetField(sysmenu.FieldComponent, field.TypeString, value)
@@ -745,27 +717,6 @@ type SysMenuUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SysMenuMutation
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (_u *SysMenuUpdateOne) SetTenantID(v int64) *SysMenuUpdateOne {
-	_u.mutation.ResetTenantID()
-	_u.mutation.SetTenantID(v)
-	return _u
-}
-
-// SetNillableTenantID sets the "tenant_id" field if the given value is not nil.
-func (_u *SysMenuUpdateOne) SetNillableTenantID(v *int64) *SysMenuUpdateOne {
-	if v != nil {
-		_u.SetTenantID(*v)
-	}
-	return _u
-}
-
-// AddTenantID adds value to the "tenant_id" field.
-func (_u *SysMenuUpdateOne) AddTenantID(v int64) *SysMenuUpdateOne {
-	_u.mutation.AddTenantID(v)
-	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
@@ -985,6 +936,12 @@ func (_u *SysMenuUpdateOne) SetNillableParentID(v *int64) *SysMenuUpdateOne {
 // AddParentID adds value to the "parent_id" field.
 func (_u *SysMenuUpdateOne) AddParentID(v int64) *SysMenuUpdateOne {
 	_u.mutation.AddParentID(v)
+	return _u
+}
+
+// ClearParentID clears the value of the "parent_id" field.
+func (_u *SysMenuUpdateOne) ClearParentID() *SysMenuUpdateOne {
+	_u.mutation.ClearParentID()
 	return _u
 }
 
@@ -1209,11 +1166,6 @@ func (_u *SysMenuUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysMenuUpdateOne) check() error {
-	if v, ok := _u.mutation.TenantID(); ok {
-		if err := sysmenu.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
-		}
-	}
 	if v, ok := _u.mutation.UpdatedID(); ok {
 		if err := sysmenu.UpdatedIDValidator(v); err != nil {
 			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.updated_id": %w`, err)}
@@ -1254,11 +1206,6 @@ func (_u *SysMenuUpdateOne) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysMenu.name": %w`, err)}
 		}
 	}
-	if v, ok := _u.mutation.ParentID(); ok {
-		if err := sysmenu.ParentIDValidator(v); err != nil {
-			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.parent_id": %w`, err)}
-		}
-	}
 	return nil
 }
 
@@ -1290,12 +1237,6 @@ func (_u *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err er
 				ps[i](selector)
 			}
 		}
-	}
-	if value, ok := _u.mutation.TenantID(); ok {
-		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
-	}
-	if value, ok := _u.mutation.AddedTenantID(); ok {
-		_spec.AddField(sysmenu.FieldTenantID, field.TypeInt64, value)
 	}
 	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(sysmenu.FieldUpdatedAt, field.TypeTime, value)
@@ -1356,6 +1297,9 @@ func (_u *SysMenuUpdateOne) sqlSave(ctx context.Context) (_node *SysMenu, err er
 	}
 	if value, ok := _u.mutation.AddedParentID(); ok {
 		_spec.AddField(sysmenu.FieldParentID, field.TypeInt64, value)
+	}
+	if _u.mutation.ParentIDCleared() {
+		_spec.ClearField(sysmenu.FieldParentID, field.TypeInt64)
 	}
 	if value, ok := _u.mutation.Component(); ok {
 		_spec.SetField(sysmenu.FieldComponent, field.TypeString, value)

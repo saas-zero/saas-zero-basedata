@@ -827,18 +827,17 @@ type Role struct {
 	IdStr         *string                `protobuf:"bytes,2,opt,name=idStr,proto3,oneof" json:"idStr,omitempty"`
 	Name          *string                `protobuf:"bytes,3,opt,name=name,proto3,oneof" json:"name,omitempty"`
 	Code          *string                `protobuf:"bytes,4,opt,name=code,proto3,oneof" json:"code,omitempty"`
-	IsSystem      *bool                  `protobuf:"varint,5,opt,name=isSystem,proto3,oneof" json:"isSystem,omitempty"`
-	Status        *string                `protobuf:"bytes,6,opt,name=status,proto3,oneof" json:"status,omitempty"`
-	Sort          *int32                 `protobuf:"varint,7,opt,name=sort,proto3,oneof" json:"sort,omitempty"`
-	Remark        *string                `protobuf:"bytes,8,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
-	TenantId      *int64                 `protobuf:"varint,9,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
-	TenantIdStr   *string                `protobuf:"bytes,10,opt,name=tenantIdStr,proto3,oneof" json:"tenantIdStr,omitempty"`
-	MenuIds       []int64                `protobuf:"varint,11,rep,packed,name=menuIds,proto3" json:"menuIds,omitempty"`
-	ApiIds        []int64                `protobuf:"varint,12,rep,packed,name=apiIds,proto3" json:"apiIds,omitempty"`
-	CreatedAt     *int64                 `protobuf:"varint,13,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
-	CreatedBy     *string                `protobuf:"bytes,14,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
-	UpdatedAt     *int64                 `protobuf:"varint,15,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
-	UpdatedBy     *string                `protobuf:"bytes,16,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
+	Status        *string                `protobuf:"bytes,5,opt,name=status,proto3,oneof" json:"status,omitempty"`
+	Sort          *int32                 `protobuf:"varint,6,opt,name=sort,proto3,oneof" json:"sort,omitempty"`
+	Remark        *string                `protobuf:"bytes,7,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
+	TenantId      *int64                 `protobuf:"varint,8,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
+	TenantIdStr   *string                `protobuf:"bytes,9,opt,name=tenantIdStr,proto3,oneof" json:"tenantIdStr,omitempty"`
+	MenuIds       []int64                `protobuf:"varint,10,rep,packed,name=menuIds,proto3" json:"menuIds,omitempty"`
+	ApiIds        []int64                `protobuf:"varint,11,rep,packed,name=apiIds,proto3" json:"apiIds,omitempty"`
+	CreatedAt     *int64                 `protobuf:"varint,12,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
+	CreatedBy     *string                `protobuf:"bytes,13,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
+	UpdatedAt     *int64                 `protobuf:"varint,14,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
+	UpdatedBy     *string                `protobuf:"bytes,15,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -899,13 +898,6 @@ func (x *Role) GetCode() string {
 		return *x.Code
 	}
 	return ""
-}
-
-func (x *Role) GetIsSystem() bool {
-	if x != nil && x.IsSystem != nil {
-		return *x.IsSystem
-	}
-	return false
 }
 
 func (x *Role) GetStatus() string {
@@ -1850,13 +1842,11 @@ type Menu struct {
 	Status        *string                `protobuf:"bytes,13,opt,name=status,proto3,oneof" json:"status,omitempty"`
 	Sort          *int32                 `protobuf:"varint,14,opt,name=sort,proto3,oneof" json:"sort,omitempty"`
 	Remark        *string                `protobuf:"bytes,15,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
-	TenantId      *int64                 `protobuf:"varint,16,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
-	TenantIdStr   *string                `protobuf:"bytes,17,opt,name=tenantIdStr,proto3,oneof" json:"tenantIdStr,omitempty"`
-	Children      []*Menu                `protobuf:"bytes,18,rep,name=children,proto3" json:"children,omitempty"`
-	CreatedAt     *int64                 `protobuf:"varint,19,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
-	CreatedBy     *string                `protobuf:"bytes,20,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
-	UpdatedAt     *int64                 `protobuf:"varint,21,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
-	UpdatedBy     *string                `protobuf:"bytes,22,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
+	Children      []*Menu                `protobuf:"bytes,16,rep,name=children,proto3" json:"children,omitempty"`
+	CreatedAt     *int64                 `protobuf:"varint,17,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
+	CreatedBy     *string                `protobuf:"bytes,18,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
+	UpdatedAt     *int64                 `protobuf:"varint,19,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
+	UpdatedBy     *string                `protobuf:"bytes,20,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -1992,20 +1982,6 @@ func (x *Menu) GetSort() int32 {
 func (x *Menu) GetRemark() string {
 	if x != nil && x.Remark != nil {
 		return *x.Remark
-	}
-	return ""
-}
-
-func (x *Menu) GetTenantId() int64 {
-	if x != nil && x.TenantId != nil {
-		return *x.TenantId
-	}
-	return 0
-}
-
-func (x *Menu) GetTenantIdStr() string {
-	if x != nil && x.TenantIdStr != nil {
-		return *x.TenantIdStr
 	}
 	return ""
 }
@@ -5378,31 +5354,29 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12/\n" +
 	"\x04data\x18\x03 \x01(\v2\x16.basedata_service.UserH\x00R\x04data\x88\x01\x01B\a\n" +
-	"\x05_data\"\x86\x05\n" +
+	"\x05_data\"\xd8\x04\n" +
 	"\x04Role\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x19\n" +
 	"\x05idStr\x18\x02 \x01(\tH\x01R\x05idStr\x88\x01\x01\x12\x17\n" +
 	"\x04name\x18\x03 \x01(\tH\x02R\x04name\x88\x01\x01\x12\x17\n" +
-	"\x04code\x18\x04 \x01(\tH\x03R\x04code\x88\x01\x01\x12\x1f\n" +
-	"\bisSystem\x18\x05 \x01(\bH\x04R\bisSystem\x88\x01\x01\x12\x1b\n" +
-	"\x06status\x18\x06 \x01(\tH\x05R\x06status\x88\x01\x01\x12\x17\n" +
-	"\x04sort\x18\a \x01(\x05H\x06R\x04sort\x88\x01\x01\x12\x1b\n" +
-	"\x06remark\x18\b \x01(\tH\aR\x06remark\x88\x01\x01\x12\x1f\n" +
-	"\btenantId\x18\t \x01(\x03H\bR\btenantId\x88\x01\x01\x12%\n" +
-	"\vtenantIdStr\x18\n" +
-	" \x01(\tH\tR\vtenantIdStr\x88\x01\x01\x12\x18\n" +
-	"\amenuIds\x18\v \x03(\x03R\amenuIds\x12\x16\n" +
-	"\x06apiIds\x18\f \x03(\x03R\x06apiIds\x12!\n" +
-	"\tcreatedAt\x18\r \x01(\x03H\n" +
-	"R\tcreatedAt\x88\x01\x01\x12!\n" +
-	"\tcreatedBy\x18\x0e \x01(\tH\vR\tcreatedBy\x88\x01\x01\x12!\n" +
-	"\tupdatedAt\x18\x0f \x01(\x03H\fR\tupdatedAt\x88\x01\x01\x12!\n" +
-	"\tupdatedBy\x18\x10 \x01(\tH\rR\tupdatedBy\x88\x01\x01B\x05\n" +
+	"\x04code\x18\x04 \x01(\tH\x03R\x04code\x88\x01\x01\x12\x1b\n" +
+	"\x06status\x18\x05 \x01(\tH\x04R\x06status\x88\x01\x01\x12\x17\n" +
+	"\x04sort\x18\x06 \x01(\x05H\x05R\x04sort\x88\x01\x01\x12\x1b\n" +
+	"\x06remark\x18\a \x01(\tH\x06R\x06remark\x88\x01\x01\x12\x1f\n" +
+	"\btenantId\x18\b \x01(\x03H\aR\btenantId\x88\x01\x01\x12%\n" +
+	"\vtenantIdStr\x18\t \x01(\tH\bR\vtenantIdStr\x88\x01\x01\x12\x18\n" +
+	"\amenuIds\x18\n" +
+	" \x03(\x03R\amenuIds\x12\x16\n" +
+	"\x06apiIds\x18\v \x03(\x03R\x06apiIds\x12!\n" +
+	"\tcreatedAt\x18\f \x01(\x03H\tR\tcreatedAt\x88\x01\x01\x12!\n" +
+	"\tcreatedBy\x18\r \x01(\tH\n" +
+	"R\tcreatedBy\x88\x01\x01\x12!\n" +
+	"\tupdatedAt\x18\x0e \x01(\x03H\vR\tupdatedAt\x88\x01\x01\x12!\n" +
+	"\tupdatedBy\x18\x0f \x01(\tH\fR\tupdatedBy\x88\x01\x01B\x05\n" +
 	"\x03_idB\b\n" +
 	"\x06_idStrB\a\n" +
 	"\x05_nameB\a\n" +
-	"\x05_codeB\v\n" +
-	"\t_isSystemB\t\n" +
+	"\x05_codeB\t\n" +
 	"\a_statusB\a\n" +
 	"\x05_sortB\t\n" +
 	"\a_remarkB\v\n" +
@@ -5533,7 +5507,7 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12/\n" +
 	"\x04data\x18\x03 \x01(\v2\x16.basedata_service.DeptH\x00R\x04data\x88\x01\x01B\a\n" +
-	"\x05_data\"\xca\a\n" +
+	"\x05_data\"\xe5\x06\n" +
 	"\x04Menu\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x19\n" +
 	"\x05idStr\x18\x02 \x01(\tH\x01R\x05idStr\x88\x01\x01\x12\x1f\n" +
@@ -5553,14 +5527,12 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x06hidden\x18\f \x01(\bH\vR\x06hidden\x88\x01\x01\x12\x1b\n" +
 	"\x06status\x18\r \x01(\tH\fR\x06status\x88\x01\x01\x12\x17\n" +
 	"\x04sort\x18\x0e \x01(\x05H\rR\x04sort\x88\x01\x01\x12\x1b\n" +
-	"\x06remark\x18\x0f \x01(\tH\x0eR\x06remark\x88\x01\x01\x12\x1f\n" +
-	"\btenantId\x18\x10 \x01(\x03H\x0fR\btenantId\x88\x01\x01\x12%\n" +
-	"\vtenantIdStr\x18\x11 \x01(\tH\x10R\vtenantIdStr\x88\x01\x01\x122\n" +
-	"\bchildren\x18\x12 \x03(\v2\x16.basedata_service.MenuR\bchildren\x12!\n" +
-	"\tcreatedAt\x18\x13 \x01(\x03H\x11R\tcreatedAt\x88\x01\x01\x12!\n" +
-	"\tcreatedBy\x18\x14 \x01(\tH\x12R\tcreatedBy\x88\x01\x01\x12!\n" +
-	"\tupdatedAt\x18\x15 \x01(\x03H\x13R\tupdatedAt\x88\x01\x01\x12!\n" +
-	"\tupdatedBy\x18\x16 \x01(\tH\x14R\tupdatedBy\x88\x01\x01B\x05\n" +
+	"\x06remark\x18\x0f \x01(\tH\x0eR\x06remark\x88\x01\x01\x122\n" +
+	"\bchildren\x18\x10 \x03(\v2\x16.basedata_service.MenuR\bchildren\x12!\n" +
+	"\tcreatedAt\x18\x11 \x01(\x03H\x0fR\tcreatedAt\x88\x01\x01\x12!\n" +
+	"\tcreatedBy\x18\x12 \x01(\tH\x10R\tcreatedBy\x88\x01\x01\x12!\n" +
+	"\tupdatedAt\x18\x13 \x01(\x03H\x11R\tupdatedAt\x88\x01\x01\x12!\n" +
+	"\tupdatedBy\x18\x14 \x01(\tH\x12R\tupdatedBy\x88\x01\x01B\x05\n" +
 	"\x03_idB\b\n" +
 	"\x06_idStrB\v\n" +
 	"\t_menuTypeB\a\n" +
@@ -5576,9 +5548,7 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\a_hiddenB\t\n" +
 	"\a_statusB\a\n" +
 	"\x05_sortB\t\n" +
-	"\a_remarkB\v\n" +
-	"\t_tenantIdB\x0e\n" +
-	"\f_tenantIdStrB\f\n" +
+	"\a_remarkB\f\n" +
 	"\n" +
 	"_createdAtB\f\n" +
 	"\n" +

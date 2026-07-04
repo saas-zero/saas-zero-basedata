@@ -3,9 +3,9 @@ package sysdictdataslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,15 @@ func NewGetDictDataByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetDictDataByIdLogic) GetDictDataById(in *apps.IdReq) (*apps.DictDataResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.DictDataResp{}, nil
+	d, err := l.svcCtx.DB.SysDictData.Query().
+		Where(sysdictdata.IDEQ(in.GetId()), sysdictdata.DeletedAtIsNil()).
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.DictDataResp{
+		Code: 200,
+		Msg:  "success",
+		Data: dictDataToResp(d),
+	}, nil
 }

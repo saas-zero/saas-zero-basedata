@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type AssignRolesLogic struct {
@@ -26,8 +24,13 @@ func NewAssignRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 	}
 }
 
-func (l *AssignRolesLogic) AssignRoles(req *types.UserReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *AssignRolesLogic) AssignRoles(req *types.UserReq) (*types.BaseResp, error) {
+	resp, err := l.svcCtx.SysUsers.AssignRoles(l.ctx, &apps.UserReq{
+		Id:      proto.Int64(req.Id),
+		RoleIds: req.RoleIds,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg}, nil
 }

@@ -54,7 +54,7 @@ func (c *SysPackageClient) ActiveQuery() *SysPackageQuery {
 
 // ─────────────────────────────────────────────
 // TenantQuery - 当前租户的未删除数据
-// 适用于 tenant_id 必填的表（sysuser, sysdept, sysrole, sysmenu）
+// 适用于 tenant_id 必填的表（sysuser, sysdept, sysrole）
 // ─────────────────────────────────────────────
 
 func (c *SysUserClient) TenantQuery(tenantId int64) *SysUserQuery {
@@ -67,10 +67,6 @@ func (c *SysDeptClient) TenantQuery(tenantId int64) *SysDeptQuery {
 
 func (c *SysRoleClient) TenantQuery(tenantId int64) *SysRoleQuery {
 	return c.Query().Where(sysrole.TenantIDEQ(tenantId), sysrole.DeletedAtIsNil())
-}
-
-func (c *SysMenuClient) TenantQuery(tenantId int64) *SysMenuQuery {
-	return c.Query().Where(sysmenu.TenantIDEQ(tenantId), sysmenu.DeletedAtIsNil())
 }
 
 // ─────────────────────────────────────────────

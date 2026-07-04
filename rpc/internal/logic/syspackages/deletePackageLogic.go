@@ -2,10 +2,13 @@ package syspackageslogic
 
 import (
 	"context"
+	"time"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +27,29 @@ func NewDeletePackageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Del
 }
 
 func (l *DeletePackageLogic) DeletePackage(in *apps.IdsReq) (*apps.EmptyResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.EmptyResp{}, nil
+	for _, id := range in.GetIds() {
+		tenantCount, err := l.svcCtx.DB.SysTenant.Query().
+			Where(systenant.PackageIDEQ(id), systenant.DeletedAtIsNil()).
+			Count(ctx)
+		if err != nil {
+			return nil, err
+		}
+		if tenantCount > 0 {
+			return &apps.EmptyResp{Code: 400, Msg: "该套餐已被租户使用，无法删除"}, nil
+		}
+	}
+
+	_, err := l.svcCtx.DB.SysPackage.Update().
+		Where(syspackage.IDIn(in.GetIds()...)).
+		SetDeletedAt(time.Now()).
+		Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

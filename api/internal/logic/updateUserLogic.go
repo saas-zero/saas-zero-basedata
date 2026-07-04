@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type UpdateUserLogic struct {
@@ -26,8 +24,32 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 	}
 }
 
-func (l *UpdateUserLogic) UpdateUser(req *types.UserReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *UpdateUserLogic) UpdateUser(req *types.UserReq) (*types.BaseResp, error) {
+	rpcReq := &apps.UserReq{Id: proto.Int64(req.Id)}
+	if req.Nickname != "" {
+		rpcReq.Nickname = proto.String(req.Nickname)
+	}
+	if req.Mobile != "" {
+		rpcReq.Mobile = proto.String(req.Mobile)
+	}
+	if req.Email != "" {
+		rpcReq.Email = proto.String(req.Email)
+	}
+	if req.DeptId > 0 {
+		rpcReq.DeptId = proto.Int64(req.DeptId)
+	}
+	if req.Status != "" {
+		rpcReq.Status = proto.String(req.Status)
+	}
+	if req.Remark != "" {
+		rpcReq.Remark = proto.String(req.Remark)
+	}
+	if len(req.RoleIds) > 0 {
+		rpcReq.RoleIds = req.RoleIds
+	}
+	resp, err := l.svcCtx.SysUsers.UpdateUser(l.ctx, rpcReq)
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
 }

@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type CreateDeptLogic struct {
@@ -26,8 +24,27 @@ func NewCreateDeptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 	}
 }
 
-func (l *CreateDeptLogic) CreateDept(req *types.DeptReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *CreateDeptLogic) CreateDept(req *types.DeptReq) (*types.BaseResp, error) {
+	rpcReq := &apps.DeptReq{
+		Name:   proto.String(req.Name),
+		Status: proto.String(req.Status),
+		Sort:   proto.Int32(req.Sort),
+	}
+	if req.ParentId > 0 {
+		rpcReq.ParentId = proto.Int64(req.ParentId)
+	}
+	if req.LeaderId > 0 {
+		rpcReq.LeaderId = proto.Int64(req.LeaderId)
+	}
+	if req.Mobile != "" {
+		rpcReq.Mobile = proto.String(req.Mobile)
+	}
+	if req.Email != "" {
+		rpcReq.Email = proto.String(req.Email)
+	}
+	resp, err := l.svcCtx.SysDepts.CreateDept(l.ctx, rpcReq)
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
 }

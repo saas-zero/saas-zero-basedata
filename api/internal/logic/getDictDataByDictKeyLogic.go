@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,8 +5,9 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type GetDictDataByDictKeyLogic struct {
@@ -26,8 +24,14 @@ func NewGetDictDataByDictKeyLogic(ctx context.Context, svcCtx *svc.ServiceContex
 	}
 }
 
-func (l *GetDictDataByDictKeyLogic) GetDictDataByDictKey(req *types.DictReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *GetDictDataByDictKeyLogic) GetDictDataByDictKey(req *types.DictReq) (*types.BaseResp, error) {
+	resp, err := l.svcCtx.SysDictDatas.GetDictDataByDictKey(l.ctx, &apps.DictReq{Key: proto.String(req.Key)})
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{
+		Code: int(resp.Code),
+		Msg:  resp.Msg,
+		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+	}, nil
 }

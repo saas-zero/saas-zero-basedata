@@ -3,9 +3,9 @@ package syspackageslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,15 @@ func NewGetPackageByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 }
 
 func (l *GetPackageByIdLogic) GetPackageById(in *apps.IdReq) (*apps.PackageResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.PackageResp{}, nil
+	p, err := l.svcCtx.DB.SysPackage.ActiveQuery().
+		Where(syspackage.IDEQ(in.GetId())).
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.PackageResp{
+		Code: 200,
+		Msg:  "success",
+		Data: packageToResp(p),
+	}, nil
 }

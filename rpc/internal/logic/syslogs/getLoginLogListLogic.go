@@ -3,9 +3,11 @@ package syslogslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysloginlog"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +26,50 @@ func NewGetLoginLogListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 }
 
 func (l *GetLoginLogListLogic) GetLoginLogList(in *apps.LogPageReq) (*apps.LoginLogListResp, error) {
-	// todo: add your logic here and delete this line
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 
-	return &apps.LoginLogListResp{}, nil
+	query := l.svcCtx.DB.SysLoginLog.Query().Where(sysloginlog.TenantIDEQ(tenantId))
+	if in.GetUsername() != "" {
+		query = query.Where(sysloginlog.UsernameContains(in.GetUsername()))
+	}
+	if in.GetStatus() != "" {
+		query = query.Where(sysloginlog.StatusEQ(sysloginlog.Status(in.GetStatus())))
+	}
+	if in.GetIp() != "" {
+		query = query.Where(sysloginlog.IPContains(in.GetIp()))
+	}
+
+	total, err := query.Count(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	page := int(in.GetPage())
+	size := int(in.GetSize())
+	if page < 1 {
+		page = 1
+	}
+	if size < 1 || size > 100 {
+		size = 20
+	}
+
+	logs, err := query.
+		Offset((page - 1) * size).
+		Limit(size).
+		Order(ent.Desc(sysloginlog.FieldLoginTime)).
+		All(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	list := make([]*apps.LoginLog, len(logs))
+	for i, log := range logs {
+		list[i] = loginLogToResp(log)
+	}
+	return &apps.LoginLogListResp{
+		Code:  200,
+		Msg:   "success",
+		List:  list,
+		Total: int64(total),
+	}, nil
 }

@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,8 +23,33 @@ func NewGetUserListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 	}
 }
 
-func (l *GetUserListLogic) GetUserList(req *types.UserPageReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *GetUserListLogic) GetUserList(req *types.UserPageReq) (*types.BaseResp, error) {
+	rpcReq := &apps.UserPageReq{
+		Page: int32(req.Page),
+		Size: int32(req.Size),
+	}
+	if req.Username != "" {
+		rpcReq.Username = &req.Username
+	}
+	if req.Nickname != "" {
+		rpcReq.Nickname = &req.Nickname
+	}
+	if req.Mobile != "" {
+		rpcReq.Mobile = &req.Mobile
+	}
+	if req.Status != "" {
+		rpcReq.Status = &req.Status
+	}
+	if req.DeptId > 0 {
+		rpcReq.DeptId = &req.DeptId
+	}
+	resp, err := l.svcCtx.SysUsers.GetUserList(l.ctx, rpcReq)
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{
+		Code: int(resp.Code),
+		Msg:  resp.Msg,
+		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+	}, nil
 }

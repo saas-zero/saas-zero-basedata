@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,8 +23,24 @@ func NewGetTenantListLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 	}
 }
 
-func (l *GetTenantListLogic) GetTenantList(req *types.TenantPageReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *GetTenantListLogic) GetTenantList(req *types.TenantPageReq) (*types.BaseResp, error) {
+	rpcReq := &apps.TenantPageReq{Page: int32(req.Page), Size: int32(req.Size)}
+	if req.Name != "" {
+		rpcReq.Name = &req.Name
+	}
+	if req.Code != "" {
+		rpcReq.Code = &req.Code
+	}
+	if req.Status != "" {
+		rpcReq.Status = &req.Status
+	}
+	resp, err := l.svcCtx.SysTenants.GetTenantList(l.ctx, rpcReq)
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{
+		Code: int(resp.Code),
+		Msg:  resp.Msg,
+		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+	}, nil
 }

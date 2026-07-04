@@ -2,11 +2,15 @@ package systenantslogic
 
 import (
 	"context"
+	"strconv"
+	"time"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type CreateTenantLogic struct {
@@ -24,7 +28,40 @@ func NewCreateTenantLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Crea
 }
 
 func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.TenantResp{}, nil
+	create := l.svcCtx.DB.SysTenant.Create().
+		SetName(in.GetName()).
+		SetCode(in.GetCode()).
+		SetAdminID(in.GetAdminId()).
+		SetStatus(systenant.Status(in.GetStatus()))
+
+	if in.GetParentId() > 0 {
+		create.SetParentID(in.GetParentId())
+	}
+	if in.GetPackageId() > 0 {
+		create.SetPackageID(in.GetPackageId())
+	}
+	if in.GetExpiredAt() > 0 {
+		create.SetExpiredAt(time.UnixMilli(in.GetExpiredAt()))
+	}
+	if in.GetRemark() != "" {
+		create.SetRemark(in.GetRemark())
+	}
+
+	result, err := create.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.TenantResp{
+		Code: 200,
+		Msg:  "success",
+		Data: &apps.Tenant{
+			Id:    proto.Int64(result.ID),
+			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+		},
+	}, nil
 }

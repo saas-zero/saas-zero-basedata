@@ -22,12 +22,6 @@ type SysMenuCreate struct {
 	hooks    []Hook
 }
 
-// SetTenantID sets the "tenant_id" field.
-func (_c *SysMenuCreate) SetTenantID(v int64) *SysMenuCreate {
-	_c.mutation.SetTenantID(v)
-	return _c
-}
-
 // SetCreatedAt sets the "created_at" field.
 func (_c *SysMenuCreate) SetCreatedAt(v time.Time) *SysMenuCreate {
 	_c.mutation.SetCreatedAt(v)
@@ -414,14 +408,6 @@ func (_c *SysMenuCreate) defaults() error {
 
 // check runs all checks and user-defined validators on the builder.
 func (_c *SysMenuCreate) check() error {
-	if _, ok := _c.mutation.TenantID(); !ok {
-		return &ValidationError{Name: "tenant_id", err: errors.New(`ent: missing required field "SysMenu.tenant_id"`)}
-	}
-	if v, ok := _c.mutation.TenantID(); ok {
-		if err := sysmenu.TenantIDValidator(v); err != nil {
-			return &ValidationError{Name: "tenant_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.tenant_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysMenu.created_at"`)}
 	}
@@ -502,14 +488,6 @@ func (_c *SysMenuCreate) check() error {
 			return &ValidationError{Name: "name", err: fmt.Errorf(`ent: validator failed for field "SysMenu.name": %w`, err)}
 		}
 	}
-	if _, ok := _c.mutation.ParentID(); !ok {
-		return &ValidationError{Name: "parent_id", err: errors.New(`ent: missing required field "SysMenu.parent_id"`)}
-	}
-	if v, ok := _c.mutation.ParentID(); ok {
-		if err := sysmenu.ParentIDValidator(v); err != nil {
-			return &ValidationError{Name: "parent_id", err: fmt.Errorf(`ent: validator failed for field "SysMenu.parent_id": %w`, err)}
-		}
-	}
 	if _, ok := _c.mutation.Icon(); !ok {
 		return &ValidationError{Name: "icon", err: errors.New(`ent: missing required field "SysMenu.icon"`)}
 	}
@@ -555,10 +533,6 @@ func (_c *SysMenuCreate) createSpec() (*SysMenu, *sqlgraph.CreateSpec) {
 	if id, ok := _c.mutation.ID(); ok {
 		_node.ID = id
 		_spec.ID.Value = id
-	}
-	if value, ok := _c.mutation.TenantID(); ok {
-		_spec.SetField(sysmenu.FieldTenantID, field.TypeInt64, value)
-		_node.TenantID = value
 	}
 	if value, ok := _c.mutation.CreatedAt(); ok {
 		_spec.SetField(sysmenu.FieldCreatedAt, field.TypeTime, value)

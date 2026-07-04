@@ -2331,10 +2331,24 @@ func (m *SysDeptMutation) AddedParentID() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearParentID clears the value of the "parent_id" field.
+func (m *SysDeptMutation) ClearParentID() {
+	m.parent_id = nil
+	m.addparent_id = nil
+	m.clearedFields[sysdept.FieldParentID] = struct{}{}
+}
+
+// ParentIDCleared returns if the "parent_id" field was cleared in this mutation.
+func (m *SysDeptMutation) ParentIDCleared() bool {
+	_, ok := m.clearedFields[sysdept.FieldParentID]
+	return ok
+}
+
 // ResetParentID resets all changes to the "parent_id" field.
 func (m *SysDeptMutation) ResetParentID() {
 	m.parent_id = nil
 	m.addparent_id = nil
+	delete(m.clearedFields, sysdept.FieldParentID)
 }
 
 // SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by id.
@@ -2862,6 +2876,9 @@ func (m *SysDeptMutation) ClearedFields() []string {
 	if m.FieldCleared(sysdept.FieldLeaderID) {
 		fields = append(fields, sysdept.FieldLeaderID)
 	}
+	if m.FieldCleared(sysdept.FieldParentID) {
+		fields = append(fields, sysdept.FieldParentID)
+	}
 	return fields
 }
 
@@ -2887,6 +2904,9 @@ func (m *SysDeptMutation) ClearField(name string) error {
 		return nil
 	case sysdept.FieldLeaderID:
 		m.ClearLeaderID()
+		return nil
+	case sysdept.FieldParentID:
+		m.ClearParentID()
 		return nil
 	}
 	return fmt.Errorf("unknown SysDept nullable field %s", name)
@@ -6631,8 +6651,6 @@ type SysMenuMutation struct {
 	op              Op
 	typ             string
 	id              *int64
-	tenant_id       *int64
-	addtenant_id    *int64
 	created_at      *time.Time
 	created_id      *int64
 	addcreated_id   *int64
@@ -6773,62 +6791,6 @@ func (m *SysMenuMutation) IDs(ctx context.Context) ([]int64, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
-}
-
-// SetTenantID sets the "tenant_id" field.
-func (m *SysMenuMutation) SetTenantID(i int64) {
-	m.tenant_id = &i
-	m.addtenant_id = nil
-}
-
-// TenantID returns the value of the "tenant_id" field in the mutation.
-func (m *SysMenuMutation) TenantID() (r int64, exists bool) {
-	v := m.tenant_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTenantID returns the old "tenant_id" field's value of the SysMenu entity.
-// If the SysMenu object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *SysMenuMutation) OldTenantID(ctx context.Context) (v int64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTenantID is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTenantID requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTenantID: %w", err)
-	}
-	return oldValue.TenantID, nil
-}
-
-// AddTenantID adds i to the "tenant_id" field.
-func (m *SysMenuMutation) AddTenantID(i int64) {
-	if m.addtenant_id != nil {
-		*m.addtenant_id += i
-	} else {
-		m.addtenant_id = &i
-	}
-}
-
-// AddedTenantID returns the value that was added to the "tenant_id" field in this mutation.
-func (m *SysMenuMutation) AddedTenantID() (r int64, exists bool) {
-	v := m.addtenant_id
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetTenantID resets all changes to the "tenant_id" field.
-func (m *SysMenuMutation) ResetTenantID() {
-	m.tenant_id = nil
-	m.addtenant_id = nil
 }
 
 // SetCreatedAt sets the "created_at" field.
@@ -7518,10 +7480,24 @@ func (m *SysMenuMutation) AddedParentID() (r int64, exists bool) {
 	return *v, true
 }
 
+// ClearParentID clears the value of the "parent_id" field.
+func (m *SysMenuMutation) ClearParentID() {
+	m.parent_id = nil
+	m.addparent_id = nil
+	m.clearedFields[sysmenu.FieldParentID] = struct{}{}
+}
+
+// ParentIDCleared returns if the "parent_id" field was cleared in this mutation.
+func (m *SysMenuMutation) ParentIDCleared() bool {
+	_, ok := m.clearedFields[sysmenu.FieldParentID]
+	return ok
+}
+
 // ResetParentID resets all changes to the "parent_id" field.
 func (m *SysMenuMutation) ResetParentID() {
 	m.parent_id = nil
 	m.addparent_id = nil
+	delete(m.clearedFields, sysmenu.FieldParentID)
 }
 
 // SetComponent sets the "component" field.
@@ -7921,10 +7897,7 @@ func (m *SysMenuMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysMenuMutation) Fields() []string {
-	fields := make([]string, 0, 22)
-	if m.tenant_id != nil {
-		fields = append(fields, sysmenu.FieldTenantID)
-	}
+	fields := make([]string, 0, 21)
 	if m.created_at != nil {
 		fields = append(fields, sysmenu.FieldCreatedAt)
 	}
@@ -7996,8 +7969,6 @@ func (m *SysMenuMutation) Fields() []string {
 // schema.
 func (m *SysMenuMutation) Field(name string) (ent.Value, bool) {
 	switch name {
-	case sysmenu.FieldTenantID:
-		return m.TenantID()
 	case sysmenu.FieldCreatedAt:
 		return m.CreatedAt()
 	case sysmenu.FieldCreatedID:
@@ -8049,8 +8020,6 @@ func (m *SysMenuMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *SysMenuMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
-	case sysmenu.FieldTenantID:
-		return m.OldTenantID(ctx)
 	case sysmenu.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	case sysmenu.FieldCreatedID:
@@ -8102,13 +8071,6 @@ func (m *SysMenuMutation) OldField(ctx context.Context, name string) (ent.Value,
 // type.
 func (m *SysMenuMutation) SetField(name string, value ent.Value) error {
 	switch name {
-	case sysmenu.FieldTenantID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTenantID(v)
-		return nil
 	case sysmenu.FieldCreatedAt:
 		v, ok := value.(time.Time)
 		if !ok {
@@ -8264,9 +8226,6 @@ func (m *SysMenuMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *SysMenuMutation) AddedFields() []string {
 	var fields []string
-	if m.addtenant_id != nil {
-		fields = append(fields, sysmenu.FieldTenantID)
-	}
 	if m.addcreated_id != nil {
 		fields = append(fields, sysmenu.FieldCreatedID)
 	}
@@ -8290,8 +8249,6 @@ func (m *SysMenuMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *SysMenuMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
-	case sysmenu.FieldTenantID:
-		return m.AddedTenantID()
 	case sysmenu.FieldCreatedID:
 		return m.AddedCreatedID()
 	case sysmenu.FieldUpdatedID:
@@ -8311,13 +8268,6 @@ func (m *SysMenuMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *SysMenuMutation) AddField(name string, value ent.Value) error {
 	switch name {
-	case sysmenu.FieldTenantID:
-		v, ok := value.(int64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTenantID(v)
-		return nil
 	case sysmenu.FieldCreatedID:
 		v, ok := value.(int64)
 		if !ok {
@@ -8373,6 +8323,9 @@ func (m *SysMenuMutation) ClearedFields() []string {
 	if m.FieldCleared(sysmenu.FieldRemark) {
 		fields = append(fields, sysmenu.FieldRemark)
 	}
+	if m.FieldCleared(sysmenu.FieldParentID) {
+		fields = append(fields, sysmenu.FieldParentID)
+	}
 	if m.FieldCleared(sysmenu.FieldComponent) {
 		fields = append(fields, sysmenu.FieldComponent)
 	}
@@ -8408,6 +8361,9 @@ func (m *SysMenuMutation) ClearField(name string) error {
 	case sysmenu.FieldRemark:
 		m.ClearRemark()
 		return nil
+	case sysmenu.FieldParentID:
+		m.ClearParentID()
+		return nil
 	case sysmenu.FieldComponent:
 		m.ClearComponent()
 		return nil
@@ -8425,9 +8381,6 @@ func (m *SysMenuMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *SysMenuMutation) ResetField(name string) error {
 	switch name {
-	case sysmenu.FieldTenantID:
-		m.ResetTenantID()
-		return nil
 	case sysmenu.FieldCreatedAt:
 		m.ResetCreatedAt()
 		return nil

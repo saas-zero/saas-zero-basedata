@@ -5,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,17 @@ func NewAssignMenusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 }
 
 func (l *AssignMenusLogic) AssignMenus(in *apps.RoleReq) (*apps.EmptyResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.EmptyResp{}, nil
+	err := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId()).
+		ClearMenus().
+		AddMenuIDs(in.GetMenuIds()...).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

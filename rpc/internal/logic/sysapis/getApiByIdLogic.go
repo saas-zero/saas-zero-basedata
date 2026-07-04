@@ -3,9 +3,9 @@ package sysapislogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,15 @@ func NewGetApiByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetApi
 }
 
 func (l *GetApiByIdLogic) GetApiById(in *apps.IdReq) (*apps.ApiResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.ApiResp{}, nil
+	a, err := l.svcCtx.DB.SysApi.ActiveQuery().
+		Where(sysapi.IDEQ(in.GetId())).
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.ApiResp{
+		Code: 200,
+		Msg:  "success",
+		Data: apiToResp(a),
+	}, nil
 }

@@ -20,7 +20,7 @@ func (SysDept) Fields() []ent.Field {
 		field.Int64("leader_id").Default(0).Optional().Comment("负责人ID | Leader ID"),
 		field.String("mobile").Default("").MaxLen(20).Comment("部门电话 | Department Phone"),
 		field.String("email").Default("").MaxLen(64).Comment("部门邮箱 | Department Email"),
-		field.Int64("parent_id").Positive().Default(0).Comment("父级ID | Parent ID"),
+		field.Int64("parent_id").Default(0).Optional().Comment("父级ID | Parent ID"),
 	}
 }
 

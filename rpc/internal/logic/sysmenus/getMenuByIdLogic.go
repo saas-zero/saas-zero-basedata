@@ -3,9 +3,9 @@ package sysmenuslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,15 @@ func NewGetMenuByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetMe
 }
 
 func (l *GetMenuByIdLogic) GetMenuById(in *apps.IdReq) (*apps.MenuResp, error) {
-	// todo: add your logic here and delete this line
-
-	return &apps.MenuResp{}, nil
+	m, err := l.svcCtx.DB.SysMenu.ActiveQuery().
+		Where(sysmenu.IDEQ(in.GetId())).
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.MenuResp{
+		Code: 200,
+		Msg:  "success",
+		Data: menuToResp(m),
+	}, nil
 }

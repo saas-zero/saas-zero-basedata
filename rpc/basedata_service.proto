@@ -94,18 +94,17 @@ message Role {
   optional string idStr = 2;
   optional string name = 3;
   optional string code = 4;
-  optional bool isSystem = 5;
-  optional string status = 6;
-  optional int32 sort = 7;
-  optional string remark = 8;
-  optional int64 tenantId = 9;
-  optional string tenantIdStr = 10;
-  repeated int64 menuIds = 11;
-  repeated int64 apiIds = 12;
-  optional int64 createdAt = 13;
-  optional string createdBy = 14;
-  optional int64 updatedAt = 15;
-  optional string updatedBy = 16;
+  optional string status = 5;
+  optional int32 sort = 6;
+  optional string remark = 7;
+  optional int64 tenantId = 8;
+  optional string tenantIdStr = 9;
+  repeated int64 menuIds = 10;
+  repeated int64 apiIds = 11;
+  optional int64 createdAt = 12;
+  optional string createdBy = 13;
+  optional int64 updatedAt = 14;
+  optional string updatedBy = 15;
 }
 
 message RoleReq {
@@ -215,13 +214,11 @@ message Menu {
   optional string status = 13;
   optional int32 sort = 14;
   optional string remark = 15;
-  optional int64 tenantId = 16;
-  optional string tenantIdStr = 17;
-  repeated Menu children = 18;
-  optional int64 createdAt = 19;
-  optional string createdBy = 20;
-  optional int64 updatedAt = 21;
-  optional string updatedBy = 22;
+  repeated Menu children = 16;
+  optional int64 createdAt = 17;
+  optional string createdBy = 18;
+  optional int64 updatedAt = 19;
+  optional string updatedBy = 20;
 }
 
 message MenuReq {

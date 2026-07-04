@@ -2,11 +2,14 @@ package sysapislogic
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type CreateApiLogic struct {
@@ -24,7 +27,34 @@ func NewCreateApiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateA
 }
 
 func (l *CreateApiLogic) CreateApi(in *apps.ApiReq) (*apps.ApiResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.ApiResp{}, nil
+	create := l.svcCtx.DB.SysApi.Create().
+		SetAPIName(in.GetApiName()).
+		SetAPIType(sysapi.APIType(in.GetApiType())).
+		SetAPIPath(in.GetApiPath()).
+		SetStatus(sysapi.Status(in.GetStatus()))
+
+	if in.GetApiMethod() != "" {
+		create.SetAPIMethod(sysapi.APIMethod(in.GetApiMethod()))
+	}
+	if in.GetRemark() != "" {
+		create.SetRemark(in.GetRemark())
+	}
+
+	result, err := create.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.ApiResp{
+		Code: 200,
+		Msg:  "success",
+		Data: &apps.Api{
+			Id:    proto.Int64(result.ID),
+			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+		},
+	}, nil
 }

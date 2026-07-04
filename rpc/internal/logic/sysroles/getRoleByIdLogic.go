@@ -3,9 +3,10 @@ package sysroleslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +25,18 @@ func NewGetRoleByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetRo
 }
 
 func (l *GetRoleByIdLogic) GetRoleById(in *apps.IdReq) (*apps.RoleResp, error) {
-	// todo: add your logic here and delete this line
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 
-	return &apps.RoleResp{}, nil
+	r, err := l.svcCtx.DB.SysRole.TenantQuery(tenantId).
+		Where(sysrole.IDEQ(in.GetId())).
+		WithMenus().
+		Only(l.ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.RoleResp{
+		Code: 200,
+		Msg:  "success",
+		Data: roleToResp(r),
+	}, nil
 }

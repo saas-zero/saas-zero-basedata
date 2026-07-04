@@ -3,9 +3,10 @@ package sysapislogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +25,40 @@ func NewUpdateApiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateA
 }
 
 func (l *UpdateApiLogic) UpdateApi(in *apps.ApiReq) (*apps.ApiResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.ApiResp{}, nil
+	update := l.svcCtx.DB.SysApi.UpdateOneID(in.GetId())
+	if in.ApiName != nil {
+		update.SetAPIName(in.GetApiName())
+	}
+	if in.ApiType != nil {
+		update.SetAPIType(sysapi.APIType(in.GetApiType()))
+	}
+	if in.ApiPath != nil {
+		update.SetAPIPath(in.GetApiPath())
+	}
+	if in.ApiMethod != nil {
+		update.SetAPIMethod(sysapi.APIMethod(in.GetApiMethod()))
+	}
+	if in.Status != nil {
+		update.SetStatus(sysapi.Status(in.GetStatus()))
+	}
+	if in.Remark != nil {
+		update.SetRemark(in.GetRemark())
+	}
+
+	result, err := update.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	a, _ := l.svcCtx.DB.SysApi.Query().Where(sysapi.IDEQ(result.ID)).Only(ctx)
+	return &apps.ApiResp{
+		Code: 200,
+		Msg:  "success",
+		Data: apiToResp(a),
+	}, nil
 }

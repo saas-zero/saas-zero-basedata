@@ -2,11 +2,14 @@ package sysroleslogic
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type CreateRoleLogic struct {
@@ -24,7 +27,38 @@ func NewCreateRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 }
 
 func (l *CreateRoleLogic) CreateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
-	// todo: add your logic here and delete this line
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
 
-	return &apps.RoleResp{}, nil
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
+
+	create := l.svcCtx.DB.SysRole.Create().
+		SetName(in.GetName()).
+		SetCode(in.GetCode()).
+		SetStatus(sysrole.Status(in.GetStatus())).
+		SetSort(uint32(in.GetSort()))
+
+	if in.GetRemark() != "" {
+		create.SetRemark(in.GetRemark())
+	}
+
+	if len(in.GetMenuIds()) > 0 {
+		create.AddMenuIDs(in.GetMenuIds()...)
+	}
+	result, err := create.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.RoleResp{
+		Code: 200,
+		Msg:  "success",
+		Data: &apps.Role{
+			Id:     proto.Int64(result.ID),
+			IdStr:  proto.String(strconv.FormatInt(result.ID, 10)),
+			Status: proto.String(string(result.Status)),
+		},
+	}, nil
 }

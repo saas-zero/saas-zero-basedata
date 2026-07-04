@@ -5,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -24,7 +24,17 @@ func NewAssignRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 }
 
 func (l *AssignRolesLogic) AssignRoles(in *apps.UserReq) (*apps.EmptyResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.EmptyResp{}, nil
+	err := l.svcCtx.DB.SysUser.UpdateOneID(in.GetId()).
+		ClearRoles().
+		AddRoleIDs(in.GetRoleIds()...).
+		Exec(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

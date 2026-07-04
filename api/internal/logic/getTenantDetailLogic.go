@@ -1,6 +1,3 @@
-// Code scaffolded by goctl. Safe to edit.
-// goctl 1.10.1
-
 package logic
 
 import (
@@ -8,7 +5,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
-
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -26,8 +23,10 @@ func NewGetTenantDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *G
 	}
 }
 
-func (l *GetTenantDetailLogic) GetTenantDetail(req *types.IdReq) (resp *types.BaseResp, err error) {
-	// todo: add your logic here and delete this line
-
-	return
+func (l *GetTenantDetailLogic) GetTenantDetail(req *types.IdReq) (*types.BaseResp, error) {
+	resp, err := l.svcCtx.SysTenants.GetTenantById(l.ctx, &apps.IdReq{Id: req.Id})
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
 }

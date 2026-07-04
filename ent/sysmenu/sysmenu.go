@@ -16,8 +16,6 @@ const (
 	Label = "sys_menu"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
-	// FieldTenantID holds the string denoting the tenant_id field in the database.
-	FieldTenantID = "tenant_id"
 	// FieldCreatedAt holds the string denoting the created_at field in the database.
 	FieldCreatedAt = "created_at"
 	// FieldCreatedID holds the string denoting the created_id field in the database.
@@ -81,7 +79,6 @@ const (
 // Columns holds all SQL columns for sysmenu fields.
 var Columns = []string{
 	FieldID,
-	FieldTenantID,
 	FieldCreatedAt,
 	FieldCreatedID,
 	FieldCreatedBy,
@@ -130,9 +127,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	Hooks [4]ent.Hook
-	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
-	TenantIDValidator func(int64) error
+	Hooks [3]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -157,8 +152,6 @@ var (
 	NameValidator func(string) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
-	// ParentIDValidator is a validator for the "parent_id" field. It is called by the builders before save.
-	ParentIDValidator func(int64) error
 	// DefaultComponent holds the default value on creation for the "component" field.
 	DefaultComponent string
 	// DefaultPath holds the default value on creation for the "path" field.
@@ -235,11 +228,6 @@ type OrderOption func(*sql.Selector)
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
-}
-
-// ByTenantID orders the results by the tenant_id field.
-func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the created_at field.

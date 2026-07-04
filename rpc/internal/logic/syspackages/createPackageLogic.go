@@ -2,11 +2,14 @@ package syspackageslogic
 
 import (
 	"context"
+	"strconv"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type CreatePackageLogic struct {
@@ -24,7 +27,31 @@ func NewCreatePackageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 }
 
 func (l *CreatePackageLogic) CreatePackage(in *apps.PackageReq) (*apps.PackageResp, error) {
-	// todo: add your logic here and delete this line
+	userId := mixins.GetCurrentUserId(l.ctx)
+	userName := mixins.GetCurrentUserName(l.ctx)
+	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	return &apps.PackageResp{}, nil
+	create := l.svcCtx.DB.SysPackage.Create().
+		SetName(in.GetName()).
+		SetCode(in.GetCode()).
+		SetStatus(syspackage.Status(in.GetStatus())).
+		SetSort(uint32(in.GetSort()))
+
+	if in.GetRemark() != "" {
+		create.SetRemark(in.GetRemark())
+	}
+
+	result, err := create.Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &apps.PackageResp{
+		Code: 200,
+		Msg:  "success",
+		Data: &apps.Package{
+			Id:    proto.Int64(result.ID),
+			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+		},
+	}, nil
 }
