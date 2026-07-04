@@ -25,7 +25,11 @@ import (
 func init() {
 	sysapiMixin := schema.SysApi{}.Mixin()
 	sysapiMixinHooks1 := sysapiMixin[1].Hooks()
+	sysapiMixinHooks2 := sysapiMixin[2].Hooks()
+	sysapiMixinHooks3 := sysapiMixin[3].Hooks()
 	sysapi.Hooks[0] = sysapiMixinHooks1[0]
+	sysapi.Hooks[1] = sysapiMixinHooks2[0]
+	sysapi.Hooks[2] = sysapiMixinHooks3[0]
 	sysapiMixinFields0 := sysapiMixin[0].Fields()
 	_ = sysapiMixinFields0
 	sysapiMixinFields1 := sysapiMixin[1].Fields()
@@ -34,6 +38,10 @@ func init() {
 	_ = sysapiMixinFields2
 	sysapiMixinFields3 := sysapiMixin[3].Fields()
 	_ = sysapiMixinFields3
+	sysapiMixinFields4 := sysapiMixin[4].Fields()
+	_ = sysapiMixinFields4
+	sysapiMixinFields5 := sysapiMixin[5].Fields()
+	_ = sysapiMixinFields5
 	sysapiFields := schema.SysApi{}.Fields()
 	_ = sysapiFields
 	// sysapiDescCreatedAt is the schema descriptor for created_at field.
@@ -62,8 +70,38 @@ func init() {
 			return nil
 		}
 	}()
+	// sysapiDescUpdatedAt is the schema descriptor for updated_at field.
+	sysapiDescUpdatedAt := sysapiMixinFields2[0].Descriptor()
+	// sysapi.DefaultUpdatedAt holds the default value on creation for the updated_at field.
+	sysapi.DefaultUpdatedAt = sysapiDescUpdatedAt.Default.(func() time.Time)
+	// sysapiDescUpdatedID is the schema descriptor for updated_id field.
+	sysapiDescUpdatedID := sysapiMixinFields2[1].Descriptor()
+	// sysapi.UpdatedIDValidator is a validator for the "updated_id" field. It is called by the builders before save.
+	sysapi.UpdatedIDValidator = sysapiDescUpdatedID.Validators[0].(func(int64) error)
+	// sysapiDescUpdatedBy is the schema descriptor for updated_by field.
+	sysapiDescUpdatedBy := sysapiMixinFields2[2].Descriptor()
+	// sysapi.UpdatedByValidator is a validator for the "updated_by" field. It is called by the builders before save.
+	sysapi.UpdatedByValidator = func() func(string) error {
+		validators := sysapiDescUpdatedBy.Validators
+		fns := [...]func(string) error{
+			validators[0].(func(string) error),
+			validators[1].(func(string) error),
+		}
+		return func(updated_by string) error {
+			for _, fn := range fns {
+				if err := fn(updated_by); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
+	// sysapiDescDeletedBy is the schema descriptor for deleted_by field.
+	sysapiDescDeletedBy := sysapiMixinFields3[2].Descriptor()
+	// sysapi.DeletedByValidator is a validator for the "deleted_by" field. It is called by the builders before save.
+	sysapi.DeletedByValidator = sysapiDescDeletedBy.Validators[0].(func(string) error)
 	// sysapiDescRemark is the schema descriptor for remark field.
-	sysapiDescRemark := sysapiMixinFields3[0].Descriptor()
+	sysapiDescRemark := sysapiMixinFields5[0].Descriptor()
 	// sysapi.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
 	sysapi.RemarkValidator = sysapiDescRemark.Validators[0].(func(string) error)
 	// sysapiDescAPIName is the schema descriptor for api_name field.
@@ -757,8 +795,10 @@ func init() {
 	syspackageMixin := schema.SysPackage{}.Mixin()
 	syspackageMixinHooks1 := syspackageMixin[1].Hooks()
 	syspackageMixinHooks2 := syspackageMixin[2].Hooks()
+	syspackageMixinHooks3 := syspackageMixin[3].Hooks()
 	syspackage.Hooks[0] = syspackageMixinHooks1[0]
 	syspackage.Hooks[1] = syspackageMixinHooks2[0]
+	syspackage.Hooks[2] = syspackageMixinHooks3[0]
 	syspackageMixinFields0 := syspackageMixin[0].Fields()
 	_ = syspackageMixinFields0
 	syspackageMixinFields1 := syspackageMixin[1].Fields()
@@ -771,6 +811,8 @@ func init() {
 	_ = syspackageMixinFields4
 	syspackageMixinFields5 := syspackageMixin[5].Fields()
 	_ = syspackageMixinFields5
+	syspackageMixinFields6 := syspackageMixin[6].Fields()
+	_ = syspackageMixinFields6
 	syspackageFields := schema.SysPackage{}.Fields()
 	_ = syspackageFields
 	// syspackageDescCreatedAt is the schema descriptor for created_at field.
@@ -825,14 +867,18 @@ func init() {
 			return nil
 		}
 	}()
+	// syspackageDescDeletedBy is the schema descriptor for deleted_by field.
+	syspackageDescDeletedBy := syspackageMixinFields3[2].Descriptor()
+	// syspackage.DeletedByValidator is a validator for the "deleted_by" field. It is called by the builders before save.
+	syspackage.DeletedByValidator = syspackageDescDeletedBy.Validators[0].(func(string) error)
 	// syspackageDescSort is the schema descriptor for sort field.
-	syspackageDescSort := syspackageMixinFields4[0].Descriptor()
+	syspackageDescSort := syspackageMixinFields5[0].Descriptor()
 	// syspackage.DefaultSort holds the default value on creation for the sort field.
 	syspackage.DefaultSort = syspackageDescSort.Default.(uint32)
 	// syspackage.SortValidator is a validator for the "sort" field. It is called by the builders before save.
 	syspackage.SortValidator = syspackageDescSort.Validators[0].(func(uint32) error)
 	// syspackageDescRemark is the schema descriptor for remark field.
-	syspackageDescRemark := syspackageMixinFields5[0].Descriptor()
+	syspackageDescRemark := syspackageMixinFields6[0].Descriptor()
 	// syspackage.RemarkValidator is a validator for the "remark" field. It is called by the builders before save.
 	syspackage.RemarkValidator = syspackageDescRemark.Validators[0].(func(string) error)
 	// syspackageDescName is the schema descriptor for name field.
@@ -1008,6 +1054,10 @@ func init() {
 			return nil
 		}
 	}()
+	// sysroleDescIsSystem is the schema descriptor for is_system field.
+	sysroleDescIsSystem := sysroleFields[2].Descriptor()
+	// sysrole.DefaultIsSystem holds the default value on creation for the is_system field.
+	sysrole.DefaultIsSystem = sysroleDescIsSystem.Default.(bool)
 	// sysroleDescID is the schema descriptor for id field.
 	sysroleDescID := sysroleMixinFields0[0].Descriptor()
 	// sysrole.IDValidator is a validator for the "id" field. It is called by the builders before save.

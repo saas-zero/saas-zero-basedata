@@ -24,6 +24,18 @@ type SysApi struct {
 	CreatedID int64 `json:"created_id,omitempty"`
 	// Creator Name | 创建人名称
 	CreatedBy string `json:"created_by,omitempty"`
+	// updated Time | 更新时间
+	UpdatedAt time.Time `json:"updated_at,omitempty"`
+	// updated ID | 更新人ID
+	UpdatedID int64 `json:"updated_id,omitempty"`
+	// updated Name | 更新人名称
+	UpdatedBy string `json:"updated_by,omitempty"`
+	// deleted Time | 删除时间
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
+	// deleted ID | 删除人ID，逻辑删除用
+	DeletedID int64 `json:"deleted_id,omitempty"`
+	// deleted Name | 删除人名称
+	DeletedBy string `json:"deleted_by,omitempty"`
 	// 状态：active-有效，inactive-无效，suspended-暂停
 	Status sysapi.Status `json:"status,omitempty"`
 	// Remark holds the value of the "remark" field.
@@ -38,8 +50,9 @@ type SysApi struct {
 	APIMethod sysapi.APIMethod `json:"api_method,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysApiQuery when eager-loading is set.
-	Edges        SysApiEdges `json:"edges"`
-	selectValues sql.SelectValues
+	Edges         SysApiEdges `json:"edges"`
+	sys_role_apis *int64
+	selectValues  sql.SelectValues
 }
 
 // SysApiEdges holds the relations/edges for other nodes in the graph.
@@ -65,12 +78,14 @@ func (*SysApi) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case sysapi.FieldID, sysapi.FieldCreatedID:
+		case sysapi.FieldID, sysapi.FieldCreatedID, sysapi.FieldUpdatedID, sysapi.FieldDeletedID:
 			values[i] = new(sql.NullInt64)
-		case sysapi.FieldCreatedBy, sysapi.FieldStatus, sysapi.FieldRemark, sysapi.FieldAPIName, sysapi.FieldAPIType, sysapi.FieldAPIPath, sysapi.FieldAPIMethod:
+		case sysapi.FieldCreatedBy, sysapi.FieldUpdatedBy, sysapi.FieldDeletedBy, sysapi.FieldStatus, sysapi.FieldRemark, sysapi.FieldAPIName, sysapi.FieldAPIType, sysapi.FieldAPIPath, sysapi.FieldAPIMethod:
 			values[i] = new(sql.NullString)
-		case sysapi.FieldCreatedAt:
+		case sysapi.FieldCreatedAt, sysapi.FieldUpdatedAt, sysapi.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
+		case sysapi.ForeignKeys[0]: // sys_role_apis
+			values[i] = new(sql.NullInt64)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -110,6 +125,42 @@ func (_m *SysApi) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.CreatedBy = value.String
 			}
+		case sysapi.FieldUpdatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
+			} else if value.Valid {
+				_m.UpdatedAt = value.Time
+			}
+		case sysapi.FieldUpdatedID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_id", values[i])
+			} else if value.Valid {
+				_m.UpdatedID = value.Int64
+			}
+		case sysapi.FieldUpdatedBy:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
+			} else if value.Valid {
+				_m.UpdatedBy = value.String
+			}
+		case sysapi.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = value.Time
+			}
+		case sysapi.FieldDeletedID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_id", values[i])
+			} else if value.Valid {
+				_m.DeletedID = value.Int64
+			}
+		case sysapi.FieldDeletedBy:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_by", values[i])
+			} else if value.Valid {
+				_m.DeletedBy = value.String
+			}
 		case sysapi.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field status", values[i])
@@ -145,6 +196,13 @@ func (_m *SysApi) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field api_method", values[i])
 			} else if value.Valid {
 				_m.APIMethod = sysapi.APIMethod(value.String)
+			}
+		case sysapi.ForeignKeys[0]:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for edge-field sys_role_apis", value)
+			} else if value.Valid {
+				_m.sys_role_apis = new(int64)
+				*_m.sys_role_apis = int64(value.Int64)
 			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
@@ -195,6 +253,24 @@ func (_m *SysApi) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("created_by=")
 	builder.WriteString(_m.CreatedBy)
+	builder.WriteString(", ")
+	builder.WriteString("updated_at=")
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("updated_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.UpdatedID))
+	builder.WriteString(", ")
+	builder.WriteString("updated_by=")
+	builder.WriteString(_m.UpdatedBy)
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(_m.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.DeletedID))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_by=")
+	builder.WriteString(_m.DeletedBy)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))

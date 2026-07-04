@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -176,6 +177,20 @@ func (_c *SysRoleCreate) SetCode(v string) *SysRoleCreate {
 	return _c
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_c *SysRoleCreate) SetIsSystem(v bool) *SysRoleCreate {
+	_c.mutation.SetIsSystem(v)
+	return _c
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_c *SysRoleCreate) SetNillableIsSystem(v *bool) *SysRoleCreate {
+	if v != nil {
+		_c.SetIsSystem(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysRoleCreate) SetID(v int64) *SysRoleCreate {
 	_c.mutation.SetID(v)
@@ -195,6 +210,21 @@ func (_c *SysRoleCreate) AddMenus(v ...*SysMenu) *SysRoleCreate {
 		ids[i] = v[i].ID
 	}
 	return _c.AddMenuIDs(ids...)
+}
+
+// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
+func (_c *SysRoleCreate) AddAPIIDs(ids ...int64) *SysRoleCreate {
+	_c.mutation.AddAPIIDs(ids...)
+	return _c
+}
+
+// AddApis adds the "apis" edges to the SysApi entity.
+func (_c *SysRoleCreate) AddApis(v ...*SysApi) *SysRoleCreate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _c.AddAPIIDs(ids...)
 }
 
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
@@ -270,6 +300,10 @@ func (_c *SysRoleCreate) defaults() error {
 	if _, ok := _c.mutation.Sort(); !ok {
 		v := sysrole.DefaultSort
 		_c.mutation.SetSort(v)
+	}
+	if _, ok := _c.mutation.IsSystem(); !ok {
+		v := sysrole.DefaultIsSystem
+		_c.mutation.SetIsSystem(v)
 	}
 	return nil
 }
@@ -363,6 +397,9 @@ func (_c *SysRoleCreate) check() error {
 		if err := sysrole.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "SysRole.code": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.IsSystem(); !ok {
+		return &ValidationError{Name: "is_system", err: errors.New(`ent: missing required field "SysRole.is_system"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysrole.IDValidator(v); err != nil {
@@ -461,6 +498,10 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
 		_node.Code = value
 	}
+	if value, ok := _c.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
+		_node.IsSystem = value
+	}
 	if nodes := _c.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -470,6 +511,22 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysmenu.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
+	}
+	if nodes := _c.mutation.ApisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

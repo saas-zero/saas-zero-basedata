@@ -75,6 +75,48 @@ func (_c *SysPackageCreate) SetUpdatedBy(v string) *SysPackageCreate {
 	return _c
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *SysPackageCreate) SetDeletedAt(v time.Time) *SysPackageCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *SysPackageCreate) SetNillableDeletedAt(v *time.Time) *SysPackageCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_c *SysPackageCreate) SetDeletedID(v int64) *SysPackageCreate {
+	_c.mutation.SetDeletedID(v)
+	return _c
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_c *SysPackageCreate) SetNillableDeletedID(v *int64) *SysPackageCreate {
+	if v != nil {
+		_c.SetDeletedID(*v)
+	}
+	return _c
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_c *SysPackageCreate) SetDeletedBy(v string) *SysPackageCreate {
+	_c.mutation.SetDeletedBy(v)
+	return _c
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_c *SysPackageCreate) SetNillableDeletedBy(v *string) *SysPackageCreate {
+	if v != nil {
+		_c.SetDeletedBy(*v)
+	}
+	return _c
+}
+
 // SetStatus sets the "status" field.
 func (_c *SysPackageCreate) SetStatus(v syspackage.Status) *SysPackageCreate {
 	_c.mutation.SetStatus(v)
@@ -282,6 +324,11 @@ func (_c *SysPackageCreate) check() error {
 			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.updated_by": %w`, err)}
 		}
 	}
+	if v, ok := _c.mutation.DeletedBy(); ok {
+		if err := syspackage.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.deleted_by": %w`, err)}
+		}
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "SysPackage.status"`)}
 	}
@@ -379,6 +426,18 @@ func (_c *SysPackageCreate) createSpec() (*SysPackage, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.UpdatedBy(); ok {
 		_spec.SetField(syspackage.FieldUpdatedBy, field.TypeString, value)
 		_node.UpdatedBy = value
+	}
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(syspackage.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
+	}
+	if value, ok := _c.mutation.DeletedID(); ok {
+		_spec.SetField(syspackage.FieldDeletedID, field.TypeInt64, value)
+		_node.DeletedID = value
+	}
+	if value, ok := _c.mutation.DeletedBy(); ok {
+		_spec.SetField(syspackage.FieldDeletedBy, field.TypeString, value)
+		_node.DeletedBy = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(syspackage.FieldStatus, field.TypeEnum, value)

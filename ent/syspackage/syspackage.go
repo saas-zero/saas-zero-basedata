@@ -28,6 +28,12 @@ const (
 	FieldUpdatedID = "updated_id"
 	// FieldUpdatedBy holds the string denoting the updated_by field in the database.
 	FieldUpdatedBy = "updated_by"
+	// FieldDeletedAt holds the string denoting the deleted_at field in the database.
+	FieldDeletedAt = "deleted_at"
+	// FieldDeletedID holds the string denoting the deleted_id field in the database.
+	FieldDeletedID = "deleted_id"
+	// FieldDeletedBy holds the string denoting the deleted_by field in the database.
+	FieldDeletedBy = "deleted_by"
 	// FieldStatus holds the string denoting the status field in the database.
 	FieldStatus = "status"
 	// FieldSort holds the string denoting the sort field in the database.
@@ -74,6 +80,9 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldUpdatedID,
 	FieldUpdatedBy,
+	FieldDeletedAt,
+	FieldDeletedID,
+	FieldDeletedBy,
 	FieldStatus,
 	FieldSort,
 	FieldRemark,
@@ -106,7 +115,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	Hooks [2]ent.Hook
+	Hooks [3]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.
@@ -119,6 +128,8 @@ var (
 	UpdatedIDValidator func(int64) error
 	// UpdatedByValidator is a validator for the "updated_by" field. It is called by the builders before save.
 	UpdatedByValidator func(string) error
+	// DeletedByValidator is a validator for the "deleted_by" field. It is called by the builders before save.
+	DeletedByValidator func(string) error
 	// DefaultSort holds the default value on creation for the "sort" field.
 	DefaultSort uint32
 	// SortValidator is a validator for the "sort" field. It is called by the builders before save.
@@ -196,6 +207,21 @@ func ByUpdatedID(opts ...sql.OrderTermOption) OrderOption {
 // ByUpdatedBy orders the results by the updated_by field.
 func ByUpdatedBy(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldUpdatedBy, opts...).ToFunc()
+}
+
+// ByDeletedAt orders the results by the deleted_at field.
+func ByDeletedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedAt, opts...).ToFunc()
+}
+
+// ByDeletedID orders the results by the deleted_id field.
+func ByDeletedID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedID, opts...).ToFunc()
+}
+
+// ByDeletedBy orders the results by the deleted_by field.
+func ByDeletedBy(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDeletedBy, opts...).ToFunc()
 }
 
 // ByStatus orders the results by the status field.

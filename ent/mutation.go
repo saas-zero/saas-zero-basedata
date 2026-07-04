@@ -57,6 +57,14 @@ type SysApiMutation struct {
 	created_id      *int64
 	addcreated_id   *int64
 	created_by      *string
+	updated_at      *time.Time
+	updated_id      *int64
+	addupdated_id   *int64
+	updated_by      *string
+	deleted_at      *time.Time
+	deleted_id      *int64
+	adddeleted_id   *int64
+	deleted_by      *string
 	status          *sysapi.Status
 	remark          *string
 	api_name        *string
@@ -302,6 +310,302 @@ func (m *SysApiMutation) OldCreatedBy(ctx context.Context) (v string, err error)
 // ResetCreatedBy resets all changes to the "created_by" field.
 func (m *SysApiMutation) ResetCreatedBy() {
 	m.created_by = nil
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (m *SysApiMutation) SetUpdatedAt(t time.Time) {
+	m.updated_at = &t
+}
+
+// UpdatedAt returns the value of the "updated_at" field in the mutation.
+func (m *SysApiMutation) UpdatedAt() (r time.Time, exists bool) {
+	v := m.updated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedAt returns the old "updated_at" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldUpdatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedAt: %w", err)
+	}
+	return oldValue.UpdatedAt, nil
+}
+
+// ResetUpdatedAt resets all changes to the "updated_at" field.
+func (m *SysApiMutation) ResetUpdatedAt() {
+	m.updated_at = nil
+}
+
+// SetUpdatedID sets the "updated_id" field.
+func (m *SysApiMutation) SetUpdatedID(i int64) {
+	m.updated_id = &i
+	m.addupdated_id = nil
+}
+
+// UpdatedID returns the value of the "updated_id" field in the mutation.
+func (m *SysApiMutation) UpdatedID() (r int64, exists bool) {
+	v := m.updated_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedID returns the old "updated_id" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldUpdatedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedID: %w", err)
+	}
+	return oldValue.UpdatedID, nil
+}
+
+// AddUpdatedID adds i to the "updated_id" field.
+func (m *SysApiMutation) AddUpdatedID(i int64) {
+	if m.addupdated_id != nil {
+		*m.addupdated_id += i
+	} else {
+		m.addupdated_id = &i
+	}
+}
+
+// AddedUpdatedID returns the value that was added to the "updated_id" field in this mutation.
+func (m *SysApiMutation) AddedUpdatedID() (r int64, exists bool) {
+	v := m.addupdated_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetUpdatedID resets all changes to the "updated_id" field.
+func (m *SysApiMutation) ResetUpdatedID() {
+	m.updated_id = nil
+	m.addupdated_id = nil
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (m *SysApiMutation) SetUpdatedBy(s string) {
+	m.updated_by = &s
+}
+
+// UpdatedBy returns the value of the "updated_by" field in the mutation.
+func (m *SysApiMutation) UpdatedBy() (r string, exists bool) {
+	v := m.updated_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldUpdatedBy returns the old "updated_by" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldUpdatedBy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldUpdatedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldUpdatedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldUpdatedBy: %w", err)
+	}
+	return oldValue.UpdatedBy, nil
+}
+
+// ResetUpdatedBy resets all changes to the "updated_by" field.
+func (m *SysApiMutation) ResetUpdatedBy() {
+	m.updated_by = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *SysApiMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *SysApiMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldDeletedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *SysApiMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[sysapi.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *SysApiMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[sysapi.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *SysApiMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, sysapi.FieldDeletedAt)
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (m *SysApiMutation) SetDeletedID(i int64) {
+	m.deleted_id = &i
+	m.adddeleted_id = nil
+}
+
+// DeletedID returns the value of the "deleted_id" field in the mutation.
+func (m *SysApiMutation) DeletedID() (r int64, exists bool) {
+	v := m.deleted_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedID returns the old "deleted_id" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldDeletedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedID: %w", err)
+	}
+	return oldValue.DeletedID, nil
+}
+
+// AddDeletedID adds i to the "deleted_id" field.
+func (m *SysApiMutation) AddDeletedID(i int64) {
+	if m.adddeleted_id != nil {
+		*m.adddeleted_id += i
+	} else {
+		m.adddeleted_id = &i
+	}
+}
+
+// AddedDeletedID returns the value that was added to the "deleted_id" field in this mutation.
+func (m *SysApiMutation) AddedDeletedID() (r int64, exists bool) {
+	v := m.adddeleted_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (m *SysApiMutation) ClearDeletedID() {
+	m.deleted_id = nil
+	m.adddeleted_id = nil
+	m.clearedFields[sysapi.FieldDeletedID] = struct{}{}
+}
+
+// DeletedIDCleared returns if the "deleted_id" field was cleared in this mutation.
+func (m *SysApiMutation) DeletedIDCleared() bool {
+	_, ok := m.clearedFields[sysapi.FieldDeletedID]
+	return ok
+}
+
+// ResetDeletedID resets all changes to the "deleted_id" field.
+func (m *SysApiMutation) ResetDeletedID() {
+	m.deleted_id = nil
+	m.adddeleted_id = nil
+	delete(m.clearedFields, sysapi.FieldDeletedID)
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (m *SysApiMutation) SetDeletedBy(s string) {
+	m.deleted_by = &s
+}
+
+// DeletedBy returns the value of the "deleted_by" field in the mutation.
+func (m *SysApiMutation) DeletedBy() (r string, exists bool) {
+	v := m.deleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedBy returns the old "deleted_by" field's value of the SysApi entity.
+// If the SysApi object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysApiMutation) OldDeletedBy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedBy: %w", err)
+	}
+	return oldValue.DeletedBy, nil
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (m *SysApiMutation) ClearDeletedBy() {
+	m.deleted_by = nil
+	m.clearedFields[sysapi.FieldDeletedBy] = struct{}{}
+}
+
+// DeletedByCleared returns if the "deleted_by" field was cleared in this mutation.
+func (m *SysApiMutation) DeletedByCleared() bool {
+	_, ok := m.clearedFields[sysapi.FieldDeletedBy]
+	return ok
+}
+
+// ResetDeletedBy resets all changes to the "deleted_by" field.
+func (m *SysApiMutation) ResetDeletedBy() {
+	m.deleted_by = nil
+	delete(m.clearedFields, sysapi.FieldDeletedBy)
 }
 
 // SetStatus sets the "status" field.
@@ -634,7 +938,7 @@ func (m *SysApiMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysApiMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 15)
 	if m.created_at != nil {
 		fields = append(fields, sysapi.FieldCreatedAt)
 	}
@@ -643,6 +947,24 @@ func (m *SysApiMutation) Fields() []string {
 	}
 	if m.created_by != nil {
 		fields = append(fields, sysapi.FieldCreatedBy)
+	}
+	if m.updated_at != nil {
+		fields = append(fields, sysapi.FieldUpdatedAt)
+	}
+	if m.updated_id != nil {
+		fields = append(fields, sysapi.FieldUpdatedID)
+	}
+	if m.updated_by != nil {
+		fields = append(fields, sysapi.FieldUpdatedBy)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, sysapi.FieldDeletedAt)
+	}
+	if m.deleted_id != nil {
+		fields = append(fields, sysapi.FieldDeletedID)
+	}
+	if m.deleted_by != nil {
+		fields = append(fields, sysapi.FieldDeletedBy)
 	}
 	if m.status != nil {
 		fields = append(fields, sysapi.FieldStatus)
@@ -676,6 +998,18 @@ func (m *SysApiMutation) Field(name string) (ent.Value, bool) {
 		return m.CreatedID()
 	case sysapi.FieldCreatedBy:
 		return m.CreatedBy()
+	case sysapi.FieldUpdatedAt:
+		return m.UpdatedAt()
+	case sysapi.FieldUpdatedID:
+		return m.UpdatedID()
+	case sysapi.FieldUpdatedBy:
+		return m.UpdatedBy()
+	case sysapi.FieldDeletedAt:
+		return m.DeletedAt()
+	case sysapi.FieldDeletedID:
+		return m.DeletedID()
+	case sysapi.FieldDeletedBy:
+		return m.DeletedBy()
 	case sysapi.FieldStatus:
 		return m.Status()
 	case sysapi.FieldRemark:
@@ -703,6 +1037,18 @@ func (m *SysApiMutation) OldField(ctx context.Context, name string) (ent.Value, 
 		return m.OldCreatedID(ctx)
 	case sysapi.FieldCreatedBy:
 		return m.OldCreatedBy(ctx)
+	case sysapi.FieldUpdatedAt:
+		return m.OldUpdatedAt(ctx)
+	case sysapi.FieldUpdatedID:
+		return m.OldUpdatedID(ctx)
+	case sysapi.FieldUpdatedBy:
+		return m.OldUpdatedBy(ctx)
+	case sysapi.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case sysapi.FieldDeletedID:
+		return m.OldDeletedID(ctx)
+	case sysapi.FieldDeletedBy:
+		return m.OldDeletedBy(ctx)
 	case sysapi.FieldStatus:
 		return m.OldStatus(ctx)
 	case sysapi.FieldRemark:
@@ -744,6 +1090,48 @@ func (m *SysApiMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCreatedBy(v)
+		return nil
+	case sysapi.FieldUpdatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedAt(v)
+		return nil
+	case sysapi.FieldUpdatedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedID(v)
+		return nil
+	case sysapi.FieldUpdatedBy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetUpdatedBy(v)
+		return nil
+	case sysapi.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case sysapi.FieldDeletedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedID(v)
+		return nil
+	case sysapi.FieldDeletedBy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedBy(v)
 		return nil
 	case sysapi.FieldStatus:
 		v, ok := value.(sysapi.Status)
@@ -798,6 +1186,12 @@ func (m *SysApiMutation) AddedFields() []string {
 	if m.addcreated_id != nil {
 		fields = append(fields, sysapi.FieldCreatedID)
 	}
+	if m.addupdated_id != nil {
+		fields = append(fields, sysapi.FieldUpdatedID)
+	}
+	if m.adddeleted_id != nil {
+		fields = append(fields, sysapi.FieldDeletedID)
+	}
 	return fields
 }
 
@@ -808,6 +1202,10 @@ func (m *SysApiMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case sysapi.FieldCreatedID:
 		return m.AddedCreatedID()
+	case sysapi.FieldUpdatedID:
+		return m.AddedUpdatedID()
+	case sysapi.FieldDeletedID:
+		return m.AddedDeletedID()
 	}
 	return nil, false
 }
@@ -824,6 +1222,20 @@ func (m *SysApiMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddCreatedID(v)
 		return nil
+	case sysapi.FieldUpdatedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddUpdatedID(v)
+		return nil
+	case sysapi.FieldDeletedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedID(v)
+		return nil
 	}
 	return fmt.Errorf("unknown SysApi numeric field %s", name)
 }
@@ -832,6 +1244,15 @@ func (m *SysApiMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *SysApiMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(sysapi.FieldDeletedAt) {
+		fields = append(fields, sysapi.FieldDeletedAt)
+	}
+	if m.FieldCleared(sysapi.FieldDeletedID) {
+		fields = append(fields, sysapi.FieldDeletedID)
+	}
+	if m.FieldCleared(sysapi.FieldDeletedBy) {
+		fields = append(fields, sysapi.FieldDeletedBy)
+	}
 	if m.FieldCleared(sysapi.FieldRemark) {
 		fields = append(fields, sysapi.FieldRemark)
 	}
@@ -852,6 +1273,15 @@ func (m *SysApiMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SysApiMutation) ClearField(name string) error {
 	switch name {
+	case sysapi.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	case sysapi.FieldDeletedID:
+		m.ClearDeletedID()
+		return nil
+	case sysapi.FieldDeletedBy:
+		m.ClearDeletedBy()
+		return nil
 	case sysapi.FieldRemark:
 		m.ClearRemark()
 		return nil
@@ -874,6 +1304,24 @@ func (m *SysApiMutation) ResetField(name string) error {
 		return nil
 	case sysapi.FieldCreatedBy:
 		m.ResetCreatedBy()
+		return nil
+	case sysapi.FieldUpdatedAt:
+		m.ResetUpdatedAt()
+		return nil
+	case sysapi.FieldUpdatedID:
+		m.ResetUpdatedID()
+		return nil
+	case sysapi.FieldUpdatedBy:
+		m.ResetUpdatedBy()
+		return nil
+	case sysapi.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case sysapi.FieldDeletedID:
+		m.ResetDeletedID()
+		return nil
+	case sysapi.FieldDeletedBy:
+		m.ResetDeletedBy()
 		return nil
 	case sysapi.FieldStatus:
 		m.ResetStatus()
@@ -9279,6 +9727,10 @@ type SysPackageMutation struct {
 	updated_id     *int64
 	addupdated_id  *int64
 	updated_by     *string
+	deleted_at     *time.Time
+	deleted_id     *int64
+	adddeleted_id  *int64
+	deleted_by     *string
 	status         *syspackage.Status
 	sort           *uint32
 	addsort        *int32
@@ -9658,6 +10110,174 @@ func (m *SysPackageMutation) OldUpdatedBy(ctx context.Context) (v string, err er
 // ResetUpdatedBy resets all changes to the "updated_by" field.
 func (m *SysPackageMutation) ResetUpdatedBy() {
 	m.updated_by = nil
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (m *SysPackageMutation) SetDeletedAt(t time.Time) {
+	m.deleted_at = &t
+}
+
+// DeletedAt returns the value of the "deleted_at" field in the mutation.
+func (m *SysPackageMutation) DeletedAt() (r time.Time, exists bool) {
+	v := m.deleted_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedAt returns the old "deleted_at" field's value of the SysPackage entity.
+// If the SysPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysPackageMutation) OldDeletedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedAt: %w", err)
+	}
+	return oldValue.DeletedAt, nil
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (m *SysPackageMutation) ClearDeletedAt() {
+	m.deleted_at = nil
+	m.clearedFields[syspackage.FieldDeletedAt] = struct{}{}
+}
+
+// DeletedAtCleared returns if the "deleted_at" field was cleared in this mutation.
+func (m *SysPackageMutation) DeletedAtCleared() bool {
+	_, ok := m.clearedFields[syspackage.FieldDeletedAt]
+	return ok
+}
+
+// ResetDeletedAt resets all changes to the "deleted_at" field.
+func (m *SysPackageMutation) ResetDeletedAt() {
+	m.deleted_at = nil
+	delete(m.clearedFields, syspackage.FieldDeletedAt)
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (m *SysPackageMutation) SetDeletedID(i int64) {
+	m.deleted_id = &i
+	m.adddeleted_id = nil
+}
+
+// DeletedID returns the value of the "deleted_id" field in the mutation.
+func (m *SysPackageMutation) DeletedID() (r int64, exists bool) {
+	v := m.deleted_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedID returns the old "deleted_id" field's value of the SysPackage entity.
+// If the SysPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysPackageMutation) OldDeletedID(ctx context.Context) (v int64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedID: %w", err)
+	}
+	return oldValue.DeletedID, nil
+}
+
+// AddDeletedID adds i to the "deleted_id" field.
+func (m *SysPackageMutation) AddDeletedID(i int64) {
+	if m.adddeleted_id != nil {
+		*m.adddeleted_id += i
+	} else {
+		m.adddeleted_id = &i
+	}
+}
+
+// AddedDeletedID returns the value that was added to the "deleted_id" field in this mutation.
+func (m *SysPackageMutation) AddedDeletedID() (r int64, exists bool) {
+	v := m.adddeleted_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (m *SysPackageMutation) ClearDeletedID() {
+	m.deleted_id = nil
+	m.adddeleted_id = nil
+	m.clearedFields[syspackage.FieldDeletedID] = struct{}{}
+}
+
+// DeletedIDCleared returns if the "deleted_id" field was cleared in this mutation.
+func (m *SysPackageMutation) DeletedIDCleared() bool {
+	_, ok := m.clearedFields[syspackage.FieldDeletedID]
+	return ok
+}
+
+// ResetDeletedID resets all changes to the "deleted_id" field.
+func (m *SysPackageMutation) ResetDeletedID() {
+	m.deleted_id = nil
+	m.adddeleted_id = nil
+	delete(m.clearedFields, syspackage.FieldDeletedID)
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (m *SysPackageMutation) SetDeletedBy(s string) {
+	m.deleted_by = &s
+}
+
+// DeletedBy returns the value of the "deleted_by" field in the mutation.
+func (m *SysPackageMutation) DeletedBy() (r string, exists bool) {
+	v := m.deleted_by
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDeletedBy returns the old "deleted_by" field's value of the SysPackage entity.
+// If the SysPackage object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysPackageMutation) OldDeletedBy(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDeletedBy is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDeletedBy requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDeletedBy: %w", err)
+	}
+	return oldValue.DeletedBy, nil
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (m *SysPackageMutation) ClearDeletedBy() {
+	m.deleted_by = nil
+	m.clearedFields[syspackage.FieldDeletedBy] = struct{}{}
+}
+
+// DeletedByCleared returns if the "deleted_by" field was cleared in this mutation.
+func (m *SysPackageMutation) DeletedByCleared() bool {
+	_, ok := m.clearedFields[syspackage.FieldDeletedBy]
+	return ok
+}
+
+// ResetDeletedBy resets all changes to the "deleted_by" field.
+func (m *SysPackageMutation) ResetDeletedBy() {
+	m.deleted_by = nil
+	delete(m.clearedFields, syspackage.FieldDeletedBy)
 }
 
 // SetStatus sets the "status" field.
@@ -10069,7 +10689,7 @@ func (m *SysPackageMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysPackageMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 14)
 	if m.created_at != nil {
 		fields = append(fields, syspackage.FieldCreatedAt)
 	}
@@ -10087,6 +10707,15 @@ func (m *SysPackageMutation) Fields() []string {
 	}
 	if m.updated_by != nil {
 		fields = append(fields, syspackage.FieldUpdatedBy)
+	}
+	if m.deleted_at != nil {
+		fields = append(fields, syspackage.FieldDeletedAt)
+	}
+	if m.deleted_id != nil {
+		fields = append(fields, syspackage.FieldDeletedID)
+	}
+	if m.deleted_by != nil {
+		fields = append(fields, syspackage.FieldDeletedBy)
 	}
 	if m.status != nil {
 		fields = append(fields, syspackage.FieldStatus)
@@ -10123,6 +10752,12 @@ func (m *SysPackageMutation) Field(name string) (ent.Value, bool) {
 		return m.UpdatedID()
 	case syspackage.FieldUpdatedBy:
 		return m.UpdatedBy()
+	case syspackage.FieldDeletedAt:
+		return m.DeletedAt()
+	case syspackage.FieldDeletedID:
+		return m.DeletedID()
+	case syspackage.FieldDeletedBy:
+		return m.DeletedBy()
 	case syspackage.FieldStatus:
 		return m.Status()
 	case syspackage.FieldSort:
@@ -10154,6 +10789,12 @@ func (m *SysPackageMutation) OldField(ctx context.Context, name string) (ent.Val
 		return m.OldUpdatedID(ctx)
 	case syspackage.FieldUpdatedBy:
 		return m.OldUpdatedBy(ctx)
+	case syspackage.FieldDeletedAt:
+		return m.OldDeletedAt(ctx)
+	case syspackage.FieldDeletedID:
+		return m.OldDeletedID(ctx)
+	case syspackage.FieldDeletedBy:
+		return m.OldDeletedBy(ctx)
 	case syspackage.FieldStatus:
 		return m.OldStatus(ctx)
 	case syspackage.FieldSort:
@@ -10215,6 +10856,27 @@ func (m *SysPackageMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetUpdatedBy(v)
 		return nil
+	case syspackage.FieldDeletedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedAt(v)
+		return nil
+	case syspackage.FieldDeletedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedID(v)
+		return nil
+	case syspackage.FieldDeletedBy:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDeletedBy(v)
+		return nil
 	case syspackage.FieldStatus:
 		v, ok := value.(syspackage.Status)
 		if !ok {
@@ -10264,6 +10926,9 @@ func (m *SysPackageMutation) AddedFields() []string {
 	if m.addupdated_id != nil {
 		fields = append(fields, syspackage.FieldUpdatedID)
 	}
+	if m.adddeleted_id != nil {
+		fields = append(fields, syspackage.FieldDeletedID)
+	}
 	if m.addsort != nil {
 		fields = append(fields, syspackage.FieldSort)
 	}
@@ -10279,6 +10944,8 @@ func (m *SysPackageMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedCreatedID()
 	case syspackage.FieldUpdatedID:
 		return m.AddedUpdatedID()
+	case syspackage.FieldDeletedID:
+		return m.AddedDeletedID()
 	case syspackage.FieldSort:
 		return m.AddedSort()
 	}
@@ -10304,6 +10971,13 @@ func (m *SysPackageMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddUpdatedID(v)
 		return nil
+	case syspackage.FieldDeletedID:
+		v, ok := value.(int64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDeletedID(v)
+		return nil
 	case syspackage.FieldSort:
 		v, ok := value.(int32)
 		if !ok {
@@ -10319,6 +10993,15 @@ func (m *SysPackageMutation) AddField(name string, value ent.Value) error {
 // mutation.
 func (m *SysPackageMutation) ClearedFields() []string {
 	var fields []string
+	if m.FieldCleared(syspackage.FieldDeletedAt) {
+		fields = append(fields, syspackage.FieldDeletedAt)
+	}
+	if m.FieldCleared(syspackage.FieldDeletedID) {
+		fields = append(fields, syspackage.FieldDeletedID)
+	}
+	if m.FieldCleared(syspackage.FieldDeletedBy) {
+		fields = append(fields, syspackage.FieldDeletedBy)
+	}
 	if m.FieldCleared(syspackage.FieldRemark) {
 		fields = append(fields, syspackage.FieldRemark)
 	}
@@ -10336,6 +11019,15 @@ func (m *SysPackageMutation) FieldCleared(name string) bool {
 // error if the field is not defined in the schema.
 func (m *SysPackageMutation) ClearField(name string) error {
 	switch name {
+	case syspackage.FieldDeletedAt:
+		m.ClearDeletedAt()
+		return nil
+	case syspackage.FieldDeletedID:
+		m.ClearDeletedID()
+		return nil
+	case syspackage.FieldDeletedBy:
+		m.ClearDeletedBy()
+		return nil
 	case syspackage.FieldRemark:
 		m.ClearRemark()
 		return nil
@@ -10364,6 +11056,15 @@ func (m *SysPackageMutation) ResetField(name string) error {
 		return nil
 	case syspackage.FieldUpdatedBy:
 		m.ResetUpdatedBy()
+		return nil
+	case syspackage.FieldDeletedAt:
+		m.ResetDeletedAt()
+		return nil
+	case syspackage.FieldDeletedID:
+		m.ResetDeletedID()
+		return nil
+	case syspackage.FieldDeletedBy:
+		m.ResetDeletedBy()
 		return nil
 	case syspackage.FieldStatus:
 		m.ResetStatus()
@@ -10546,10 +11247,14 @@ type SysRoleMutation struct {
 	remark        *string
 	name          *string
 	code          *string
+	is_system     *bool
 	clearedFields map[string]struct{}
 	menus         map[int64]struct{}
 	removedmenus  map[int64]struct{}
 	clearedmenus  bool
+	apis          map[int64]struct{}
+	removedapis   map[int64]struct{}
+	clearedapis   bool
 	users         map[int64]struct{}
 	removedusers  map[int64]struct{}
 	clearedusers  bool
@@ -11355,6 +12060,42 @@ func (m *SysRoleMutation) ResetCode() {
 	m.code = nil
 }
 
+// SetIsSystem sets the "is_system" field.
+func (m *SysRoleMutation) SetIsSystem(b bool) {
+	m.is_system = &b
+}
+
+// IsSystem returns the value of the "is_system" field in the mutation.
+func (m *SysRoleMutation) IsSystem() (r bool, exists bool) {
+	v := m.is_system
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsSystem returns the old "is_system" field's value of the SysRole entity.
+// If the SysRole object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysRoleMutation) OldIsSystem(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsSystem is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsSystem requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsSystem: %w", err)
+	}
+	return oldValue.IsSystem, nil
+}
+
+// ResetIsSystem resets all changes to the "is_system" field.
+func (m *SysRoleMutation) ResetIsSystem() {
+	m.is_system = nil
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by ids.
 func (m *SysRoleMutation) AddMenuIDs(ids ...int64) {
 	if m.menus == nil {
@@ -11407,6 +12148,60 @@ func (m *SysRoleMutation) ResetMenus() {
 	m.menus = nil
 	m.clearedmenus = false
 	m.removedmenus = nil
+}
+
+// AddAPIIDs adds the "apis" edge to the SysApi entity by ids.
+func (m *SysRoleMutation) AddAPIIDs(ids ...int64) {
+	if m.apis == nil {
+		m.apis = make(map[int64]struct{})
+	}
+	for i := range ids {
+		m.apis[ids[i]] = struct{}{}
+	}
+}
+
+// ClearApis clears the "apis" edge to the SysApi entity.
+func (m *SysRoleMutation) ClearApis() {
+	m.clearedapis = true
+}
+
+// ApisCleared reports if the "apis" edge to the SysApi entity was cleared.
+func (m *SysRoleMutation) ApisCleared() bool {
+	return m.clearedapis
+}
+
+// RemoveAPIIDs removes the "apis" edge to the SysApi entity by IDs.
+func (m *SysRoleMutation) RemoveAPIIDs(ids ...int64) {
+	if m.removedapis == nil {
+		m.removedapis = make(map[int64]struct{})
+	}
+	for i := range ids {
+		delete(m.apis, ids[i])
+		m.removedapis[ids[i]] = struct{}{}
+	}
+}
+
+// RemovedApis returns the removed IDs of the "apis" edge to the SysApi entity.
+func (m *SysRoleMutation) RemovedApisIDs() (ids []int64) {
+	for id := range m.removedapis {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ApisIDs returns the "apis" edge IDs in the mutation.
+func (m *SysRoleMutation) ApisIDs() (ids []int64) {
+	for id := range m.apis {
+		ids = append(ids, id)
+	}
+	return
+}
+
+// ResetApis resets all changes to the "apis" edge.
+func (m *SysRoleMutation) ResetApis() {
+	m.apis = nil
+	m.clearedapis = false
+	m.removedapis = nil
 }
 
 // AddUserIDs adds the "users" edge to the SysUser entity by ids.
@@ -11497,7 +12292,7 @@ func (m *SysRoleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysRoleMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.tenant_id != nil {
 		fields = append(fields, sysrole.FieldTenantID)
 	}
@@ -11543,6 +12338,9 @@ func (m *SysRoleMutation) Fields() []string {
 	if m.code != nil {
 		fields = append(fields, sysrole.FieldCode)
 	}
+	if m.is_system != nil {
+		fields = append(fields, sysrole.FieldIsSystem)
+	}
 	return fields
 }
 
@@ -11581,6 +12379,8 @@ func (m *SysRoleMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case sysrole.FieldCode:
 		return m.Code()
+	case sysrole.FieldIsSystem:
+		return m.IsSystem()
 	}
 	return nil, false
 }
@@ -11620,6 +12420,8 @@ func (m *SysRoleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldName(ctx)
 	case sysrole.FieldCode:
 		return m.OldCode(ctx)
+	case sysrole.FieldIsSystem:
+		return m.OldIsSystem(ctx)
 	}
 	return nil, fmt.Errorf("unknown SysRole field %s", name)
 }
@@ -11733,6 +12535,13 @@ func (m *SysRoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
+		return nil
+	case sysrole.FieldIsSystem:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsSystem(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
@@ -11918,15 +12727,21 @@ func (m *SysRoleMutation) ResetField(name string) error {
 	case sysrole.FieldCode:
 		m.ResetCode()
 		return nil
+	case sysrole.FieldIsSystem:
+		m.ResetIsSystem()
+		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
 }
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *SysRoleMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.menus != nil {
 		edges = append(edges, sysrole.EdgeMenus)
+	}
+	if m.apis != nil {
+		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.users != nil {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -11944,6 +12759,12 @@ func (m *SysRoleMutation) AddedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case sysrole.EdgeApis:
+		ids := make([]ent.Value, 0, len(m.apis))
+		for id := range m.apis {
+			ids = append(ids, id)
+		}
+		return ids
 	case sysrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.users))
 		for id := range m.users {
@@ -11956,9 +12777,12 @@ func (m *SysRoleMutation) AddedIDs(name string) []ent.Value {
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *SysRoleMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.removedmenus != nil {
 		edges = append(edges, sysrole.EdgeMenus)
+	}
+	if m.removedapis != nil {
+		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.removedusers != nil {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -11976,6 +12800,12 @@ func (m *SysRoleMutation) RemovedIDs(name string) []ent.Value {
 			ids = append(ids, id)
 		}
 		return ids
+	case sysrole.EdgeApis:
+		ids := make([]ent.Value, 0, len(m.removedapis))
+		for id := range m.removedapis {
+			ids = append(ids, id)
+		}
+		return ids
 	case sysrole.EdgeUsers:
 		ids := make([]ent.Value, 0, len(m.removedusers))
 		for id := range m.removedusers {
@@ -11988,9 +12818,12 @@ func (m *SysRoleMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *SysRoleMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 3)
 	if m.clearedmenus {
 		edges = append(edges, sysrole.EdgeMenus)
+	}
+	if m.clearedapis {
+		edges = append(edges, sysrole.EdgeApis)
 	}
 	if m.clearedusers {
 		edges = append(edges, sysrole.EdgeUsers)
@@ -12004,6 +12837,8 @@ func (m *SysRoleMutation) EdgeCleared(name string) bool {
 	switch name {
 	case sysrole.EdgeMenus:
 		return m.clearedmenus
+	case sysrole.EdgeApis:
+		return m.clearedapis
 	case sysrole.EdgeUsers:
 		return m.clearedusers
 	}
@@ -12024,6 +12859,9 @@ func (m *SysRoleMutation) ResetEdge(name string) error {
 	switch name {
 	case sysrole.EdgeMenus:
 		m.ResetMenus()
+		return nil
+	case sysrole.EdgeApis:
+		m.ResetApis()
 		return nil
 	case sysrole.EdgeUsers:
 		m.ResetUsers()

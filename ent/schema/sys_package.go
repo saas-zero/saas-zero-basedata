@@ -34,6 +34,7 @@ func (SysPackage) Mixin() []ent.Mixin {
 		mixins.BaseMixin{},
 		mixins.CreatedMixin{},
 		mixins.UpdatedMixin{},
+		mixins.DeletedMixin{},
 		mixins.StatusMixin{},
 		mixins.SortMixin{},
 		mixins.RemarkMixin{},

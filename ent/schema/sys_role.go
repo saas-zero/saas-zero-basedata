@@ -18,12 +18,14 @@ func (SysRole) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty().MaxLen(128).Comment("名称 | Name"),
 		field.String("code").Unique().NotEmpty().MaxLen(128).Comment("编码 | Code"),
+		field.Bool("is_system").Default(false).Comment("是否系统角色 | Is System"),
 	}
 }
 
 func (SysRole) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("menus", SysMenu.Type),
+		edge.To("apis", SysApi.Type),
 		edge.From("users", SysUser.Type).Ref("roles"),
 	}
 }

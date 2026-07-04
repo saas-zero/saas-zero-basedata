@@ -33,6 +33,8 @@ func (SysApi) Mixin() []ent.Mixin {
 	return []ent.Mixin{
 		mixins.BaseMixin{},
 		mixins.CreatedMixin{},
+		mixins.UpdatedMixin{},
+		mixins.DeletedMixin{},
 		mixins.StatusMixin{},
 		mixins.RemarkMixin{},
 	}

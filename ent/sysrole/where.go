@@ -125,6 +125,11 @@ func Code(v string) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldCode, v))
 }
 
+// IsSystem applies equality check predicate on the "is_system" field. It's identical to IsSystemEQ.
+func IsSystem(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldIsSystem, v))
+}
+
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
 func TenantIDEQ(v int64) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldTenantID, v))
@@ -895,6 +900,16 @@ func CodeContainsFold(v string) predicate.SysRole {
 	return predicate.SysRole(sql.FieldContainsFold(FieldCode, v))
 }
 
+// IsSystemEQ applies the EQ predicate on the "is_system" field.
+func IsSystemEQ(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldIsSystem, v))
+}
+
+// IsSystemNEQ applies the NEQ predicate on the "is_system" field.
+func IsSystemNEQ(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldNEQ(FieldIsSystem, v))
+}
+
 // HasMenus applies the HasEdge predicate on the "menus" edge.
 func HasMenus() predicate.SysRole {
 	return predicate.SysRole(func(s *sql.Selector) {
@@ -910,6 +925,29 @@ func HasMenus() predicate.SysRole {
 func HasMenusWith(preds ...predicate.SysMenu) predicate.SysRole {
 	return predicate.SysRole(func(s *sql.Selector) {
 		step := newMenusStep()
+		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
+			for _, p := range preds {
+				p(s)
+			}
+		})
+	})
+}
+
+// HasApis applies the HasEdge predicate on the "apis" edge.
+func HasApis() predicate.SysRole {
+	return predicate.SysRole(func(s *sql.Selector) {
+		step := sqlgraph.NewStep(
+			sqlgraph.From(Table, FieldID),
+			sqlgraph.Edge(sqlgraph.O2M, false, ApisTable, ApisColumn),
+		)
+		sqlgraph.HasNeighbors(s, step)
+	})
+}
+
+// HasApisWith applies the HasEdge predicate on the "apis" edge with a given conditions (other predicates).
+func HasApisWith(preds ...predicate.SysApi) predicate.SysRole {
+	return predicate.SysRole(func(s *sql.Selector) {
+		step := newApisStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

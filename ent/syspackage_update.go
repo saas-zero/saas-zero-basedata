@@ -80,6 +80,73 @@ func (_u *SysPackageUpdate) SetNillableUpdatedBy(v *string) *SysPackageUpdate {
 	return _u
 }
 
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *SysPackageUpdate) SetDeletedAt(v time.Time) *SysPackageUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *SysPackageUpdate) SetNillableDeletedAt(v *time.Time) *SysPackageUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *SysPackageUpdate) ClearDeletedAt() *SysPackageUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_u *SysPackageUpdate) SetDeletedID(v int64) *SysPackageUpdate {
+	_u.mutation.ResetDeletedID()
+	_u.mutation.SetDeletedID(v)
+	return _u
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_u *SysPackageUpdate) SetNillableDeletedID(v *int64) *SysPackageUpdate {
+	if v != nil {
+		_u.SetDeletedID(*v)
+	}
+	return _u
+}
+
+// AddDeletedID adds value to the "deleted_id" field.
+func (_u *SysPackageUpdate) AddDeletedID(v int64) *SysPackageUpdate {
+	_u.mutation.AddDeletedID(v)
+	return _u
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (_u *SysPackageUpdate) ClearDeletedID() *SysPackageUpdate {
+	_u.mutation.ClearDeletedID()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *SysPackageUpdate) SetDeletedBy(v string) *SysPackageUpdate {
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *SysPackageUpdate) SetNillableDeletedBy(v *string) *SysPackageUpdate {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *SysPackageUpdate) ClearDeletedBy() *SysPackageUpdate {
+	_u.mutation.ClearDeletedBy()
+	return _u
+}
+
 // SetStatus sets the "status" field.
 func (_u *SysPackageUpdate) SetStatus(v syspackage.Status) *SysPackageUpdate {
 	_u.mutation.SetStatus(v)
@@ -315,6 +382,11 @@ func (_u *SysPackageUpdate) check() error {
 			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.updated_by": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.DeletedBy(); ok {
+		if err := syspackage.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.deleted_by": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := syspackage.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysPackage.status": %w`, err)}
@@ -366,6 +438,27 @@ func (_u *SysPackageUpdate) sqlSave(ctx context.Context) (_node int, err error) 
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(syspackage.FieldUpdatedBy, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(syspackage.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(syspackage.FieldDeletedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.DeletedID(); ok {
+		_spec.SetField(syspackage.FieldDeletedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedID(); ok {
+		_spec.AddField(syspackage.FieldDeletedID, field.TypeInt64, value)
+	}
+	if _u.mutation.DeletedIDCleared() {
+		_spec.ClearField(syspackage.FieldDeletedID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(syspackage.FieldDeletedBy, field.TypeString, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(syspackage.FieldDeletedBy, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(syspackage.FieldStatus, field.TypeEnum, value)
@@ -589,6 +682,73 @@ func (_u *SysPackageUpdateOne) SetNillableUpdatedBy(v *string) *SysPackageUpdate
 	if v != nil {
 		_u.SetUpdatedBy(*v)
 	}
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *SysPackageUpdateOne) SetDeletedAt(v time.Time) *SysPackageUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *SysPackageUpdateOne) SetNillableDeletedAt(v *time.Time) *SysPackageUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *SysPackageUpdateOne) ClearDeletedAt() *SysPackageUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_u *SysPackageUpdateOne) SetDeletedID(v int64) *SysPackageUpdateOne {
+	_u.mutation.ResetDeletedID()
+	_u.mutation.SetDeletedID(v)
+	return _u
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_u *SysPackageUpdateOne) SetNillableDeletedID(v *int64) *SysPackageUpdateOne {
+	if v != nil {
+		_u.SetDeletedID(*v)
+	}
+	return _u
+}
+
+// AddDeletedID adds value to the "deleted_id" field.
+func (_u *SysPackageUpdateOne) AddDeletedID(v int64) *SysPackageUpdateOne {
+	_u.mutation.AddDeletedID(v)
+	return _u
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (_u *SysPackageUpdateOne) ClearDeletedID() *SysPackageUpdateOne {
+	_u.mutation.ClearDeletedID()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *SysPackageUpdateOne) SetDeletedBy(v string) *SysPackageUpdateOne {
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *SysPackageUpdateOne) SetNillableDeletedBy(v *string) *SysPackageUpdateOne {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *SysPackageUpdateOne) ClearDeletedBy() *SysPackageUpdateOne {
+	_u.mutation.ClearDeletedBy()
 	return _u
 }
 
@@ -840,6 +1000,11 @@ func (_u *SysPackageUpdateOne) check() error {
 			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.updated_by": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.DeletedBy(); ok {
+		if err := syspackage.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysPackage.deleted_by": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := syspackage.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysPackage.status": %w`, err)}
@@ -908,6 +1073,27 @@ func (_u *SysPackageUpdateOne) sqlSave(ctx context.Context) (_node *SysPackage, 
 	}
 	if value, ok := _u.mutation.UpdatedBy(); ok {
 		_spec.SetField(syspackage.FieldUpdatedBy, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(syspackage.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(syspackage.FieldDeletedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.DeletedID(); ok {
+		_spec.SetField(syspackage.FieldDeletedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedID(); ok {
+		_spec.AddField(syspackage.FieldDeletedID, field.TypeInt64, value)
+	}
+	if _u.mutation.DeletedIDCleared() {
+		_spec.ClearField(syspackage.FieldDeletedID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(syspackage.FieldDeletedBy, field.TypeString, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(syspackage.FieldDeletedBy, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(syspackage.FieldStatus, field.TypeEnum, value)

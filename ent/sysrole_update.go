@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -250,6 +251,20 @@ func (_u *SysRoleUpdate) SetNillableCode(v *string) *SysRoleUpdate {
 	return _u
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_u *SysRoleUpdate) SetIsSystem(v bool) *SysRoleUpdate {
+	_u.mutation.SetIsSystem(v)
+	return _u
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_u *SysRoleUpdate) SetNillableIsSystem(v *bool) *SysRoleUpdate {
+	if v != nil {
+		_u.SetIsSystem(*v)
+	}
+	return _u
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
 func (_u *SysRoleUpdate) AddMenuIDs(ids ...int64) *SysRoleUpdate {
 	_u.mutation.AddMenuIDs(ids...)
@@ -263,6 +278,21 @@ func (_u *SysRoleUpdate) AddMenus(v ...*SysMenu) *SysRoleUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.AddMenuIDs(ids...)
+}
+
+// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
+func (_u *SysRoleUpdate) AddAPIIDs(ids ...int64) *SysRoleUpdate {
+	_u.mutation.AddAPIIDs(ids...)
+	return _u
+}
+
+// AddApis adds the "apis" edges to the SysApi entity.
+func (_u *SysRoleUpdate) AddApis(v ...*SysApi) *SysRoleUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAPIIDs(ids...)
 }
 
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
@@ -304,6 +334,27 @@ func (_u *SysRoleUpdate) RemoveMenus(v ...*SysMenu) *SysRoleUpdate {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveMenuIDs(ids...)
+}
+
+// ClearApis clears all "apis" edges to the SysApi entity.
+func (_u *SysRoleUpdate) ClearApis() *SysRoleUpdate {
+	_u.mutation.ClearApis()
+	return _u
+}
+
+// RemoveAPIIDs removes the "apis" edge to SysApi entities by IDs.
+func (_u *SysRoleUpdate) RemoveAPIIDs(ids ...int64) *SysRoleUpdate {
+	_u.mutation.RemoveAPIIDs(ids...)
+	return _u
+}
+
+// RemoveApis removes "apis" edges to SysApi entities.
+func (_u *SysRoleUpdate) RemoveApis(v ...*SysApi) *SysRoleUpdate {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAPIIDs(ids...)
 }
 
 // ClearUsers clears all "users" edges to the SysUser entity.
@@ -476,6 +527,9 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
 	}
+	if value, ok := _u.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
+	}
 	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -514,6 +568,51 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysmenu.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ApisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedApisIDs(); len(nodes) > 0 && !_u.mutation.ApisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ApisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {
@@ -806,6 +905,20 @@ func (_u *SysRoleUpdateOne) SetNillableCode(v *string) *SysRoleUpdateOne {
 	return _u
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_u *SysRoleUpdateOne) SetIsSystem(v bool) *SysRoleUpdateOne {
+	_u.mutation.SetIsSystem(v)
+	return _u
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_u *SysRoleUpdateOne) SetNillableIsSystem(v *bool) *SysRoleUpdateOne {
+	if v != nil {
+		_u.SetIsSystem(*v)
+	}
+	return _u
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
 func (_u *SysRoleUpdateOne) AddMenuIDs(ids ...int64) *SysRoleUpdateOne {
 	_u.mutation.AddMenuIDs(ids...)
@@ -819,6 +932,21 @@ func (_u *SysRoleUpdateOne) AddMenus(v ...*SysMenu) *SysRoleUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.AddMenuIDs(ids...)
+}
+
+// AddAPIIDs adds the "apis" edge to the SysApi entity by IDs.
+func (_u *SysRoleUpdateOne) AddAPIIDs(ids ...int64) *SysRoleUpdateOne {
+	_u.mutation.AddAPIIDs(ids...)
+	return _u
+}
+
+// AddApis adds the "apis" edges to the SysApi entity.
+func (_u *SysRoleUpdateOne) AddApis(v ...*SysApi) *SysRoleUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.AddAPIIDs(ids...)
 }
 
 // AddUserIDs adds the "users" edge to the SysUser entity by IDs.
@@ -860,6 +988,27 @@ func (_u *SysRoleUpdateOne) RemoveMenus(v ...*SysMenu) *SysRoleUpdateOne {
 		ids[i] = v[i].ID
 	}
 	return _u.RemoveMenuIDs(ids...)
+}
+
+// ClearApis clears all "apis" edges to the SysApi entity.
+func (_u *SysRoleUpdateOne) ClearApis() *SysRoleUpdateOne {
+	_u.mutation.ClearApis()
+	return _u
+}
+
+// RemoveAPIIDs removes the "apis" edge to SysApi entities by IDs.
+func (_u *SysRoleUpdateOne) RemoveAPIIDs(ids ...int64) *SysRoleUpdateOne {
+	_u.mutation.RemoveAPIIDs(ids...)
+	return _u
+}
+
+// RemoveApis removes "apis" edges to SysApi entities.
+func (_u *SysRoleUpdateOne) RemoveApis(v ...*SysApi) *SysRoleUpdateOne {
+	ids := make([]int64, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
+	}
+	return _u.RemoveAPIIDs(ids...)
 }
 
 // ClearUsers clears all "users" edges to the SysUser entity.
@@ -1062,6 +1211,9 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
 	}
+	if value, ok := _u.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
+	}
 	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -1100,6 +1252,51 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(sysmenu.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
+	if _u.mutation.ApisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.RemovedApisIDs(); len(nodes) > 0 && !_u.mutation.ApisCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := _u.mutation.ApisIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.O2M,
+			Inverse: false,
+			Table:   sysrole.ApisTable,
+			Columns: []string{sysrole.ApisColumn},
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(sysapi.FieldID, field.TypeInt64),
 			},
 		}
 		for _, k := range nodes {

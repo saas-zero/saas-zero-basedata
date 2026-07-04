@@ -85,6 +85,21 @@ func UpdatedBy(v string) predicate.SysPackage {
 	return predicate.SysPackage(sql.FieldEQ(FieldUpdatedBy, v))
 }
 
+// DeletedAt applies equality check predicate on the "deleted_at" field. It's identical to DeletedAtEQ.
+func DeletedAt(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedAt, v))
+}
+
+// DeletedID applies equality check predicate on the "deleted_id" field. It's identical to DeletedIDEQ.
+func DeletedID(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedID, v))
+}
+
+// DeletedBy applies equality check predicate on the "deleted_by" field. It's identical to DeletedByEQ.
+func DeletedBy(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedBy, v))
+}
+
 // Sort applies equality check predicate on the "sort" field. It's identical to SortEQ.
 func Sort(v uint32) predicate.SysPackage {
 	return predicate.SysPackage(sql.FieldEQ(FieldSort, v))
@@ -393,6 +408,181 @@ func UpdatedByEqualFold(v string) predicate.SysPackage {
 // UpdatedByContainsFold applies the ContainsFold predicate on the "updated_by" field.
 func UpdatedByContainsFold(v string) predicate.SysPackage {
 	return predicate.SysPackage(sql.FieldContainsFold(FieldUpdatedBy, v))
+}
+
+// DeletedAtEQ applies the EQ predicate on the "deleted_at" field.
+func DeletedAtEQ(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtNEQ applies the NEQ predicate on the "deleted_at" field.
+func DeletedAtNEQ(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNEQ(FieldDeletedAt, v))
+}
+
+// DeletedAtIn applies the In predicate on the "deleted_at" field.
+func DeletedAtIn(vs ...time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtNotIn applies the NotIn predicate on the "deleted_at" field.
+func DeletedAtNotIn(vs ...time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotIn(FieldDeletedAt, vs...))
+}
+
+// DeletedAtGT applies the GT predicate on the "deleted_at" field.
+func DeletedAtGT(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGT(FieldDeletedAt, v))
+}
+
+// DeletedAtGTE applies the GTE predicate on the "deleted_at" field.
+func DeletedAtGTE(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGTE(FieldDeletedAt, v))
+}
+
+// DeletedAtLT applies the LT predicate on the "deleted_at" field.
+func DeletedAtLT(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLT(FieldDeletedAt, v))
+}
+
+// DeletedAtLTE applies the LTE predicate on the "deleted_at" field.
+func DeletedAtLTE(v time.Time) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLTE(FieldDeletedAt, v))
+}
+
+// DeletedAtIsNil applies the IsNil predicate on the "deleted_at" field.
+func DeletedAtIsNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIsNull(FieldDeletedAt))
+}
+
+// DeletedAtNotNil applies the NotNil predicate on the "deleted_at" field.
+func DeletedAtNotNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotNull(FieldDeletedAt))
+}
+
+// DeletedIDEQ applies the EQ predicate on the "deleted_id" field.
+func DeletedIDEQ(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedID, v))
+}
+
+// DeletedIDNEQ applies the NEQ predicate on the "deleted_id" field.
+func DeletedIDNEQ(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNEQ(FieldDeletedID, v))
+}
+
+// DeletedIDIn applies the In predicate on the "deleted_id" field.
+func DeletedIDIn(vs ...int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIn(FieldDeletedID, vs...))
+}
+
+// DeletedIDNotIn applies the NotIn predicate on the "deleted_id" field.
+func DeletedIDNotIn(vs ...int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotIn(FieldDeletedID, vs...))
+}
+
+// DeletedIDGT applies the GT predicate on the "deleted_id" field.
+func DeletedIDGT(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGT(FieldDeletedID, v))
+}
+
+// DeletedIDGTE applies the GTE predicate on the "deleted_id" field.
+func DeletedIDGTE(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGTE(FieldDeletedID, v))
+}
+
+// DeletedIDLT applies the LT predicate on the "deleted_id" field.
+func DeletedIDLT(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLT(FieldDeletedID, v))
+}
+
+// DeletedIDLTE applies the LTE predicate on the "deleted_id" field.
+func DeletedIDLTE(v int64) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLTE(FieldDeletedID, v))
+}
+
+// DeletedIDIsNil applies the IsNil predicate on the "deleted_id" field.
+func DeletedIDIsNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIsNull(FieldDeletedID))
+}
+
+// DeletedIDNotNil applies the NotNil predicate on the "deleted_id" field.
+func DeletedIDNotNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotNull(FieldDeletedID))
+}
+
+// DeletedByEQ applies the EQ predicate on the "deleted_by" field.
+func DeletedByEQ(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEQ(FieldDeletedBy, v))
+}
+
+// DeletedByNEQ applies the NEQ predicate on the "deleted_by" field.
+func DeletedByNEQ(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNEQ(FieldDeletedBy, v))
+}
+
+// DeletedByIn applies the In predicate on the "deleted_by" field.
+func DeletedByIn(vs ...string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIn(FieldDeletedBy, vs...))
+}
+
+// DeletedByNotIn applies the NotIn predicate on the "deleted_by" field.
+func DeletedByNotIn(vs ...string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotIn(FieldDeletedBy, vs...))
+}
+
+// DeletedByGT applies the GT predicate on the "deleted_by" field.
+func DeletedByGT(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGT(FieldDeletedBy, v))
+}
+
+// DeletedByGTE applies the GTE predicate on the "deleted_by" field.
+func DeletedByGTE(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldGTE(FieldDeletedBy, v))
+}
+
+// DeletedByLT applies the LT predicate on the "deleted_by" field.
+func DeletedByLT(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLT(FieldDeletedBy, v))
+}
+
+// DeletedByLTE applies the LTE predicate on the "deleted_by" field.
+func DeletedByLTE(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldLTE(FieldDeletedBy, v))
+}
+
+// DeletedByContains applies the Contains predicate on the "deleted_by" field.
+func DeletedByContains(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldContains(FieldDeletedBy, v))
+}
+
+// DeletedByHasPrefix applies the HasPrefix predicate on the "deleted_by" field.
+func DeletedByHasPrefix(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldHasPrefix(FieldDeletedBy, v))
+}
+
+// DeletedByHasSuffix applies the HasSuffix predicate on the "deleted_by" field.
+func DeletedByHasSuffix(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldHasSuffix(FieldDeletedBy, v))
+}
+
+// DeletedByIsNil applies the IsNil predicate on the "deleted_by" field.
+func DeletedByIsNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldIsNull(FieldDeletedBy))
+}
+
+// DeletedByNotNil applies the NotNil predicate on the "deleted_by" field.
+func DeletedByNotNil() predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldNotNull(FieldDeletedBy))
+}
+
+// DeletedByEqualFold applies the EqualFold predicate on the "deleted_by" field.
+func DeletedByEqualFold(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldEqualFold(FieldDeletedBy, v))
+}
+
+// DeletedByContainsFold applies the ContainsFold predicate on the "deleted_by" field.
+func DeletedByContainsFold(v string) predicate.SysPackage {
+	return predicate.SysPackage(sql.FieldContainsFold(FieldDeletedBy, v))
 }
 
 // StatusEQ applies the EQ predicate on the "status" field.

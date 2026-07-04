@@ -15,12 +15,19 @@ var (
 		{Name: "created_at", Type: field.TypeTime, Comment: "Create Time | 创建时间"},
 		{Name: "created_id", Type: field.TypeInt64, Comment: "Creator ID | 创建人ID"},
 		{Name: "created_by", Type: field.TypeString, Size: 64, Comment: "Creator Name | 创建人名称"},
+		{Name: "updated_at", Type: field.TypeTime, Comment: "updated Time | 更新时间"},
+		{Name: "updated_id", Type: field.TypeInt64, Comment: "updated ID | 更新人ID"},
+		{Name: "updated_by", Type: field.TypeString, Size: 64, Comment: "updated Name | 更新人名称"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "deleted Time | 删除时间"},
+		{Name: "deleted_id", Type: field.TypeInt64, Nullable: true, Comment: "deleted ID | 删除人ID，逻辑删除用"},
+		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "api_name", Type: field.TypeString, Size: 128, Comment: "API名称 | API Name", Default: ""},
 		{Name: "api_type", Type: field.TypeEnum, Comment: "类型：group-分组 api-接口 | API Type", Enums: []string{"group", "api"}, Default: "group"},
 		{Name: "api_path", Type: field.TypeString, Size: 128, Comment: "API路径 | API Path", Default: ""},
 		{Name: "api_method", Type: field.TypeEnum, Nullable: true, Comment: "请求方法 | HTTP Method", Enums: []string{"get", "post", "put", "delete"}},
+		{Name: "sys_role_apis", Type: field.TypeInt64, Nullable: true},
 	}
 	// SysApisTable holds the schema information for the "sys_apis" table.
 	SysApisTable = &schema.Table{
@@ -28,21 +35,29 @@ var (
 		Comment:    "API Table | 接口表",
 		Columns:    SysApisColumns,
 		PrimaryKey: []*schema.Column{SysApisColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "sys_apis_sys_roles_apis",
+				Columns:    []*schema.Column{SysApisColumns[16]},
+				RefColumns: []*schema.Column{SysRolesColumns[0]},
+				OnDelete:   schema.SetNull,
+			},
+		},
 		Indexes: []*schema.Index{
 			{
 				Name:    "idx_api_path_method_unique",
 				Unique:  true,
-				Columns: []*schema.Column{SysApisColumns[8], SysApisColumns[9]},
+				Columns: []*schema.Column{SysApisColumns[14], SysApisColumns[15]},
 			},
 			{
 				Name:    "sysapi_api_type",
 				Unique:  false,
-				Columns: []*schema.Column{SysApisColumns[7]},
+				Columns: []*schema.Column{SysApisColumns[13]},
 			},
 			{
 				Name:    "sysapi_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysApisColumns[4]},
+				Columns: []*schema.Column{SysApisColumns[10]},
 			},
 		},
 	}
@@ -378,6 +393,9 @@ var (
 		{Name: "updated_at", Type: field.TypeTime, Comment: "updated Time | 更新时间"},
 		{Name: "updated_id", Type: field.TypeInt64, Comment: "updated ID | 更新人ID"},
 		{Name: "updated_by", Type: field.TypeString, Size: 64, Comment: "updated Name | 更新人名称"},
+		{Name: "deleted_at", Type: field.TypeTime, Nullable: true, Comment: "deleted Time | 删除时间"},
+		{Name: "deleted_id", Type: field.TypeInt64, Nullable: true, Comment: "deleted ID | 删除人ID，逻辑删除用"},
+		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
@@ -394,12 +412,12 @@ var (
 			{
 				Name:    "syspackage_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysPackagesColumns[7]},
+				Columns: []*schema.Column{SysPackagesColumns[10]},
 			},
 			{
 				Name:    "syspackage_sort",
 				Unique:  false,
-				Columns: []*schema.Column{SysPackagesColumns[8]},
+				Columns: []*schema.Column{SysPackagesColumns[11]},
 			},
 		},
 	}
@@ -421,6 +439,7 @@ var (
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
 		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码 | Code"},
+		{Name: "is_system", Type: field.TypeBool, Comment: "是否系统角色 | Is System", Default: false},
 	}
 	// SysRolesTable holds the schema information for the "sys_roles" table.
 	SysRolesTable = &schema.Table{
@@ -710,6 +729,7 @@ var (
 )
 
 func init() {
+	SysApisTable.ForeignKeys[0].RefTable = SysRolesTable
 	SysApisTable.Annotation = &entsql.Annotation{
 		Table: "sys_apis",
 	}

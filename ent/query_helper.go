@@ -1,10 +1,12 @@
 package ent
 
 import (
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdictdata"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -40,6 +42,14 @@ func (c *SysDictClient) ActiveQuery() *SysDictQuery {
 
 func (c *SysDictDataClient) ActiveQuery() *SysDictDataQuery {
 	return c.Query().Where(sysdictdata.DeletedAtIsNil())
+}
+
+func (c *SysApiClient) ActiveQuery() *SysApiQuery {
+	return c.Query().Where(sysapi.DeletedAtIsNil())
+}
+
+func (c *SysPackageClient) ActiveQuery() *SysPackageQuery {
+	return c.Query().Where(syspackage.DeletedAtIsNil())
 }
 
 // ─────────────────────────────────────────────

@@ -30,6 +30,12 @@ type SysPackage struct {
 	UpdatedID int64 `json:"updated_id,omitempty"`
 	// updated Name | 更新人名称
 	UpdatedBy string `json:"updated_by,omitempty"`
+	// deleted Time | 删除时间
+	DeletedAt time.Time `json:"deleted_at,omitempty"`
+	// deleted ID | 删除人ID，逻辑删除用
+	DeletedID int64 `json:"deleted_id,omitempty"`
+	// deleted Name | 删除人名称
+	DeletedBy string `json:"deleted_by,omitempty"`
 	// 状态：active-有效，inactive-无效，suspended-暂停
 	Status syspackage.Status `json:"status,omitempty"`
 	// Sort Number | 排序编号
@@ -91,11 +97,11 @@ func (*SysPackage) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case syspackage.FieldID, syspackage.FieldCreatedID, syspackage.FieldUpdatedID, syspackage.FieldSort:
+		case syspackage.FieldID, syspackage.FieldCreatedID, syspackage.FieldUpdatedID, syspackage.FieldDeletedID, syspackage.FieldSort:
 			values[i] = new(sql.NullInt64)
-		case syspackage.FieldCreatedBy, syspackage.FieldUpdatedBy, syspackage.FieldStatus, syspackage.FieldRemark, syspackage.FieldName, syspackage.FieldCode:
+		case syspackage.FieldCreatedBy, syspackage.FieldUpdatedBy, syspackage.FieldDeletedBy, syspackage.FieldStatus, syspackage.FieldRemark, syspackage.FieldName, syspackage.FieldCode:
 			values[i] = new(sql.NullString)
-		case syspackage.FieldCreatedAt, syspackage.FieldUpdatedAt:
+		case syspackage.FieldCreatedAt, syspackage.FieldUpdatedAt, syspackage.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -153,6 +159,24 @@ func (_m *SysPackage) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field updated_by", values[i])
 			} else if value.Valid {
 				_m.UpdatedBy = value.String
+			}
+		case syspackage.FieldDeletedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_at", values[i])
+			} else if value.Valid {
+				_m.DeletedAt = value.Time
+			}
+		case syspackage.FieldDeletedID:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_id", values[i])
+			} else if value.Valid {
+				_m.DeletedID = value.Int64
+			}
+		case syspackage.FieldDeletedBy:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field deleted_by", values[i])
+			} else if value.Valid {
+				_m.DeletedBy = value.String
 			}
 		case syspackage.FieldStatus:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -252,6 +276,15 @@ func (_m *SysPackage) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("updated_by=")
 	builder.WriteString(_m.UpdatedBy)
+	builder.WriteString(", ")
+	builder.WriteString("deleted_at=")
+	builder.WriteString(_m.DeletedAt.Format(time.ANSIC))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_id=")
+	builder.WriteString(fmt.Sprintf("%v", _m.DeletedID))
+	builder.WriteString(", ")
+	builder.WriteString("deleted_by=")
+	builder.WriteString(_m.DeletedBy)
 	builder.WriteString(", ")
 	builder.WriteString("status=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Status))

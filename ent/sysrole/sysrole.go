@@ -46,8 +46,12 @@ const (
 	FieldName = "name"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
+	// FieldIsSystem holds the string denoting the is_system field in the database.
+	FieldIsSystem = "is_system"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
+	// EdgeApis holds the string denoting the apis edge name in mutations.
+	EdgeApis = "apis"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
 	EdgeUsers = "users"
 	// Table holds the table name of the sysrole in the database.
@@ -57,6 +61,13 @@ const (
 	// MenusInverseTable is the table name for the SysMenu entity.
 	// It exists in this package in order to avoid circular dependency with the "sysmenu" package.
 	MenusInverseTable = "sys_menus"
+	// ApisTable is the table that holds the apis relation/edge.
+	ApisTable = "sys_apis"
+	// ApisInverseTable is the table name for the SysApi entity.
+	// It exists in this package in order to avoid circular dependency with the "sysapi" package.
+	ApisInverseTable = "sys_apis"
+	// ApisColumn is the table column denoting the apis relation/edge.
+	ApisColumn = "sys_role_apis"
 	// UsersTable is the table that holds the users relation/edge. The primary key declared below.
 	UsersTable = "sys_user_roles"
 	// UsersInverseTable is the table name for the SysUser entity.
@@ -82,6 +93,7 @@ var Columns = []string{
 	FieldRemark,
 	FieldName,
 	FieldCode,
+	FieldIsSystem,
 }
 
 var (
@@ -136,6 +148,8 @@ var (
 	NameValidator func(string) error
 	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	CodeValidator func(string) error
+	// DefaultIsSystem holds the default value on creation for the "is_system" field.
+	DefaultIsSystem bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -250,6 +264,11 @@ func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
 }
 
+// ByIsSystem orders the results by the is_system field.
+func ByIsSystem(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsSystem, opts...).ToFunc()
+}
+
 // ByMenusCount orders the results by menus count.
 func ByMenusCount(opts ...sql.OrderTermOption) OrderOption {
 	return func(s *sql.Selector) {
@@ -261,6 +280,20 @@ func ByMenusCount(opts ...sql.OrderTermOption) OrderOption {
 func ByMenus(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 	return func(s *sql.Selector) {
 		sqlgraph.OrderByNeighborTerms(s, newMenusStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+
+// ByApisCount orders the results by apis count.
+func ByApisCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newApisStep(), opts...)
+	}
+}
+
+// ByApis orders the results by apis terms.
+func ByApis(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newApisStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
 
@@ -282,6 +315,13 @@ func newMenusStep() *sqlgraph.Step {
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(MenusInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2M, false, MenusTable, MenusPrimaryKey...),
+	)
+}
+func newApisStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(ApisInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.O2M, false, ApisTable, ApisColumn),
 	)
 }
 func newUsersStep() *sqlgraph.Step {

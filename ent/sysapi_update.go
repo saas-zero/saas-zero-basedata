@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -25,6 +26,122 @@ type SysApiUpdate struct {
 // Where appends a list predicates to the SysApiUpdate builder.
 func (_u *SysApiUpdate) Where(ps ...predicate.SysApi) *SysApiUpdate {
 	_u.mutation.Where(ps...)
+	return _u
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *SysApiUpdate) SetUpdatedAt(v time.Time) *SysApiUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableUpdatedAt(v *time.Time) *SysApiUpdate {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
+	}
+	return _u
+}
+
+// SetUpdatedID sets the "updated_id" field.
+func (_u *SysApiUpdate) SetUpdatedID(v int64) *SysApiUpdate {
+	_u.mutation.ResetUpdatedID()
+	_u.mutation.SetUpdatedID(v)
+	return _u
+}
+
+// SetNillableUpdatedID sets the "updated_id" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableUpdatedID(v *int64) *SysApiUpdate {
+	if v != nil {
+		_u.SetUpdatedID(*v)
+	}
+	return _u
+}
+
+// AddUpdatedID adds value to the "updated_id" field.
+func (_u *SysApiUpdate) AddUpdatedID(v int64) *SysApiUpdate {
+	_u.mutation.AddUpdatedID(v)
+	return _u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_u *SysApiUpdate) SetUpdatedBy(v string) *SysApiUpdate {
+	_u.mutation.SetUpdatedBy(v)
+	return _u
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableUpdatedBy(v *string) *SysApiUpdate {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
+	}
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *SysApiUpdate) SetDeletedAt(v time.Time) *SysApiUpdate {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableDeletedAt(v *time.Time) *SysApiUpdate {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *SysApiUpdate) ClearDeletedAt() *SysApiUpdate {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_u *SysApiUpdate) SetDeletedID(v int64) *SysApiUpdate {
+	_u.mutation.ResetDeletedID()
+	_u.mutation.SetDeletedID(v)
+	return _u
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableDeletedID(v *int64) *SysApiUpdate {
+	if v != nil {
+		_u.SetDeletedID(*v)
+	}
+	return _u
+}
+
+// AddDeletedID adds value to the "deleted_id" field.
+func (_u *SysApiUpdate) AddDeletedID(v int64) *SysApiUpdate {
+	_u.mutation.AddDeletedID(v)
+	return _u
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (_u *SysApiUpdate) ClearDeletedID() *SysApiUpdate {
+	_u.mutation.ClearDeletedID()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *SysApiUpdate) SetDeletedBy(v string) *SysApiUpdate {
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *SysApiUpdate) SetNillableDeletedBy(v *string) *SysApiUpdate {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *SysApiUpdate) ClearDeletedBy() *SysApiUpdate {
+	_u.mutation.ClearDeletedBy()
 	return _u
 }
 
@@ -194,6 +311,21 @@ func (_u *SysApiUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysApiUpdate) check() error {
+	if v, ok := _u.mutation.UpdatedID(); ok {
+		if err := sysapi.UpdatedIDValidator(v); err != nil {
+			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_id": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.UpdatedBy(); ok {
+		if err := sysapi.UpdatedByValidator(v); err != nil {
+			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_by": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.DeletedBy(); ok {
+		if err := sysapi.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.deleted_by": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := sysapi.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysApi.status": %w`, err)}
@@ -238,6 +370,39 @@ func (_u *SysApiUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(sysapi.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.UpdatedID(); ok {
+		_spec.SetField(sysapi.FieldUpdatedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedUpdatedID(); ok {
+		_spec.AddField(sysapi.FieldUpdatedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.UpdatedBy(); ok {
+		_spec.SetField(sysapi.FieldUpdatedBy, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(sysapi.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(sysapi.FieldDeletedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.DeletedID(); ok {
+		_spec.SetField(sysapi.FieldDeletedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedID(); ok {
+		_spec.AddField(sysapi.FieldDeletedID, field.TypeInt64, value)
+	}
+	if _u.mutation.DeletedIDCleared() {
+		_spec.ClearField(sysapi.FieldDeletedID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(sysapi.FieldDeletedBy, field.TypeString, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(sysapi.FieldDeletedBy, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(sysapi.FieldStatus, field.TypeEnum, value)
@@ -326,6 +491,122 @@ type SysApiUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *SysApiMutation
+}
+
+// SetUpdatedAt sets the "updated_at" field.
+func (_u *SysApiUpdateOne) SetUpdatedAt(v time.Time) *SysApiUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableUpdatedAt(v *time.Time) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetUpdatedAt(*v)
+	}
+	return _u
+}
+
+// SetUpdatedID sets the "updated_id" field.
+func (_u *SysApiUpdateOne) SetUpdatedID(v int64) *SysApiUpdateOne {
+	_u.mutation.ResetUpdatedID()
+	_u.mutation.SetUpdatedID(v)
+	return _u
+}
+
+// SetNillableUpdatedID sets the "updated_id" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableUpdatedID(v *int64) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetUpdatedID(*v)
+	}
+	return _u
+}
+
+// AddUpdatedID adds value to the "updated_id" field.
+func (_u *SysApiUpdateOne) AddUpdatedID(v int64) *SysApiUpdateOne {
+	_u.mutation.AddUpdatedID(v)
+	return _u
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_u *SysApiUpdateOne) SetUpdatedBy(v string) *SysApiUpdateOne {
+	_u.mutation.SetUpdatedBy(v)
+	return _u
+}
+
+// SetNillableUpdatedBy sets the "updated_by" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableUpdatedBy(v *string) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetUpdatedBy(*v)
+	}
+	return _u
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_u *SysApiUpdateOne) SetDeletedAt(v time.Time) *SysApiUpdateOne {
+	_u.mutation.SetDeletedAt(v)
+	return _u
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableDeletedAt(v *time.Time) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetDeletedAt(*v)
+	}
+	return _u
+}
+
+// ClearDeletedAt clears the value of the "deleted_at" field.
+func (_u *SysApiUpdateOne) ClearDeletedAt() *SysApiUpdateOne {
+	_u.mutation.ClearDeletedAt()
+	return _u
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_u *SysApiUpdateOne) SetDeletedID(v int64) *SysApiUpdateOne {
+	_u.mutation.ResetDeletedID()
+	_u.mutation.SetDeletedID(v)
+	return _u
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableDeletedID(v *int64) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetDeletedID(*v)
+	}
+	return _u
+}
+
+// AddDeletedID adds value to the "deleted_id" field.
+func (_u *SysApiUpdateOne) AddDeletedID(v int64) *SysApiUpdateOne {
+	_u.mutation.AddDeletedID(v)
+	return _u
+}
+
+// ClearDeletedID clears the value of the "deleted_id" field.
+func (_u *SysApiUpdateOne) ClearDeletedID() *SysApiUpdateOne {
+	_u.mutation.ClearDeletedID()
+	return _u
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_u *SysApiUpdateOne) SetDeletedBy(v string) *SysApiUpdateOne {
+	_u.mutation.SetDeletedBy(v)
+	return _u
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_u *SysApiUpdateOne) SetNillableDeletedBy(v *string) *SysApiUpdateOne {
+	if v != nil {
+		_u.SetDeletedBy(*v)
+	}
+	return _u
+}
+
+// ClearDeletedBy clears the value of the "deleted_by" field.
+func (_u *SysApiUpdateOne) ClearDeletedBy() *SysApiUpdateOne {
+	_u.mutation.ClearDeletedBy()
+	return _u
 }
 
 // SetStatus sets the "status" field.
@@ -507,6 +788,21 @@ func (_u *SysApiUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (_u *SysApiUpdateOne) check() error {
+	if v, ok := _u.mutation.UpdatedID(); ok {
+		if err := sysapi.UpdatedIDValidator(v); err != nil {
+			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_id": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.UpdatedBy(); ok {
+		if err := sysapi.UpdatedByValidator(v); err != nil {
+			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_by": %w`, err)}
+		}
+	}
+	if v, ok := _u.mutation.DeletedBy(); ok {
+		if err := sysapi.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.deleted_by": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.Status(); ok {
 		if err := sysapi.StatusValidator(v); err != nil {
 			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysApi.status": %w`, err)}
@@ -568,6 +864,39 @@ func (_u *SysApiUpdateOne) sqlSave(ctx context.Context) (_node *SysApi, err erro
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := _u.mutation.UpdatedAt(); ok {
+		_spec.SetField(sysapi.FieldUpdatedAt, field.TypeTime, value)
+	}
+	if value, ok := _u.mutation.UpdatedID(); ok {
+		_spec.SetField(sysapi.FieldUpdatedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedUpdatedID(); ok {
+		_spec.AddField(sysapi.FieldUpdatedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.UpdatedBy(); ok {
+		_spec.SetField(sysapi.FieldUpdatedBy, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.DeletedAt(); ok {
+		_spec.SetField(sysapi.FieldDeletedAt, field.TypeTime, value)
+	}
+	if _u.mutation.DeletedAtCleared() {
+		_spec.ClearField(sysapi.FieldDeletedAt, field.TypeTime)
+	}
+	if value, ok := _u.mutation.DeletedID(); ok {
+		_spec.SetField(sysapi.FieldDeletedID, field.TypeInt64, value)
+	}
+	if value, ok := _u.mutation.AddedDeletedID(); ok {
+		_spec.AddField(sysapi.FieldDeletedID, field.TypeInt64, value)
+	}
+	if _u.mutation.DeletedIDCleared() {
+		_spec.ClearField(sysapi.FieldDeletedID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.DeletedBy(); ok {
+		_spec.SetField(sysapi.FieldDeletedBy, field.TypeString, value)
+	}
+	if _u.mutation.DeletedByCleared() {
+		_spec.ClearField(sysapi.FieldDeletedBy, field.TypeString)
 	}
 	if value, ok := _u.mutation.Status(); ok {
 		_spec.SetField(sysapi.FieldStatus, field.TypeEnum, value)

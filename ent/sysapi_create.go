@@ -47,6 +47,74 @@ func (_c *SysApiCreate) SetCreatedBy(v string) *SysApiCreate {
 	return _c
 }
 
+// SetUpdatedAt sets the "updated_at" field.
+func (_c *SysApiCreate) SetUpdatedAt(v time.Time) *SysApiCreate {
+	_c.mutation.SetUpdatedAt(v)
+	return _c
+}
+
+// SetNillableUpdatedAt sets the "updated_at" field if the given value is not nil.
+func (_c *SysApiCreate) SetNillableUpdatedAt(v *time.Time) *SysApiCreate {
+	if v != nil {
+		_c.SetUpdatedAt(*v)
+	}
+	return _c
+}
+
+// SetUpdatedID sets the "updated_id" field.
+func (_c *SysApiCreate) SetUpdatedID(v int64) *SysApiCreate {
+	_c.mutation.SetUpdatedID(v)
+	return _c
+}
+
+// SetUpdatedBy sets the "updated_by" field.
+func (_c *SysApiCreate) SetUpdatedBy(v string) *SysApiCreate {
+	_c.mutation.SetUpdatedBy(v)
+	return _c
+}
+
+// SetDeletedAt sets the "deleted_at" field.
+func (_c *SysApiCreate) SetDeletedAt(v time.Time) *SysApiCreate {
+	_c.mutation.SetDeletedAt(v)
+	return _c
+}
+
+// SetNillableDeletedAt sets the "deleted_at" field if the given value is not nil.
+func (_c *SysApiCreate) SetNillableDeletedAt(v *time.Time) *SysApiCreate {
+	if v != nil {
+		_c.SetDeletedAt(*v)
+	}
+	return _c
+}
+
+// SetDeletedID sets the "deleted_id" field.
+func (_c *SysApiCreate) SetDeletedID(v int64) *SysApiCreate {
+	_c.mutation.SetDeletedID(v)
+	return _c
+}
+
+// SetNillableDeletedID sets the "deleted_id" field if the given value is not nil.
+func (_c *SysApiCreate) SetNillableDeletedID(v *int64) *SysApiCreate {
+	if v != nil {
+		_c.SetDeletedID(*v)
+	}
+	return _c
+}
+
+// SetDeletedBy sets the "deleted_by" field.
+func (_c *SysApiCreate) SetDeletedBy(v string) *SysApiCreate {
+	_c.mutation.SetDeletedBy(v)
+	return _c
+}
+
+// SetNillableDeletedBy sets the "deleted_by" field if the given value is not nil.
+func (_c *SysApiCreate) SetNillableDeletedBy(v *string) *SysApiCreate {
+	if v != nil {
+		_c.SetDeletedBy(*v)
+	}
+	return _c
+}
+
 // SetStatus sets the "status" field.
 func (_c *SysApiCreate) SetStatus(v sysapi.Status) *SysApiCreate {
 	_c.mutation.SetStatus(v)
@@ -196,6 +264,13 @@ func (_c *SysApiCreate) defaults() error {
 		v := sysapi.DefaultCreatedAt()
 		_c.mutation.SetCreatedAt(v)
 	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		if sysapi.DefaultUpdatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysapi.DefaultUpdatedAt (forgotten import ent/runtime?)")
+		}
+		v := sysapi.DefaultUpdatedAt()
+		_c.mutation.SetUpdatedAt(v)
+	}
 	if _, ok := _c.mutation.Status(); !ok {
 		v := sysapi.DefaultStatus
 		_c.mutation.SetStatus(v)
@@ -234,6 +309,30 @@ func (_c *SysApiCreate) check() error {
 	if v, ok := _c.mutation.CreatedBy(); ok {
 		if err := sysapi.CreatedByValidator(v); err != nil {
 			return &ValidationError{Name: "created_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.created_by": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.UpdatedAt(); !ok {
+		return &ValidationError{Name: "updated_at", err: errors.New(`ent: missing required field "SysApi.updated_at"`)}
+	}
+	if _, ok := _c.mutation.UpdatedID(); !ok {
+		return &ValidationError{Name: "updated_id", err: errors.New(`ent: missing required field "SysApi.updated_id"`)}
+	}
+	if v, ok := _c.mutation.UpdatedID(); ok {
+		if err := sysapi.UpdatedIDValidator(v); err != nil {
+			return &ValidationError{Name: "updated_id", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_id": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.UpdatedBy(); !ok {
+		return &ValidationError{Name: "updated_by", err: errors.New(`ent: missing required field "SysApi.updated_by"`)}
+	}
+	if v, ok := _c.mutation.UpdatedBy(); ok {
+		if err := sysapi.UpdatedByValidator(v); err != nil {
+			return &ValidationError{Name: "updated_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.updated_by": %w`, err)}
+		}
+	}
+	if v, ok := _c.mutation.DeletedBy(); ok {
+		if err := sysapi.DeletedByValidator(v); err != nil {
+			return &ValidationError{Name: "deleted_by", err: fmt.Errorf(`ent: validator failed for field "SysApi.deleted_by": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Status(); !ok {
@@ -326,6 +425,30 @@ func (_c *SysApiCreate) createSpec() (*SysApi, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.CreatedBy(); ok {
 		_spec.SetField(sysapi.FieldCreatedBy, field.TypeString, value)
 		_node.CreatedBy = value
+	}
+	if value, ok := _c.mutation.UpdatedAt(); ok {
+		_spec.SetField(sysapi.FieldUpdatedAt, field.TypeTime, value)
+		_node.UpdatedAt = value
+	}
+	if value, ok := _c.mutation.UpdatedID(); ok {
+		_spec.SetField(sysapi.FieldUpdatedID, field.TypeInt64, value)
+		_node.UpdatedID = value
+	}
+	if value, ok := _c.mutation.UpdatedBy(); ok {
+		_spec.SetField(sysapi.FieldUpdatedBy, field.TypeString, value)
+		_node.UpdatedBy = value
+	}
+	if value, ok := _c.mutation.DeletedAt(); ok {
+		_spec.SetField(sysapi.FieldDeletedAt, field.TypeTime, value)
+		_node.DeletedAt = value
+	}
+	if value, ok := _c.mutation.DeletedID(); ok {
+		_spec.SetField(sysapi.FieldDeletedID, field.TypeInt64, value)
+		_node.DeletedID = value
+	}
+	if value, ok := _c.mutation.DeletedBy(); ok {
+		_spec.SetField(sysapi.FieldDeletedBy, field.TypeString, value)
+		_node.DeletedBy = value
 	}
 	if value, ok := _c.mutation.Status(); ok {
 		_spec.SetField(sysapi.FieldStatus, field.TypeEnum, value)
