@@ -1,8 +1,10 @@
 Name: basedataservice.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:18084
+
 Etcd:
   Hosts:
-  - 127.0.0.1:2379
+  - 192.168.201.52:32384
   Key: basedataservice.rpc
+
 Postgres:
-  DataSource: host=localhost port=5432 user=postgres password=postgres dbname=saas_zero sslmode=disable
+  DataSource: host=192.168.201.58 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable

@@ -1,8 +1,9 @@
 Name: SystemApis
 Host: 0.0.0.0
-Port: 8888
+Port: 18083
+
 Basedata:
   Etcd:
     Hosts:
-      - 127.0.0.1:2379
+      - 192.168.201.52:32384
     Key: basedataservice.rpc
