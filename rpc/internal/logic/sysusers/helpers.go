@@ -32,6 +32,9 @@ func userToResp(u *ent.SysUser) *apps.User {
 	if u.Remark != "" {
 		resp.Remark = proto.String(u.Remark)
 	}
+	if u.Password != "" {
+		resp.Password = proto.String(u.Password)
+	}
 	if u.DeptID > 0 {
 		resp.DeptId = proto.Int64(u.DeptID)
 		resp.DeptIdStr = proto.String(strconv.FormatInt(u.DeptID, 10))

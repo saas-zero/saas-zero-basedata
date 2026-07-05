@@ -297,6 +297,7 @@ type User struct {
 	CreatedBy     *string                `protobuf:"bytes,20,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
 	UpdatedAt     *int64                 `protobuf:"varint,21,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
 	UpdatedBy     *string                `protobuf:"bytes,22,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
+	Password      *string                `protobuf:"bytes,23,opt,name=password,proto3,oneof" json:"password,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -481,6 +482,13 @@ func (x *User) GetUpdatedAt() int64 {
 func (x *User) GetUpdatedBy() string {
 	if x != nil && x.UpdatedBy != nil {
 		return *x.UpdatedBy
+	}
+	return ""
+}
+
+func (x *User) GetPassword() string {
+	if x != nil && x.Password != nil {
+		return *x.Password
 	}
 	return ""
 }
@@ -5259,7 +5267,7 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x05IdReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x1a\n" +
 	"\x06IdsReq\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids\"\x9c\a\n" +
+	"\x03ids\x18\x01 \x03(\x03R\x03ids\"\xca\a\n" +
 	"\x04User\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x19\n" +
 	"\x05idStr\x18\x02 \x01(\tH\x01R\x05idStr\x88\x01\x01\x12\x1f\n" +
@@ -5284,7 +5292,8 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\tcreatedAt\x18\x13 \x01(\x03H\x0fR\tcreatedAt\x88\x01\x01\x12!\n" +
 	"\tcreatedBy\x18\x14 \x01(\tH\x10R\tcreatedBy\x88\x01\x01\x12!\n" +
 	"\tupdatedAt\x18\x15 \x01(\x03H\x11R\tupdatedAt\x88\x01\x01\x12!\n" +
-	"\tupdatedBy\x18\x16 \x01(\tH\x12R\tupdatedBy\x88\x01\x01B\x05\n" +
+	"\tupdatedBy\x18\x16 \x01(\tH\x12R\tupdatedBy\x88\x01\x01\x12\x1f\n" +
+	"\bpassword\x18\x17 \x01(\tH\x13R\bpassword\x88\x01\x01B\x05\n" +
 	"\x03_idB\b\n" +
 	"\x06_idStrB\v\n" +
 	"\t_usernameB\v\n" +
@@ -5310,7 +5319,8 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\n" +
 	"_updatedAtB\f\n" +
 	"\n" +
-	"_updatedBy\"\x8e\x03\n" +
+	"_updatedByB\v\n" +
+	"\t_password\"\x8e\x03\n" +
 	"\aUserReq\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x1f\n" +
 	"\busername\x18\x02 \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +

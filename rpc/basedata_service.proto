@@ -51,6 +51,7 @@ message User {
   optional string createdBy = 20;
   optional int64 updatedAt = 21;
   optional string updatedBy = 22;
+  optional string password = 23;
 }
 
 message UserReq {
