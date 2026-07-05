@@ -107,7 +107,9 @@ func (_c *SysLoginLogCreate) Mutation() *SysLoginLogMutation {
 
 // Save creates the SysLoginLog in the database.
 func (_c *SysLoginLogCreate) Save(ctx context.Context) (*SysLoginLog, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -134,7 +136,7 @@ func (_c *SysLoginLogCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysLoginLogCreate) defaults() {
+func (_c *SysLoginLogCreate) defaults() error {
 	if _, ok := _c.mutation.IP(); !ok {
 		v := sysloginlog.DefaultIP
 		_c.mutation.SetIP(v)
@@ -151,6 +153,7 @@ func (_c *SysLoginLogCreate) defaults() {
 		v := sysloginlog.DefaultTenantID
 		_c.mutation.SetTenantID(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

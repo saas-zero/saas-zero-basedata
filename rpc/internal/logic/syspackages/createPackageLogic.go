@@ -42,6 +42,8 @@ func (l *CreatePackageLogic) CreatePackage(in *apps.PackageReq) (*apps.PackageRe
 		create.SetRemark(in.GetRemark())
 	}
 
+	//logx.Infof("CreatePackage req:\n%s", prototext.Format(in))
+
 	result, err := create.Save(ctx)
 	if err != nil {
 		return nil, err

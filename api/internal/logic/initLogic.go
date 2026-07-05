@@ -30,7 +30,7 @@ func (l *InitLogic) initCtx() context.Context {
 	return metadata.NewOutgoingContext(l.ctx, metadata.Pairs(
 		"x-user-id", "1",
 		"x-user-name", "system",
-		"x-tenant-id", "0",
+		"x-tenant-id", "1",
 	))
 }
 

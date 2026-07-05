@@ -115,7 +115,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	Hooks [3]ent.Hook
+	Hooks [4]ent.Hook
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
 	DefaultCreatedAt func() time.Time
 	// CreatedIDValidator is a validator for the "created_id" field. It is called by the builders before save.

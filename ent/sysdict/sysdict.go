@@ -92,7 +92,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	Hooks [4]ent.Hook
+	Hooks [5]ent.Hook
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
 	DefaultTenantID int64
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.

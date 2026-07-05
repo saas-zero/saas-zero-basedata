@@ -1029,7 +1029,8 @@ func (c *SysLoginLogClient) GetX(ctx context.Context, id int64) *SysLoginLog {
 
 // Hooks returns the client hooks.
 func (c *SysLoginLogClient) Hooks() []Hook {
-	return c.hooks.SysLoginLog
+	hooks := c.hooks.SysLoginLog
+	return append(hooks[:len(hooks):len(hooks)], sysloginlog.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.
@@ -1328,7 +1329,8 @@ func (c *SysOperationLogClient) GetX(ctx context.Context, id int64) *SysOperatio
 
 // Hooks returns the client hooks.
 func (c *SysOperationLogClient) Hooks() []Hook {
-	return c.hooks.SysOperationLog
+	hooks := c.hooks.SysOperationLog
+	return append(hooks[:len(hooks):len(hooks)], sysoperationlog.Hooks[:]...)
 }
 
 // Interceptors returns the client interceptors.

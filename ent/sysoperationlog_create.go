@@ -200,7 +200,9 @@ func (_c *SysOperationLogCreate) Mutation() *SysOperationLogMutation {
 
 // Save creates the SysOperationLog in the database.
 func (_c *SysOperationLogCreate) Save(ctx context.Context) (*SysOperationLog, error) {
-	_c.defaults()
+	if err := _c.defaults(); err != nil {
+		return nil, err
+	}
 	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
@@ -227,7 +229,7 @@ func (_c *SysOperationLogCreate) ExecX(ctx context.Context) {
 }
 
 // defaults sets the default values of the builder before save.
-func (_c *SysOperationLogCreate) defaults() {
+func (_c *SysOperationLogCreate) defaults() error {
 	if _, ok := _c.mutation.Module(); !ok {
 		v := sysoperationlog.DefaultModule
 		_c.mutation.SetModule(v)
@@ -264,6 +266,7 @@ func (_c *SysOperationLogCreate) defaults() {
 		v := sysoperationlog.DefaultTenantID
 		_c.mutation.SetTenantID(v)
 	}
+	return nil
 }
 
 // check runs all checks and user-defined validators on the builder.

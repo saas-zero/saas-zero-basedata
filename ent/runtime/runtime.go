@@ -24,12 +24,14 @@ import (
 // to their package variables.
 func init() {
 	sysapiMixin := schema.SysApi{}.Mixin()
+	sysapiMixinHooks0 := sysapiMixin[0].Hooks()
 	sysapiMixinHooks1 := sysapiMixin[1].Hooks()
 	sysapiMixinHooks2 := sysapiMixin[2].Hooks()
 	sysapiMixinHooks3 := sysapiMixin[3].Hooks()
-	sysapi.Hooks[0] = sysapiMixinHooks1[0]
-	sysapi.Hooks[1] = sysapiMixinHooks2[0]
-	sysapi.Hooks[2] = sysapiMixinHooks3[0]
+	sysapi.Hooks[0] = sysapiMixinHooks0[0]
+	sysapi.Hooks[1] = sysapiMixinHooks1[0]
+	sysapi.Hooks[2] = sysapiMixinHooks2[0]
+	sysapi.Hooks[3] = sysapiMixinHooks3[0]
 	sysapiMixinFields0 := sysapiMixin[0].Fields()
 	_ = sysapiMixinFields0
 	sysapiMixinFields1 := sysapiMixin[1].Fields()
@@ -121,14 +123,16 @@ func init() {
 	// sysapi.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysapi.IDValidator = sysapiDescID.Validators[0].(func(int64) error)
 	sysdeptMixin := schema.SysDept{}.Mixin()
+	sysdeptMixinHooks0 := sysdeptMixin[0].Hooks()
 	sysdeptMixinHooks1 := sysdeptMixin[1].Hooks()
 	sysdeptMixinHooks2 := sysdeptMixin[2].Hooks()
 	sysdeptMixinHooks3 := sysdeptMixin[3].Hooks()
 	sysdeptMixinHooks4 := sysdeptMixin[4].Hooks()
-	sysdept.Hooks[0] = sysdeptMixinHooks1[0]
-	sysdept.Hooks[1] = sysdeptMixinHooks2[0]
-	sysdept.Hooks[2] = sysdeptMixinHooks3[0]
-	sysdept.Hooks[3] = sysdeptMixinHooks4[0]
+	sysdept.Hooks[0] = sysdeptMixinHooks0[0]
+	sysdept.Hooks[1] = sysdeptMixinHooks1[0]
+	sysdept.Hooks[2] = sysdeptMixinHooks2[0]
+	sysdept.Hooks[3] = sysdeptMixinHooks3[0]
+	sysdept.Hooks[4] = sysdeptMixinHooks4[0]
 	sysdeptMixinFields0 := sysdeptMixin[0].Fields()
 	_ = sysdeptMixinFields0
 	sysdeptMixinFields1 := sysdeptMixin[1].Fields()
@@ -254,14 +258,16 @@ func init() {
 	// sysdept.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysdept.IDValidator = sysdeptDescID.Validators[0].(func(int64) error)
 	sysdictMixin := schema.SysDict{}.Mixin()
+	sysdictMixinHooks0 := sysdictMixin[0].Hooks()
 	sysdictMixinHooks1 := sysdictMixin[1].Hooks()
 	sysdictMixinHooks2 := sysdictMixin[2].Hooks()
 	sysdictMixinHooks3 := sysdictMixin[3].Hooks()
 	sysdictMixinHooks4 := sysdictMixin[4].Hooks()
-	sysdict.Hooks[0] = sysdictMixinHooks1[0]
-	sysdict.Hooks[1] = sysdictMixinHooks2[0]
-	sysdict.Hooks[2] = sysdictMixinHooks3[0]
-	sysdict.Hooks[3] = sysdictMixinHooks4[0]
+	sysdict.Hooks[0] = sysdictMixinHooks0[0]
+	sysdict.Hooks[1] = sysdictMixinHooks1[0]
+	sysdict.Hooks[2] = sysdictMixinHooks2[0]
+	sysdict.Hooks[3] = sysdictMixinHooks3[0]
+	sysdict.Hooks[4] = sysdictMixinHooks4[0]
 	sysdictMixinFields0 := sysdictMixin[0].Fields()
 	_ = sysdictMixinFields0
 	sysdictMixinFields1 := sysdictMixin[1].Fields()
@@ -383,14 +389,16 @@ func init() {
 	// sysdict.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysdict.IDValidator = sysdictDescID.Validators[0].(func(int64) error)
 	sysdictdataMixin := schema.SysDictData{}.Mixin()
+	sysdictdataMixinHooks0 := sysdictdataMixin[0].Hooks()
 	sysdictdataMixinHooks1 := sysdictdataMixin[1].Hooks()
 	sysdictdataMixinHooks2 := sysdictdataMixin[2].Hooks()
 	sysdictdataMixinHooks3 := sysdictdataMixin[3].Hooks()
 	sysdictdataMixinHooks4 := sysdictdataMixin[4].Hooks()
-	sysdictdata.Hooks[0] = sysdictdataMixinHooks1[0]
-	sysdictdata.Hooks[1] = sysdictdataMixinHooks2[0]
-	sysdictdata.Hooks[2] = sysdictdataMixinHooks3[0]
-	sysdictdata.Hooks[3] = sysdictdataMixinHooks4[0]
+	sysdictdata.Hooks[0] = sysdictdataMixinHooks0[0]
+	sysdictdata.Hooks[1] = sysdictdataMixinHooks1[0]
+	sysdictdata.Hooks[2] = sysdictdataMixinHooks2[0]
+	sysdictdata.Hooks[3] = sysdictdataMixinHooks3[0]
+	sysdictdata.Hooks[4] = sysdictdataMixinHooks4[0]
 	sysdictdataMixinFields0 := sysdictdataMixin[0].Fields()
 	_ = sysdictdataMixinFields0
 	sysdictdataMixinFields1 := sysdictdataMixin[1].Fields()
@@ -534,6 +542,8 @@ func init() {
 	// sysdictdata.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysdictdata.IDValidator = sysdictdataDescID.Validators[0].(func(int64) error)
 	sysloginlogMixin := schema.SysLoginLog{}.Mixin()
+	sysloginlogMixinHooks0 := sysloginlogMixin[0].Hooks()
+	sysloginlog.Hooks[0] = sysloginlogMixinHooks0[0]
 	sysloginlogMixinFields0 := sysloginlogMixin[0].Fields()
 	_ = sysloginlogMixinFields0
 	sysloginlogFields := schema.SysLoginLog{}.Fields()
@@ -581,12 +591,14 @@ func init() {
 	// sysloginlog.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysloginlog.IDValidator = sysloginlogDescID.Validators[0].(func(int64) error)
 	sysmenuMixin := schema.SysMenu{}.Mixin()
+	sysmenuMixinHooks0 := sysmenuMixin[0].Hooks()
 	sysmenuMixinHooks1 := sysmenuMixin[1].Hooks()
 	sysmenuMixinHooks2 := sysmenuMixin[2].Hooks()
 	sysmenuMixinHooks3 := sysmenuMixin[3].Hooks()
-	sysmenu.Hooks[0] = sysmenuMixinHooks1[0]
-	sysmenu.Hooks[1] = sysmenuMixinHooks2[0]
-	sysmenu.Hooks[2] = sysmenuMixinHooks3[0]
+	sysmenu.Hooks[0] = sysmenuMixinHooks0[0]
+	sysmenu.Hooks[1] = sysmenuMixinHooks1[0]
+	sysmenu.Hooks[2] = sysmenuMixinHooks2[0]
+	sysmenu.Hooks[3] = sysmenuMixinHooks3[0]
 	sysmenuMixinFields0 := sysmenuMixin[0].Fields()
 	_ = sysmenuMixinFields0
 	sysmenuMixinFields1 := sysmenuMixin[1].Fields()
@@ -720,6 +732,8 @@ func init() {
 	// sysmenu.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysmenu.IDValidator = sysmenuDescID.Validators[0].(func(int64) error)
 	sysoperationlogMixin := schema.SysOperationLog{}.Mixin()
+	sysoperationlogMixinHooks0 := sysoperationlogMixin[0].Hooks()
+	sysoperationlog.Hooks[0] = sysoperationlogMixinHooks0[0]
 	sysoperationlogMixinFields0 := sysoperationlogMixin[0].Fields()
 	_ = sysoperationlogMixinFields0
 	sysoperationlogFields := schema.SysOperationLog{}.Fields()
@@ -781,12 +795,14 @@ func init() {
 	// sysoperationlog.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysoperationlog.IDValidator = sysoperationlogDescID.Validators[0].(func(int64) error)
 	syspackageMixin := schema.SysPackage{}.Mixin()
+	syspackageMixinHooks0 := syspackageMixin[0].Hooks()
 	syspackageMixinHooks1 := syspackageMixin[1].Hooks()
 	syspackageMixinHooks2 := syspackageMixin[2].Hooks()
 	syspackageMixinHooks3 := syspackageMixin[3].Hooks()
-	syspackage.Hooks[0] = syspackageMixinHooks1[0]
-	syspackage.Hooks[1] = syspackageMixinHooks2[0]
-	syspackage.Hooks[2] = syspackageMixinHooks3[0]
+	syspackage.Hooks[0] = syspackageMixinHooks0[0]
+	syspackage.Hooks[1] = syspackageMixinHooks1[0]
+	syspackage.Hooks[2] = syspackageMixinHooks2[0]
+	syspackage.Hooks[3] = syspackageMixinHooks3[0]
 	syspackageMixinFields0 := syspackageMixin[0].Fields()
 	_ = syspackageMixinFields0
 	syspackageMixinFields1 := syspackageMixin[1].Fields()
@@ -910,14 +926,16 @@ func init() {
 	// syspackage.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	syspackage.IDValidator = syspackageDescID.Validators[0].(func(int64) error)
 	sysroleMixin := schema.SysRole{}.Mixin()
+	sysroleMixinHooks0 := sysroleMixin[0].Hooks()
 	sysroleMixinHooks1 := sysroleMixin[1].Hooks()
 	sysroleMixinHooks2 := sysroleMixin[2].Hooks()
 	sysroleMixinHooks3 := sysroleMixin[3].Hooks()
 	sysroleMixinHooks4 := sysroleMixin[4].Hooks()
-	sysrole.Hooks[0] = sysroleMixinHooks1[0]
-	sysrole.Hooks[1] = sysroleMixinHooks2[0]
-	sysrole.Hooks[2] = sysroleMixinHooks3[0]
-	sysrole.Hooks[3] = sysroleMixinHooks4[0]
+	sysrole.Hooks[0] = sysroleMixinHooks0[0]
+	sysrole.Hooks[1] = sysroleMixinHooks1[0]
+	sysrole.Hooks[2] = sysroleMixinHooks2[0]
+	sysrole.Hooks[3] = sysroleMixinHooks3[0]
+	sysrole.Hooks[4] = sysroleMixinHooks4[0]
 	sysroleMixinFields0 := sysroleMixin[0].Fields()
 	_ = sysroleMixinFields0
 	sysroleMixinFields1 := sysroleMixin[1].Fields()
@@ -1047,12 +1065,14 @@ func init() {
 	// sysrole.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	sysrole.IDValidator = sysroleDescID.Validators[0].(func(int64) error)
 	systenantMixin := schema.SysTenant{}.Mixin()
+	systenantMixinHooks0 := systenantMixin[0].Hooks()
 	systenantMixinHooks1 := systenantMixin[1].Hooks()
 	systenantMixinHooks2 := systenantMixin[2].Hooks()
 	systenantMixinHooks3 := systenantMixin[3].Hooks()
-	systenant.Hooks[0] = systenantMixinHooks1[0]
-	systenant.Hooks[1] = systenantMixinHooks2[0]
-	systenant.Hooks[2] = systenantMixinHooks3[0]
+	systenant.Hooks[0] = systenantMixinHooks0[0]
+	systenant.Hooks[1] = systenantMixinHooks1[0]
+	systenant.Hooks[2] = systenantMixinHooks2[0]
+	systenant.Hooks[3] = systenantMixinHooks3[0]
 	systenantMixinFields0 := systenantMixin[0].Fields()
 	_ = systenantMixinFields0
 	systenantMixinFields1 := systenantMixin[1].Fields()
@@ -1180,14 +1200,16 @@ func init() {
 	// systenant.IDValidator is a validator for the "id" field. It is called by the builders before save.
 	systenant.IDValidator = systenantDescID.Validators[0].(func(int64) error)
 	sysuserMixin := schema.SysUser{}.Mixin()
+	sysuserMixinHooks0 := sysuserMixin[0].Hooks()
 	sysuserMixinHooks1 := sysuserMixin[1].Hooks()
 	sysuserMixinHooks2 := sysuserMixin[2].Hooks()
 	sysuserMixinHooks3 := sysuserMixin[3].Hooks()
 	sysuserMixinHooks4 := sysuserMixin[4].Hooks()
-	sysuser.Hooks[0] = sysuserMixinHooks1[0]
-	sysuser.Hooks[1] = sysuserMixinHooks2[0]
-	sysuser.Hooks[2] = sysuserMixinHooks3[0]
-	sysuser.Hooks[3] = sysuserMixinHooks4[0]
+	sysuser.Hooks[0] = sysuserMixinHooks0[0]
+	sysuser.Hooks[1] = sysuserMixinHooks1[0]
+	sysuser.Hooks[2] = sysuserMixinHooks2[0]
+	sysuser.Hooks[3] = sysuserMixinHooks3[0]
+	sysuser.Hooks[4] = sysuserMixinHooks4[0]
 	sysuserMixinFields0 := sysuserMixin[0].Fields()
 	_ = sysuserMixinFields0
 	sysuserMixinFields1 := sysuserMixin[1].Fields()

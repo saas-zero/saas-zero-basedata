@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/dialect"
 	_ "github.com/lib/pq"
 	"github.com/saas-zero/saas-zero-basedata/ent"
+	_ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 )
 
 type ServiceContext struct {

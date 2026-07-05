@@ -119,7 +119,7 @@ func ValidColumn(column string) bool {
 //
 //	import _ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 var (
-	Hooks [4]ent.Hook
+	Hooks [5]ent.Hook
 	// TenantIDValidator is a validator for the "tenant_id" field. It is called by the builders before save.
 	TenantIDValidator func(int64) error
 	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
