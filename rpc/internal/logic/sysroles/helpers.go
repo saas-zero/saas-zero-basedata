@@ -3,6 +3,7 @@ package sysroleslogic
 import (
 	"strconv"
 
+	casbinapi "github.com/casbin/casbin/v2"
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"google.golang.org/protobuf/proto"
@@ -38,4 +39,18 @@ func roleToResp(r *ent.SysRole) *apps.Role {
 		resp.MenuIds = menuIds
 	}
 	return resp
+}
+
+func roleApiIds(enf *casbinapi.SyncedEnforcer, roleCode string, tenantId int64) []int64 {
+	dom := strconv.FormatInt(tenantId, 10)
+	policies, _ := enf.GetFilteredPolicy(0, roleCode, dom)
+	ids := make([]int64, 0, len(policies))
+	for _, p := range policies {
+		if len(p) > 4 {
+			if id, err := strconv.ParseInt(p[4], 10, 64); err == nil {
+				ids = append(ids, id)
+			}
+		}
+	}
+	return ids
 }

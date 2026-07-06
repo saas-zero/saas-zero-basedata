@@ -9,6 +9,7 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/config"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/handler"
+	"github.com/saas-zero/saas-zero-basedata/api/internal/middleware"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
@@ -27,6 +28,10 @@ func main() {
 	defer server.Stop()
 
 	ctx := svc.NewServiceContext(c)
+
+	server.Use(middleware.JwtAuth(c.JwtSecret))
+	server.Use(middleware.CasbinAuth(ctx.Enforcer))
+
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterInitRoutes(server, ctx)
 

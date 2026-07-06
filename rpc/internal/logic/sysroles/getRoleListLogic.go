@@ -65,7 +65,9 @@ func (l *GetRoleListLogic) GetRoleList(in *apps.RolePageReq) (*apps.RoleListResp
 
 	list := make([]*apps.Role, len(roles))
 	for i, r := range roles {
-		list[i] = roleToResp(r)
+		resp := roleToResp(r)
+		resp.ApiIds = roleApiIds(l.svcCtx.Enforcer, r.Code, tenantId)
+		list[i] = resp
 	}
 	return &apps.RoleListResp{
 		Code:  200,

@@ -2,9 +2,12 @@ package sysroleslogic
 
 import (
 	"context"
+	"strconv"
+	"strings"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -22,9 +25,20 @@ func NewAssignApisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assign
 	}
 }
 
-func (l *AssignApisLogic) AssignApis(_ *apps.RoleReq) (*apps.EmptyResp, error) {
-	// Casbin handles runtime API authorization
-	// sys_role_apis junction will be managed through Casbin policy store
-	// This RPC stub is reserved for future sync to Casbin
+func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) {
+	roleCode := in.GetCode()
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
+	dom := strconv.FormatInt(tenantId, 10)
+
+	l.svcCtx.Enforcer.RemoveFilteredPolicy(0, roleCode, dom)
+
+	for _, apiId := range in.GetApiIds() {
+		api, err := l.svcCtx.DB.SysApi.Get(l.ctx, apiId)
+		if err != nil {
+			continue
+		}
+		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), strconv.FormatInt(apiId, 10))
+	}
+
 	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }

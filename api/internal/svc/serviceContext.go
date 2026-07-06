@@ -1,9 +1,18 @@
 package svc
 
 import (
+	"database/sql"
+	"log"
+	"time"
+
+	_ "github.com/lib/pq"
+
+	casbinapi "github.com/casbin/casbin/v2"
+	"github.com/saas-zer
 	"github.com/saas-zero/saas-zero-basedata/api/internal/config"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
-	"github.com/zeromicro/go-zero/zrpc"
+	commcasbin "github.com/saas-zero/saas-zero-common/pkg/casbin"
+	casbinapi "github.com/casbin/casbin/v2"
 )
 
 type ServiceContext struct {
@@ -18,10 +27,30 @@ type ServiceContext struct {
 	SysPackages  apps.SysPackagesClient
 	SysApis      apps.SysApisClient
 	SysLogs      apps.SysLogsClient
+	Enforcer     *casbinapi.SyncedEnforcer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := zrpc.MustNewClient(c.Basedata)
+
+	db, err := sql.Open("postgres", c.CasbinPostgres.DataSource)
+	if err != nil {
+		log.Fatalf("failed to open casbin db: %v", err)
+	}
+	enf, err := commcasbin.NewEnforcer(db, "casbin_rule")
+	if err != nil {
+		log.Fatalf("failed to init casbin enforcer: %v", err)
+	}
+	go func() {
+		ticker := time.NewTicker(60 * time.Second)
+		defer ticker.Stop()
+		for range ticker.C {
+			if err := enf.LoadPolicy(); err != nil {
+				log.Printf("casbin reload policy error: %v", err)
+			}
+		}
+	}()
+
 	return &ServiceContext{
 		Config:       c,
 		SysUsers:     apps.NewSysUsersClient(conn.Conn()),
@@ -34,5 +63,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SysPackages:  apps.NewSysPackagesClient(conn.Conn()),
 		SysApis:      apps.NewSysApisClient(conn.Conn()),
 		SysLogs:      apps.NewSysLogsClient(conn.Conn()),
+		Enforcer:     enf,
 	}
 }

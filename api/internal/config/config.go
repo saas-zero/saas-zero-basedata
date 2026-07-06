@@ -8,7 +8,13 @@ import (
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
+type CasbinPostgresConfig struct {
+	DataSource string `json:"dataSource"`
+}
+
 type Config struct {
 	rest.RestConf
-	Basedata zrpc.RpcClientConf
+	JwtSecret      string               `json:"jwtSecret"`
+	CasbinPostgres CasbinPostgresConfig `json:"casbinPostgres"`
+	Basedata       zrpc.RpcClientConf
 }

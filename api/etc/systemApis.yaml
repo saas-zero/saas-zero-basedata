@@ -2,6 +2,11 @@ Name: SystemApis
 Host: 0.0.0.0
 Port: 18083
 
+JwtSecret: saas-zero-secret-key-2024
+
+CasbinPostgres:
+  DataSource: host=192.168.201.188 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable
+
 Basedata:
   Etcd:
     Hosts:

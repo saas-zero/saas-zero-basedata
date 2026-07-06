@@ -34,9 +34,11 @@ func (l *GetRoleByIdLogic) GetRoleById(in *apps.IdReq) (*apps.RoleResp, error) {
 	if err != nil {
 		return nil, err
 	}
+	resp := roleToResp(r)
+	resp.ApiIds = roleApiIds(l.svcCtx.Enforcer, r.Code, tenantId)
 	return &apps.RoleResp{
 		Code: 200,
 		Msg:  "success",
-		Data: roleToResp(r),
+		Data: resp,
 	}, nil
 }
