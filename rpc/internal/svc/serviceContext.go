@@ -6,7 +6,7 @@ import (
 	"log"
 
 	"entgo.io/ent/dialect"
-	casbinapi "github.com
+	casbinapi "github.com/casbin/casbin/v2"
 	_ "github.com/lib/pq"
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	_ "github.com/saas-zero/saas-zero-basedata/ent/runtime"

@@ -60,6 +60,18 @@ func InitCreateUserHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	}
 }
 
+func InitAllHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		l := logic.NewInitLogic(r.Context(), svcCtx)
+		resp, err := l.InitAll()
+		if err != nil {
+			httpx.ErrorCtx(r.Context(), w, err)
+		} else {
+			httpx.OkJsonCtx(r.Context(), w, resp)
+		}
+	}
+}
+
 func InitCreateRoleHandler(svcCtx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req types.RoleReq

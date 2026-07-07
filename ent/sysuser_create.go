@@ -407,10 +407,6 @@ func (_c *SysUserCreate) defaults() error {
 		v := sysuser.DefaultEmail
 		_c.mutation.SetEmail(v)
 	}
-	if _, ok := _c.mutation.DeptID(); !ok {
-		v := sysuser.DefaultDeptID
-		_c.mutation.SetDeptID(v)
-	}
 	if _, ok := _c.mutation.LoginIP(); !ok {
 		v := sysuser.DefaultLoginIP
 		_c.mutation.SetLoginIP(v)

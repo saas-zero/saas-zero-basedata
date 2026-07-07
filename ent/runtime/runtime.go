@@ -233,10 +233,6 @@ func init() {
 			return nil
 		}
 	}()
-	// sysdeptDescLeaderID is the schema descriptor for leader_id field.
-	sysdeptDescLeaderID := sysdeptFields[1].Descriptor()
-	// sysdept.DefaultLeaderID holds the default value on creation for the leader_id field.
-	sysdept.DefaultLeaderID = sysdeptDescLeaderID.Default.(int64)
 	// sysdeptDescMobile is the schema descriptor for mobile field.
 	sysdeptDescMobile := sysdeptFields[2].Descriptor()
 	// sysdept.DefaultMobile holds the default value on creation for the mobile field.
@@ -1344,10 +1340,6 @@ func init() {
 	sysuser.DefaultEmail = sysuserDescEmail.Default.(string)
 	// sysuser.EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	sysuser.EmailValidator = sysuserDescEmail.Validators[0].(func(string) error)
-	// sysuserDescDeptID is the schema descriptor for dept_id field.
-	sysuserDescDeptID := sysuserFields[5].Descriptor()
-	// sysuser.DefaultDeptID holds the default value on creation for the dept_id field.
-	sysuser.DefaultDeptID = sysuserDescDeptID.Default.(int64)
 	// sysuserDescLoginIP is the schema descriptor for login_ip field.
 	sysuserDescLoginIP := sysuserFields[6].Descriptor()
 	// sysuser.DefaultLoginIP holds the default value on creation for the login_ip field.

@@ -108,6 +108,14 @@ func (l *InitLogic) InitCreateUser(req *types.UserReq) (*types.BaseResp, error) 
 	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
 }
 
+func (l *InitLogic) InitAll() (*types.BaseResp, error) {
+	resp, err := l.svcCtx.SysInit.InitAll(l.initCtx(), &apps.EmptyReq{})
+	if err != nil {
+		return nil, err
+	}
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg}, nil
+}
+
 func (l *InitLogic) InitCreateRole(req *types.RoleReq) (*types.BaseResp, error) {
 	rpcReq := &apps.RoleReq{
 		Name:   proto.String(req.Name),

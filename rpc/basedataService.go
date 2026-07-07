@@ -12,6 +12,7 @@ import (
 	sysdeptsServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysdepts"
 	sysdictdatasServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysdictdatas"
 	sysdictsServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysdicts"
+	sysinitServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysinit"
 	syslogsServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/syslogs"
 	sysmenusServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysmenus"
 	syspackagesServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/syspackages"
@@ -68,6 +69,7 @@ func main() {
 		apps.RegisterSysPackagesServer(grpcServer, syspackagesServer.NewSysPackagesServer(ctx))
 		apps.RegisterSysApisServer(grpcServer, sysapisServer.NewSysApisServer(ctx))
 		apps.RegisterSysLogsServer(grpcServer, syslogsServer.NewSysLogsServer(ctx))
+		apps.RegisterSysInitServer(grpcServer, sysinitServer.NewSysInitServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

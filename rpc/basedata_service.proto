@@ -631,6 +631,7 @@ service SysTenants {
   rpc DeleteTenant(IdsReq) returns (EmptyResp);
   rpc GetTenantList(TenantPageReq) returns (TenantListResp);
   rpc GetTenantById(IdReq) returns (TenantResp);
+  rpc GetTenantByCode(TenantReq) returns (TenantResp);
   rpc ChangeTenantStatus(TenantReq) returns (EmptyResp);
 }
 
@@ -653,4 +654,8 @@ service SysApis {
 service SysLogs {
   rpc GetLoginLogList(LogPageReq) returns (LoginLogListResp);
   rpc GetOperationLogList(LogPageReq) returns (OperationLogListResp);
+}
+
+service SysInit {
+  rpc InitAll(EmptyReq) returns (EmptyResp);
 }

@@ -12,6 +12,11 @@ func RegisterInitRoutes(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
+				Path:    "/init/all",
+				Handler: InitAllHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/init/package/create",
 				Handler: InitCreatePackageHandler(serverCtx),
 			},

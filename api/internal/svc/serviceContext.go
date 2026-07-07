@@ -8,11 +8,10 @@ import (
 	_ "github.com/lib/pq"
 
 	casbinapi "github.com/casbin/casbin/v2"
-	"github.com/saas-zer
 	"github.com/saas-zero/saas-zero-basedata/api/internal/config"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	commcasbin "github.com/saas-zero/saas-zero-common/pkg/casbin"
-	casbinapi "github.com/casbin/casbin/v2"
+	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
@@ -27,6 +26,7 @@ type ServiceContext struct {
 	SysPackages  apps.SysPackagesClient
 	SysApis      apps.SysApisClient
 	SysLogs      apps.SysLogsClient
+	SysInit      apps.SysInitClient
 	Enforcer     *casbinapi.SyncedEnforcer
 }
 
@@ -63,6 +63,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		SysPackages:  apps.NewSysPackagesClient(conn.Conn()),
 		SysApis:      apps.NewSysApisClient(conn.Conn()),
 		SysLogs:      apps.NewSysLogsClient(conn.Conn()),
+		SysInit:      apps.NewSysInitClient(conn.Conn()),
 		Enforcer:     enf,
 	}
 }

@@ -8,6 +8,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -37,7 +38,7 @@ func (l *DeleteDeptLogic) DeleteDept(in *apps.IdsReq) (*apps.EmptyResp, error) {
 			return nil, err
 		}
 		if childCount > 0 {
-			return &apps.EmptyResp{Code: 400, Msg: "该部门下存在子部门，无法删除"}, nil
+			return &apps.EmptyResp{Code: int32(errno.HasSubDept.Code), Msg: errno.HasSubDept.Msg}, nil
 		}
 	}
 

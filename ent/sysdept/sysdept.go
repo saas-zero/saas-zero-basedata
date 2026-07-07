@@ -142,8 +142,6 @@ var (
 	SortValidator func(uint32) error
 	// NameValidator is a validator for the "name" field. It is called by the builders before save.
 	NameValidator func(string) error
-	// DefaultLeaderID holds the default value on creation for the "leader_id" field.
-	DefaultLeaderID int64
 	// DefaultMobile holds the default value on creation for the "mobile" field.
 	DefaultMobile string
 	// MobileValidator is a validator for the "mobile" field. It is called by the builders before save.

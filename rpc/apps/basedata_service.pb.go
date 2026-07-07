@@ -6145,14 +6145,15 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x0eDeleteDictData\x12\x18.basedata_service.IdsReq\x1a\x1b.basedata_service.EmptyResp\x12X\n" +
 	"\x0fGetDictDataList\x12!.basedata_service.DictDataPageReq\x1a\".basedata_service.DictDataListResp\x12J\n" +
 	"\x0fGetDictDataById\x12\x17.basedata_service.IdReq\x1a\x1e.basedata_service.DictDataResp\x12U\n" +
-	"\x14GetDictDataByDictKey\x12\x19.basedata_service.DictReq\x1a\".basedata_service.DictDataListResp2\xd5\x03\n" +
+	"\x14GetDictDataByDictKey\x12\x19.basedata_service.DictReq\x1a\".basedata_service.DictDataListResp2\xa3\x04\n" +
 	"\n" +
 	"SysTenants\x12I\n" +
 	"\fCreateTenant\x12\x1b.basedata_service.TenantReq\x1a\x1c.basedata_service.TenantResp\x12I\n" +
 	"\fUpdateTenant\x12\x1b.basedata_service.TenantReq\x1a\x1c.basedata_service.TenantResp\x12E\n" +
 	"\fDeleteTenant\x12\x18.basedata_service.IdsReq\x1a\x1b.basedata_service.EmptyResp\x12R\n" +
 	"\rGetTenantList\x12\x1f.basedata_service.TenantPageReq\x1a .basedata_service.TenantListResp\x12F\n" +
-	"\rGetTenantById\x12\x17.basedata_service.IdReq\x1a\x1c.basedata_service.TenantResp\x12N\n" +
+	"\rGetTenantById\x12\x17.basedata_service.IdReq\x1a\x1c.basedata_service.TenantResp\x12L\n" +
+	"\x0fGetTenantByCode\x12\x1b.basedata_service.TenantReq\x1a\x1c.basedata_service.TenantResp\x12N\n" +
 	"\x12ChangeTenantStatus\x12\x1b.basedata_service.TenantReq\x1a\x1b.basedata_service.EmptyResp2\x92\x03\n" +
 	"\vSysPackages\x12L\n" +
 	"\rCreatePackage\x12\x1c.basedata_service.PackageReq\x1a\x1d.basedata_service.PackageResp\x12L\n" +
@@ -6170,7 +6171,9 @@ const file_basedata_service_proto_rawDesc = "" +
 	"GetApiById\x12\x17.basedata_service.IdReq\x1a\x19.basedata_service.ApiResp2\xbb\x01\n" +
 	"\aSysLogs\x12S\n" +
 	"\x0fGetLoginLogList\x12\x1c.basedata_service.LogPageReq\x1a\".basedata_service.LoginLogListResp\x12[\n" +
-	"\x13GetOperationLogList\x12\x1c.basedata_service.LogPageReq\x1a&.basedata_service.OperationLogListRespB\bZ\x06./appsb\x06proto3"
+	"\x13GetOperationLogList\x12\x1c.basedata_service.LogPageReq\x1a&.basedata_service.OperationLogListResp2M\n" +
+	"\aSysInit\x12B\n" +
+	"\aInitAll\x12\x1a.basedata_service.EmptyReq\x1a\x1b.basedata_service.EmptyRespB\bZ\x06./appsb\x06proto3"
 
 var (
 	file_basedata_service_proto_rawDescOnce sync.Once
@@ -6316,78 +6319,82 @@ var file_basedata_service_proto_depIdxs = []int32{
 	4,  // 66: basedata_service.SysTenants.DeleteTenant:input_type -> basedata_service.IdsReq
 	39, // 67: basedata_service.SysTenants.GetTenantList:input_type -> basedata_service.TenantPageReq
 	3,  // 68: basedata_service.SysTenants.GetTenantById:input_type -> basedata_service.IdReq
-	38, // 69: basedata_service.SysTenants.ChangeTenantStatus:input_type -> basedata_service.TenantReq
-	43, // 70: basedata_service.SysPackages.CreatePackage:input_type -> basedata_service.PackageReq
-	43, // 71: basedata_service.SysPackages.UpdatePackage:input_type -> basedata_service.PackageReq
-	4,  // 72: basedata_service.SysPackages.DeletePackage:input_type -> basedata_service.IdsReq
-	44, // 73: basedata_service.SysPackages.GetPackageList:input_type -> basedata_service.PackagePageReq
-	3,  // 74: basedata_service.SysPackages.GetPackageById:input_type -> basedata_service.IdReq
-	48, // 75: basedata_service.SysApis.CreateApi:input_type -> basedata_service.ApiReq
-	48, // 76: basedata_service.SysApis.UpdateApi:input_type -> basedata_service.ApiReq
-	4,  // 77: basedata_service.SysApis.DeleteApi:input_type -> basedata_service.IdsReq
-	49, // 78: basedata_service.SysApis.GetApiList:input_type -> basedata_service.ApiPageReq
-	3,  // 79: basedata_service.SysApis.GetApiById:input_type -> basedata_service.IdReq
-	56, // 80: basedata_service.SysLogs.GetLoginLogList:input_type -> basedata_service.LogPageReq
-	56, // 81: basedata_service.SysLogs.GetOperationLogList:input_type -> basedata_service.LogPageReq
-	9,  // 82: basedata_service.SysUsers.CreateUser:output_type -> basedata_service.UserResp
-	9,  // 83: basedata_service.SysUsers.UpdateUser:output_type -> basedata_service.UserResp
-	55, // 84: basedata_service.SysUsers.DeleteUser:output_type -> basedata_service.EmptyResp
-	8,  // 85: basedata_service.SysUsers.GetUserList:output_type -> basedata_service.UserListResp
-	9,  // 86: basedata_service.SysUsers.GetUserById:output_type -> basedata_service.UserResp
-	9,  // 87: basedata_service.SysUsers.GetUserByUsername:output_type -> basedata_service.UserResp
-	55, // 88: basedata_service.SysUsers.ResetPassword:output_type -> basedata_service.EmptyResp
-	55, // 89: basedata_service.SysUsers.AssignRoles:output_type -> basedata_service.EmptyResp
-	14, // 90: basedata_service.SysRoles.CreateRole:output_type -> basedata_service.RoleResp
-	14, // 91: basedata_service.SysRoles.UpdateRole:output_type -> basedata_service.RoleResp
-	55, // 92: basedata_service.SysRoles.DeleteRole:output_type -> basedata_service.EmptyResp
-	13, // 93: basedata_service.SysRoles.GetRoleList:output_type -> basedata_service.RoleListResp
-	14, // 94: basedata_service.SysRoles.GetRoleById:output_type -> basedata_service.RoleResp
-	55, // 95: basedata_service.SysRoles.AssignMenus:output_type -> basedata_service.EmptyResp
-	55, // 96: basedata_service.SysRoles.AssignApis:output_type -> basedata_service.EmptyResp
-	20, // 97: basedata_service.SysDepts.CreateDept:output_type -> basedata_service.DeptResp
-	20, // 98: basedata_service.SysDepts.UpdateDept:output_type -> basedata_service.DeptResp
-	55, // 99: basedata_service.SysDepts.DeleteDept:output_type -> basedata_service.EmptyResp
-	18, // 100: basedata_service.SysDepts.GetDeptList:output_type -> basedata_service.DeptListResp
-	20, // 101: basedata_service.SysDepts.GetDeptById:output_type -> basedata_service.DeptResp
-	19, // 102: basedata_service.SysDepts.GetDeptTree:output_type -> basedata_service.DeptTreeResp
-	26, // 103: basedata_service.SysMenus.CreateMenu:output_type -> basedata_service.MenuResp
-	26, // 104: basedata_service.SysMenus.UpdateMenu:output_type -> basedata_service.MenuResp
-	55, // 105: basedata_service.SysMenus.DeleteMenu:output_type -> basedata_service.EmptyResp
-	24, // 106: basedata_service.SysMenus.GetMenuList:output_type -> basedata_service.MenuListResp
-	26, // 107: basedata_service.SysMenus.GetMenuById:output_type -> basedata_service.MenuResp
-	25, // 108: basedata_service.SysMenus.GetMenuTree:output_type -> basedata_service.MenuTreeResp
-	25, // 109: basedata_service.SysMenus.GetMenuRouters:output_type -> basedata_service.MenuTreeResp
-	32, // 110: basedata_service.SysDicts.CreateDict:output_type -> basedata_service.DictResp
-	32, // 111: basedata_service.SysDicts.UpdateDict:output_type -> basedata_service.DictResp
-	55, // 112: basedata_service.SysDicts.DeleteDict:output_type -> basedata_service.EmptyResp
-	31, // 113: basedata_service.SysDicts.GetDictList:output_type -> basedata_service.DictListResp
-	32, // 114: basedata_service.SysDicts.GetDictById:output_type -> basedata_service.DictResp
-	36, // 115: basedata_service.SysDictDatas.CreateDictData:output_type -> basedata_service.DictDataResp
-	36, // 116: basedata_service.SysDictDatas.UpdateDictData:output_type -> basedata_service.DictDataResp
-	55, // 117: basedata_service.SysDictDatas.DeleteDictData:output_type -> basedata_service.EmptyResp
-	35, // 118: basedata_service.SysDictDatas.GetDictDataList:output_type -> basedata_service.DictDataListResp
-	36, // 119: basedata_service.SysDictDatas.GetDictDataById:output_type -> basedata_service.DictDataResp
-	35, // 120: basedata_service.SysDictDatas.GetDictDataByDictKey:output_type -> basedata_service.DictDataListResp
-	41, // 121: basedata_service.SysTenants.CreateTenant:output_type -> basedata_service.TenantResp
-	41, // 122: basedata_service.SysTenants.UpdateTenant:output_type -> basedata_service.TenantResp
-	55, // 123: basedata_service.SysTenants.DeleteTenant:output_type -> basedata_service.EmptyResp
-	40, // 124: basedata_service.SysTenants.GetTenantList:output_type -> basedata_service.TenantListResp
-	41, // 125: basedata_service.SysTenants.GetTenantById:output_type -> basedata_service.TenantResp
-	55, // 126: basedata_service.SysTenants.ChangeTenantStatus:output_type -> basedata_service.EmptyResp
-	46, // 127: basedata_service.SysPackages.CreatePackage:output_type -> basedata_service.PackageResp
-	46, // 128: basedata_service.SysPackages.UpdatePackage:output_type -> basedata_service.PackageResp
-	55, // 129: basedata_service.SysPackages.DeletePackage:output_type -> basedata_service.EmptyResp
-	45, // 130: basedata_service.SysPackages.GetPackageList:output_type -> basedata_service.PackageListResp
-	46, // 131: basedata_service.SysPackages.GetPackageById:output_type -> basedata_service.PackageResp
-	51, // 132: basedata_service.SysApis.CreateApi:output_type -> basedata_service.ApiResp
-	51, // 133: basedata_service.SysApis.UpdateApi:output_type -> basedata_service.ApiResp
-	55, // 134: basedata_service.SysApis.DeleteApi:output_type -> basedata_service.EmptyResp
-	50, // 135: basedata_service.SysApis.GetApiList:output_type -> basedata_service.ApiListResp
-	51, // 136: basedata_service.SysApis.GetApiById:output_type -> basedata_service.ApiResp
-	57, // 137: basedata_service.SysLogs.GetLoginLogList:output_type -> basedata_service.LoginLogListResp
-	58, // 138: basedata_service.SysLogs.GetOperationLogList:output_type -> basedata_service.OperationLogListResp
-	82, // [82:139] is the sub-list for method output_type
-	25, // [25:82] is the sub-list for method input_type
+	38, // 69: basedata_service.SysTenants.GetTenantByCode:input_type -> basedata_service.TenantReq
+	38, // 70: basedata_service.SysTenants.ChangeTenantStatus:input_type -> basedata_service.TenantReq
+	43, // 71: basedata_service.SysPackages.CreatePackage:input_type -> basedata_service.PackageReq
+	43, // 72: basedata_service.SysPackages.UpdatePackage:input_type -> basedata_service.PackageReq
+	4,  // 73: basedata_service.SysPackages.DeletePackage:input_type -> basedata_service.IdsReq
+	44, // 74: basedata_service.SysPackages.GetPackageList:input_type -> basedata_service.PackagePageReq
+	3,  // 75: basedata_service.SysPackages.GetPackageById:input_type -> basedata_service.IdReq
+	48, // 76: basedata_service.SysApis.CreateApi:input_type -> basedata_service.ApiReq
+	48, // 77: basedata_service.SysApis.UpdateApi:input_type -> basedata_service.ApiReq
+	4,  // 78: basedata_service.SysApis.DeleteApi:input_type -> basedata_service.IdsReq
+	49, // 79: basedata_service.SysApis.GetApiList:input_type -> basedata_service.ApiPageReq
+	3,  // 80: basedata_service.SysApis.GetApiById:input_type -> basedata_service.IdReq
+	56, // 81: basedata_service.SysLogs.GetLoginLogList:input_type -> basedata_service.LogPageReq
+	56, // 82: basedata_service.SysLogs.GetOperationLogList:input_type -> basedata_service.LogPageReq
+	54, // 83: basedata_service.SysInit.InitAll:input_type -> basedata_service.EmptyReq
+	9,  // 84: basedata_service.SysUsers.CreateUser:output_type -> basedata_service.UserResp
+	9,  // 85: basedata_service.SysUsers.UpdateUser:output_type -> basedata_service.UserResp
+	55, // 86: basedata_service.SysUsers.DeleteUser:output_type -> basedata_service.EmptyResp
+	8,  // 87: basedata_service.SysUsers.GetUserList:output_type -> basedata_service.UserListResp
+	9,  // 88: basedata_service.SysUsers.GetUserById:output_type -> basedata_service.UserResp
+	9,  // 89: basedata_service.SysUsers.GetUserByUsername:output_type -> basedata_service.UserResp
+	55, // 90: basedata_service.SysUsers.ResetPassword:output_type -> basedata_service.EmptyResp
+	55, // 91: basedata_service.SysUsers.AssignRoles:output_type -> basedata_service.EmptyResp
+	14, // 92: basedata_service.SysRoles.CreateRole:output_type -> basedata_service.RoleResp
+	14, // 93: basedata_service.SysRoles.UpdateRole:output_type -> basedata_service.RoleResp
+	55, // 94: basedata_service.SysRoles.DeleteRole:output_type -> basedata_service.EmptyResp
+	13, // 95: basedata_service.SysRoles.GetRoleList:output_type -> basedata_service.RoleListResp
+	14, // 96: basedata_service.SysRoles.GetRoleById:output_type -> basedata_service.RoleResp
+	55, // 97: basedata_service.SysRoles.AssignMenus:output_type -> basedata_service.EmptyResp
+	55, // 98: basedata_service.SysRoles.AssignApis:output_type -> basedata_service.EmptyResp
+	20, // 99: basedata_service.SysDepts.CreateDept:output_type -> basedata_service.DeptResp
+	20, // 100: basedata_service.SysDepts.UpdateDept:output_type -> basedata_service.DeptResp
+	55, // 101: basedata_service.SysDepts.DeleteDept:output_type -> basedata_service.EmptyResp
+	18, // 102: basedata_service.SysDepts.GetDeptList:output_type -> basedata_service.DeptListResp
+	20, // 103: basedata_service.SysDepts.GetDeptById:output_type -> basedata_service.DeptResp
+	19, // 104: basedata_service.SysDepts.GetDeptTree:output_type -> basedata_service.DeptTreeResp
+	26, // 105: basedata_service.SysMenus.CreateMenu:output_type -> basedata_service.MenuResp
+	26, // 106: basedata_service.SysMenus.UpdateMenu:output_type -> basedata_service.MenuResp
+	55, // 107: basedata_service.SysMenus.DeleteMenu:output_type -> basedata_service.EmptyResp
+	24, // 108: basedata_service.SysMenus.GetMenuList:output_type -> basedata_service.MenuListResp
+	26, // 109: basedata_service.SysMenus.GetMenuById:output_type -> basedata_service.MenuResp
+	25, // 110: basedata_service.SysMenus.GetMenuTree:output_type -> basedata_service.MenuTreeResp
+	25, // 111: basedata_service.SysMenus.GetMenuRouters:output_type -> basedata_service.MenuTreeResp
+	32, // 112: basedata_service.SysDicts.CreateDict:output_type -> basedata_service.DictResp
+	32, // 113: basedata_service.SysDicts.UpdateDict:output_type -> basedata_service.DictResp
+	55, // 114: basedata_service.SysDicts.DeleteDict:output_type -> basedata_service.EmptyResp
+	31, // 115: basedata_service.SysDicts.GetDictList:output_type -> basedata_service.DictListResp
+	32, // 116: basedata_service.SysDicts.GetDictById:output_type -> basedata_service.DictResp
+	36, // 117: basedata_service.SysDictDatas.CreateDictData:output_type -> basedata_service.DictDataResp
+	36, // 118: basedata_service.SysDictDatas.UpdateDictData:output_type -> basedata_service.DictDataResp
+	55, // 119: basedata_service.SysDictDatas.DeleteDictData:output_type -> basedata_service.EmptyResp
+	35, // 120: basedata_service.SysDictDatas.GetDictDataList:output_type -> basedata_service.DictDataListResp
+	36, // 121: basedata_service.SysDictDatas.GetDictDataById:output_type -> basedata_service.DictDataResp
+	35, // 122: basedata_service.SysDictDatas.GetDictDataByDictKey:output_type -> basedata_service.DictDataListResp
+	41, // 123: basedata_service.SysTenants.CreateTenant:output_type -> basedata_service.TenantResp
+	41, // 124: basedata_service.SysTenants.UpdateTenant:output_type -> basedata_service.TenantResp
+	55, // 125: basedata_service.SysTenants.DeleteTenant:output_type -> basedata_service.EmptyResp
+	40, // 126: basedata_service.SysTenants.GetTenantList:output_type -> basedata_service.TenantListResp
+	41, // 127: basedata_service.SysTenants.GetTenantById:output_type -> basedata_service.TenantResp
+	41, // 128: basedata_service.SysTenants.GetTenantByCode:output_type -> basedata_service.TenantResp
+	55, // 129: basedata_service.SysTenants.ChangeTenantStatus:output_type -> basedata_service.EmptyResp
+	46, // 130: basedata_service.SysPackages.CreatePackage:output_type -> basedata_service.PackageResp
+	46, // 131: basedata_service.SysPackages.UpdatePackage:output_type -> basedata_service.PackageResp
+	55, // 132: basedata_service.SysPackages.DeletePackage:output_type -> basedata_service.EmptyResp
+	45, // 133: basedata_service.SysPackages.GetPackageList:output_type -> basedata_service.PackageListResp
+	46, // 134: basedata_service.SysPackages.GetPackageById:output_type -> basedata_service.PackageResp
+	51, // 135: basedata_service.SysApis.CreateApi:output_type -> basedata_service.ApiResp
+	51, // 136: basedata_service.SysApis.UpdateApi:output_type -> basedata_service.ApiResp
+	55, // 137: basedata_service.SysApis.DeleteApi:output_type -> basedata_service.EmptyResp
+	50, // 138: basedata_service.SysApis.GetApiList:output_type -> basedata_service.ApiListResp
+	51, // 139: basedata_service.SysApis.GetApiById:output_type -> basedata_service.ApiResp
+	57, // 140: basedata_service.SysLogs.GetLoginLogList:output_type -> basedata_service.LoginLogListResp
+	58, // 141: basedata_service.SysLogs.GetOperationLogList:output_type -> basedata_service.OperationLogListResp
+	55, // 142: basedata_service.SysInit.InitAll:output_type -> basedata_service.EmptyResp
+	84, // [84:143] is the sub-list for method output_type
+	25, // [25:84] is the sub-list for method input_type
 	25, // [25:25] is the sub-list for extension type_name
 	25, // [25:25] is the sub-list for extension extendee
 	0,  // [0:25] is the sub-list for field type_name
@@ -6445,7 +6452,7 @@ func file_basedata_service_proto_init() {
 			NumEnums:      0,
 			NumMessages:   59,
 			NumExtensions: 0,
-			NumServices:   10,
+			NumServices:   11,
 		},
 		GoTypes:           file_basedata_service_proto_goTypes,
 		DependencyIndexes: file_basedata_service_proto_depIdxs,

@@ -9,6 +9,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -40,7 +41,7 @@ func (l *DeletePackageLogic) DeletePackage(in *apps.IdsReq) (*apps.EmptyResp, er
 			return nil, err
 		}
 		if tenantCount > 0 {
-			return &apps.EmptyResp{Code: 400, Msg: "该套餐已被租户使用，无法删除"}, nil
+			return &apps.EmptyResp{Code: int32(errno.PackageInUse.Code), Msg: errno.PackageInUse.Msg}, nil
 		}
 	}
 

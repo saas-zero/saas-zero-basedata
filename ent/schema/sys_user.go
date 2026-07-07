@@ -16,12 +16,12 @@ type SysUser struct {
 
 func (SysUser) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("username").Immutable().Unique().NotEmpty().MaxLen(128).Comment("用户名 | Username"),
+		field.String("username").Immutable().NotEmpty().MaxLen(128).Comment("用户名 | Username"),
 		field.String("password").NotEmpty().MaxLen(255).Comment("密码 | Password"),
 		field.String("nickname").Default("").MaxLen(128).Comment("昵称 | Nickname"),
 		field.String("mobile").Default("").MaxLen(20).Comment("手机号码 | Mobile"),
 		field.String("email").Default("").MaxLen(64).Comment("邮箱 | Email"),
-		field.Int64("dept_id").Default(0).Optional().Comment("部门ID | Department ID"),
+		field.Int64("dept_id").Optional().Comment("部门ID | Department ID"),
 		field.String("login_ip").Default("").MaxLen(64).Comment("最后登录IP | Last Login IP"),
 		field.Time("login_at").Optional().Comment("最后登录时间 | Last Login At"),
 		field.Int32("login_error_count").Default(0).Comment("连续登录错误次数 | Login Error Count"),
@@ -60,7 +60,7 @@ func (SysUser) Annotations() []schema.Annotation {
 
 func (SysUser) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("tenant_id", "username"),
+		index.Fields("tenant_id", "username").Unique(),
 		index.Fields("tenant_id", "mobile"),
 		index.Fields("tenant_id", "email"),
 		index.Fields("dept_id"),

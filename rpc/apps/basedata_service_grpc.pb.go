@@ -1890,6 +1890,7 @@ const (
 	SysTenants_DeleteTenant_FullMethodName       = "/basedata_service.SysTenants/DeleteTenant"
 	SysTenants_GetTenantList_FullMethodName      = "/basedata_service.SysTenants/GetTenantList"
 	SysTenants_GetTenantById_FullMethodName      = "/basedata_service.SysTenants/GetTenantById"
+	SysTenants_GetTenantByCode_FullMethodName    = "/basedata_service.SysTenants/GetTenantByCode"
 	SysTenants_ChangeTenantStatus_FullMethodName = "/basedata_service.SysTenants/ChangeTenantStatus"
 )
 
@@ -1902,6 +1903,7 @@ type SysTenantsClient interface {
 	DeleteTenant(ctx context.Context, in *IdsReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	GetTenantList(ctx context.Context, in *TenantPageReq, opts ...grpc.CallOption) (*TenantListResp, error)
 	GetTenantById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*TenantResp, error)
+	GetTenantByCode(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*TenantResp, error)
 	ChangeTenantStatus(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*EmptyResp, error)
 }
 
@@ -1963,6 +1965,16 @@ func (c *sysTenantsClient) GetTenantById(ctx context.Context, in *IdReq, opts ..
 	return out, nil
 }
 
+func (c *sysTenantsClient) GetTenantByCode(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*TenantResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(TenantResp)
+	err := c.cc.Invoke(ctx, SysTenants_GetTenantByCode_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *sysTenantsClient) ChangeTenantStatus(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*EmptyResp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(EmptyResp)
@@ -1982,6 +1994,7 @@ type SysTenantsServer interface {
 	DeleteTenant(context.Context, *IdsReq) (*EmptyResp, error)
 	GetTenantList(context.Context, *TenantPageReq) (*TenantListResp, error)
 	GetTenantById(context.Context, *IdReq) (*TenantResp, error)
+	GetTenantByCode(context.Context, *TenantReq) (*TenantResp, error)
 	ChangeTenantStatus(context.Context, *TenantReq) (*EmptyResp, error)
 	mustEmbedUnimplementedSysTenantsServer()
 }
@@ -2007,6 +2020,9 @@ func (UnimplementedSysTenantsServer) GetTenantList(context.Context, *TenantPageR
 }
 func (UnimplementedSysTenantsServer) GetTenantById(context.Context, *IdReq) (*TenantResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTenantById not implemented")
+}
+func (UnimplementedSysTenantsServer) GetTenantByCode(context.Context, *TenantReq) (*TenantResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTenantByCode not implemented")
 }
 func (UnimplementedSysTenantsServer) ChangeTenantStatus(context.Context, *TenantReq) (*EmptyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangeTenantStatus not implemented")
@@ -2122,6 +2138,24 @@ func _SysTenants_GetTenantById_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SysTenants_GetTenantByCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TenantReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysTenantsServer).GetTenantByCode(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysTenants_GetTenantByCode_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysTenantsServer).GetTenantByCode(ctx, req.(*TenantReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _SysTenants_ChangeTenantStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(TenantReq)
 	if err := dec(in); err != nil {
@@ -2166,6 +2200,10 @@ var SysTenants_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTenantById",
 			Handler:    _SysTenants_GetTenantById_Handler,
+		},
+		{
+			MethodName: "GetTenantByCode",
+			Handler:    _SysTenants_GetTenantByCode_Handler,
 		},
 		{
 			MethodName: "ChangeTenantStatus",
@@ -2818,6 +2856,108 @@ var SysLogs_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOperationLogList",
 			Handler:    _SysLogs_GetOperationLogList_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "basedata_service.proto",
+}
+
+const (
+	SysInit_InitAll_FullMethodName = "/basedata_service.SysInit/InitAll"
+)
+
+// SysInitClient is the client API for SysInit service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type SysInitClient interface {
+	InitAll(ctx context.Context, in *EmptyReq, opts ...grpc.CallOption) (*EmptyResp, error)
+}
+
+type sysInitClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewSysInitClient(cc grpc.ClientConnInterface) SysInitClient {
+	return &sysInitClient{cc}
+}
+
+func (c *sysInitClient) InitAll(ctx context.Context, in *EmptyReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EmptyResp)
+	err := c.cc.Invoke(ctx, SysInit_InitAll_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// SysInitServer is the server API for SysInit service.
+// All implementations must embed UnimplementedSysInitServer
+// for forward compatibility.
+type SysInitServer interface {
+	InitAll(context.Context, *EmptyReq) (*EmptyResp, error)
+	mustEmbedUnimplementedSysInitServer()
+}
+
+// UnimplementedSysInitServer must be embedded to have
+// forward compatible implementations.
+//
+// NOTE: this should be embedded by value instead of pointer to avoid a nil
+// pointer dereference when methods are called.
+type UnimplementedSysInitServer struct{}
+
+func (UnimplementedSysInitServer) InitAll(context.Context, *EmptyReq) (*EmptyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InitAll not implemented")
+}
+func (UnimplementedSysInitServer) mustEmbedUnimplementedSysInitServer() {}
+func (UnimplementedSysInitServer) testEmbeddedByValue()                 {}
+
+// UnsafeSysInitServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to SysInitServer will
+// result in compilation errors.
+type UnsafeSysInitServer interface {
+	mustEmbedUnimplementedSysInitServer()
+}
+
+func RegisterSysInitServer(s grpc.ServiceRegistrar, srv SysInitServer) {
+	// If the following call pancis, it indicates UnimplementedSysInitServer was
+	// embedded by pointer and is nil.  This will cause panics if an
+	// unimplemented method is ever invoked, so we test this at initialization
+	// time to prevent it from happening at runtime later due to I/O.
+	if t, ok := srv.(interface{ testEmbeddedByValue() }); ok {
+		t.testEmbeddedByValue()
+	}
+	s.RegisterService(&SysInit_ServiceDesc, srv)
+}
+
+func _SysInit_InitAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EmptyReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysInitServer).InitAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysInit_InitAll_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysInitServer).InitAll(ctx, req.(*EmptyReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// SysInit_ServiceDesc is the grpc.ServiceDesc for SysInit service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var SysInit_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "basedata_service.SysInit",
+	HandlerType: (*SysInitServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "InitAll",
+			Handler:    _SysInit_InitAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

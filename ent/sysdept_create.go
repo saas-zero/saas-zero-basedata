@@ -308,10 +308,6 @@ func (_c *SysDeptCreate) defaults() error {
 		v := sysdept.DefaultSort
 		_c.mutation.SetSort(v)
 	}
-	if _, ok := _c.mutation.LeaderID(); !ok {
-		v := sysdept.DefaultLeaderID
-		_c.mutation.SetLeaderID(v)
-	}
 	if _, ok := _c.mutation.Mobile(); !ok {
 		v := sysdept.DefaultMobile
 		_c.mutation.SetMobile(v)

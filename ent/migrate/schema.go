@@ -70,7 +70,7 @@ var (
 		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "部门电话 | Department Phone", Default: ""},
 		{Name: "email", Type: field.TypeString, Size: 64, Comment: "部门邮箱 | Department Email", Default: ""},
 		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
-		{Name: "leader_id", Type: field.TypeInt64, Nullable: true, Comment: "负责人ID | Leader ID", Default: 0},
+		{Name: "leader_id", Type: field.TypeInt64, Nullable: true, Comment: "负责人ID | Leader ID"},
 		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
 	// SysDeptsTable holds the schema information for the "sys_depts" table.
@@ -516,7 +516,7 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "username", Type: field.TypeString, Unique: true, Size: 128, Comment: "用户名 | Username"},
+		{Name: "username", Type: field.TypeString, Size: 128, Comment: "用户名 | Username"},
 		{Name: "password", Type: field.TypeString, Size: 255, Comment: "密码 | Password"},
 		{Name: "nickname", Type: field.TypeString, Size: 128, Comment: "昵称 | Nickname", Default: ""},
 		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "手机号码 | Mobile", Default: ""},
@@ -526,7 +526,7 @@ var (
 		{Name: "login_error_count", Type: field.TypeInt32, Comment: "连续登录错误次数 | Login Error Count", Default: 0},
 		{Name: "lockout_until", Type: field.TypeTime, Nullable: true, Comment: "锁定截止时间 | Lockout Until"},
 		{Name: "position", Type: field.TypeString, Size: 64, Comment: "岗位 | Position", Default: ""},
-		{Name: "dept_id", Type: field.TypeInt64, Nullable: true, Comment: "部门ID | Department ID", Default: 0},
+		{Name: "dept_id", Type: field.TypeInt64, Nullable: true, Comment: "部门ID | Department ID"},
 		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
 	// SysUsersTable holds the schema information for the "sys_users" table.
@@ -557,7 +557,7 @@ var (
 			},
 			{
 				Name:    "sysuser_tenant_id_username",
-				Unique:  false,
+				Unique:  true,
 				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[12]},
 			},
 			{

@@ -176,8 +176,6 @@ var (
 	DefaultEmail string
 	// EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	EmailValidator func(string) error
-	// DefaultDeptID holds the default value on creation for the "dept_id" field.
-	DefaultDeptID int64
 	// DefaultLoginIP holds the default value on creation for the "login_ip" field.
 	DefaultLoginIP string
 	// LoginIPValidator is a validator for the "login_ip" field. It is called by the builders before save.

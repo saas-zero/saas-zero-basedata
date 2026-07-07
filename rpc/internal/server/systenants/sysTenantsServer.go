@@ -48,6 +48,11 @@ func (s *SysTenantsServer) GetTenantById(ctx context.Context, in *apps.IdReq) (*
 	return l.GetTenantById(in)
 }
 
+func (s *SysTenantsServer) GetTenantByCode(ctx context.Context, in *apps.TenantReq) (*apps.TenantResp, error) {
+	l := systenantslogic.NewGetTenantByCodeLogic(ctx, s.svcCtx)
+	return l.GetTenantByCode(in)
+}
+
 func (s *SysTenantsServer) ChangeTenantStatus(ctx context.Context, in *apps.TenantReq) (*apps.EmptyResp, error) {
 	l := systenantslogic.NewChangeTenantStatusLogic(ctx, s.svcCtx)
 	return l.ChangeTenantStatus(in)
