@@ -62,3 +62,8 @@ func (s *SysUsersServer) AssignRoles(ctx context.Context, in *apps.UserReq) (*ap
 	l := sysuserslogic.NewAssignRolesLogic(ctx, s.svcCtx)
 	return l.AssignRoles(in)
 }
+
+func (s *SysUsersServer) GetUserRoleCodes(ctx context.Context, in *apps.IdReq) (*apps.RoleCodesResp, error) {
+	l := sysuserslogic.NewGetUserRoleCodesLogic(ctx, s.svcCtx)
+	return l.GetUserRoleCodes(in)
+}

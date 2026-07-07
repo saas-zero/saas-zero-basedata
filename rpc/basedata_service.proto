@@ -577,6 +577,13 @@ service SysUsers {
   rpc GetUserByUsername(UserReq) returns (UserResp);
   rpc ResetPassword(UserReq) returns (EmptyResp);
   rpc AssignRoles(UserReq) returns (EmptyResp);
+  rpc GetUserRoleCodes(IdReq) returns (RoleCodesResp);
+}
+
+message RoleCodesResp {
+  int32 code = 1;
+  string msg = 2;
+  repeated string codes = 3;
 }
 
 service SysRoles {

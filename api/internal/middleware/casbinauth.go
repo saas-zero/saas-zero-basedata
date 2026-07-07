@@ -1,15 +1,33 @@
 package middleware
 
 import (
+	"context"
 	"net/http"
 	"strconv"
 
+	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 
 	casbinapi "github.com/casbin/casbin/v2"
 )
 
-func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.HandlerFunc {
+type roleCodesKeyType string
+
+const roleCodesCtxKey roleCodesKeyType = "role_codes"
+
+func withRoleCodes(ctx context.Context, codes []string) context.Context {
+	return context.WithValue(ctx, roleCodesCtxKey, codes)
+}
+
+func getRoleCodesFromCtx(ctx context.Context) []string {
+	if v, ok := ctx.Value(roleCodesCtxKey).([]string); ok {
+		return v
+	}
+	return nil
+}
+
+func CasbinAuth(enf *casbinapi.SyncedEnforcer, usersClient apps.SysUsersClient) func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			if r.URL.Path == "" || r.URL.Path[0] != '/' {
@@ -21,9 +39,22 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 				return
 			}
 			tenantId := mixins.GetCurrentTenantId(r.Context())
-			roleCodes := GetRoleCodes(r.Context())
+			userId := mixins.GetCurrentUserId(r.Context())
+
+			// Fetch role codes via gRPC (not from JWT)
+			roleCodes := getRoleCodesFromCtx(r.Context())
+			if roleCodes == nil {
+				resp, err := usersClient.GetUserRoleCodes(r.Context(), &apps.IdReq{Id: userId})
+				if err != nil || resp == nil {
+					http.Error(w, errno.InvalidToken.JSON(), http.StatusUnauthorized)
+					return
+				}
+				roleCodes = resp.GetCodes()
+				r = r.WithContext(withRoleCodes(r.Context(), roleCodes))
+			}
+
 			if len(roleCodes) == 0 {
-				http.Error(w, `{"code":403,"msg":"no roles"}`, http.StatusForbidden)
+				http.Error(w, errno.NoRoles.JSON(), http.StatusForbidden)
 				return
 			}
 			path := r.URL.Path
@@ -37,7 +68,7 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 				}
 			}
 			if !allowed {
-				http.Error(w, `{"code":403,"msg":"forbidden"}`, http.StatusForbidden)
+				http.Error(w, errno.ForbiddenOperation.JSON(), http.StatusForbidden)
 				return
 			}
 			next(w, r)

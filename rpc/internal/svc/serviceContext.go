@@ -12,11 +12,13 @@ import (
 	_ "github.com/saas-zero/saas-zero-basedata/ent/runtime"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/config"
 	commcasbin "github.com/saas-zero/saas-zero-common/pkg/casbin"
+	"github.com/zeromicro/go-zero/core/stores/redis"
 )
 
 type ServiceContext struct {
 	Config   config.Config
 	DB       *ent.Client
+	Redis    *redis.Redis
 	Enforcer *casbinapi.SyncedEnforcer
 }
 
@@ -36,9 +38,14 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		log.Fatalf("failed initializing casbin: %v", err)
 	}
+	rds, err := redis.NewRedis(c.Redis)
+	if err != nil {
+		log.Fatalf("failed initializing redis: %v", err)
+	}
 	return &ServiceContext{
 		Config:   c,
 		DB:       client,
+		Redis:    rds,
 		Enforcer: enf,
 	}
 }

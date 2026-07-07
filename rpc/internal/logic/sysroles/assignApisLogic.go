@@ -2,9 +2,12 @@ package sysroleslogic
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
@@ -38,6 +41,13 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 			continue
 		}
 		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), strconv.FormatInt(apiId, 10))
+	}
+
+	users, err := l.svcCtx.DB.SysUser.Query().Where(sysuser.HasRolesWith(sysrole.CodeEQ(roleCode))).All(l.ctx)
+	if err == nil {
+		for _, u := range users {
+			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+		}
 	}
 
 	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil

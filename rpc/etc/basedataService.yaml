@@ -6,5 +6,10 @@ Etcd:
   - 192.168.201.52:32384
   Key: basedataservice.rpc
 
+Redis:
+  Host: 192.168.201.188:6379
+  Pass: ""
+  Type: node
+
 Postgres:
   DataSource: host=192.168.201.188 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable

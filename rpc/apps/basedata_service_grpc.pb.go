@@ -27,6 +27,7 @@ const (
 	SysUsers_GetUserByUsername_FullMethodName = "/basedata_service.SysUsers/GetUserByUsername"
 	SysUsers_ResetPassword_FullMethodName     = "/basedata_service.SysUsers/ResetPassword"
 	SysUsers_AssignRoles_FullMethodName       = "/basedata_service.SysUsers/AssignRoles"
+	SysUsers_GetUserRoleCodes_FullMethodName  = "/basedata_service.SysUsers/GetUserRoleCodes"
 )
 
 // SysUsersClient is the client API for SysUsers service.
@@ -41,6 +42,7 @@ type SysUsersClient interface {
 	GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
 	ResetPassword(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	AssignRoles(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
+	GetUserRoleCodes(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*RoleCodesResp, error)
 }
 
 type sysUsersClient struct {
@@ -131,6 +133,16 @@ func (c *sysUsersClient) AssignRoles(ctx context.Context, in *UserReq, opts ...g
 	return out, nil
 }
 
+func (c *sysUsersClient) GetUserRoleCodes(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*RoleCodesResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RoleCodesResp)
+	err := c.cc.Invoke(ctx, SysUsers_GetUserRoleCodes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SysUsersServer is the server API for SysUsers service.
 // All implementations must embed UnimplementedSysUsersServer
 // for forward compatibility.
@@ -143,6 +155,7 @@ type SysUsersServer interface {
 	GetUserByUsername(context.Context, *UserReq) (*UserResp, error)
 	ResetPassword(context.Context, *UserReq) (*EmptyResp, error)
 	AssignRoles(context.Context, *UserReq) (*EmptyResp, error)
+	GetUserRoleCodes(context.Context, *IdReq) (*RoleCodesResp, error)
 	mustEmbedUnimplementedSysUsersServer()
 }
 
@@ -176,6 +189,9 @@ func (UnimplementedSysUsersServer) ResetPassword(context.Context, *UserReq) (*Em
 }
 func (UnimplementedSysUsersServer) AssignRoles(context.Context, *UserReq) (*EmptyResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignRoles not implemented")
+}
+func (UnimplementedSysUsersServer) GetUserRoleCodes(context.Context, *IdReq) (*RoleCodesResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserRoleCodes not implemented")
 }
 func (UnimplementedSysUsersServer) mustEmbedUnimplementedSysUsersServer() {}
 func (UnimplementedSysUsersServer) testEmbeddedByValue()                  {}
@@ -342,6 +358,24 @@ func _SysUsers_AssignRoles_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SysUsers_GetUserRoleCodes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysUsersServer).GetUserRoleCodes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysUsers_GetUserRoleCodes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysUsersServer).GetUserRoleCodes(ctx, req.(*IdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SysUsers_ServiceDesc is the grpc.ServiceDesc for SysUsers service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -380,6 +414,10 @@ var SysUsers_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssignRoles",
 			Handler:    _SysUsers_AssignRoles_Handler,
+		},
+		{
+			MethodName: "GetUserRoleCodes",
+			Handler:    _SysUsers_GetUserRoleCodes_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

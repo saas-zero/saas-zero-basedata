@@ -29,8 +29,8 @@ func main() {
 
 	ctx := svc.NewServiceContext(c)
 
-	server.Use(middleware.JwtAuth(c.JwtSecret))
-	server.Use(middleware.CasbinAuth(ctx.Enforcer))
+	server.Use(middleware.JwtAuth(c.JwtSecret, ctx.Redis))
+	server.Use(middleware.CasbinAuth(ctx.Enforcer, ctx.SysUsers))
 
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterInitRoutes(server, ctx)

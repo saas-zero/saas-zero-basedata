@@ -2,6 +2,7 @@ package sysuserslogic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
@@ -36,5 +37,6 @@ func (l *AssignRolesLogic) AssignRoles(in *apps.UserReq) (*apps.EmptyResp, error
 	if err != nil {
 		return nil, err
 	}
+	l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", in.GetId()))
 	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
 }
