@@ -8,6 +8,7 @@ Redis:
   Host: 192.168.201.188:6379
   Pass: "redis.123456"
   Type: node
+  DB: 3
 
 CasbinPostgres:
   DataSource: host=192.168.201.188 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable

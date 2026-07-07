@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/saas-zero/saas-zero-common/pkg/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
@@ -11,6 +11,6 @@ type PostgresConfig struct {
 
 type Config struct {
 	zrpc.RpcServerConf
-	Postgres PostgresConfig
-	Redis    redis.RedisConf `json:"redis"`
+	Postgres   PostgresConfig
+	CacheRedis redis.Conf `json:"cacheRedis"`
 }

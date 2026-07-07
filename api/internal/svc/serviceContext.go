@@ -11,13 +11,13 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/api/internal/config"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	commcasbin "github.com/saas-zero/saas-zero-common/pkg/casbin"
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/saas-zero/saas-zero-common/pkg/redis"
 	"github.com/zeromicro/go-zero/zrpc"
 )
 
 type ServiceContext struct {
 	Config       config.Config
-	Redis        *redis.Redis
+	Redis        *redis.Client
 	SysUsers     apps.SysUsersClient
 	SysRoles     apps.SysRolesClient
 	SysDepts     apps.SysDeptsClient
@@ -53,7 +53,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		}
 	}()
 
-	rds, err := redis.NewRedis(c.Redis)
+	rds, err := redis.NewClient(c.Redis)
 	if err != nil {
 		log.Fatalf("failed to init redis: %v", err)
 	}

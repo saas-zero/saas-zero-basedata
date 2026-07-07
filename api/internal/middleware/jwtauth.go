@@ -9,7 +9,7 @@ import (
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/saas-zero/saas-zero-common/pkg/jwt"
-	"github.com/zeromicro/go-zero/core/stores/redis"
+	"github.com/saas-zero/saas-zero-common/pkg/redis"
 )
 
 type ctxKey string
@@ -23,7 +23,7 @@ func GetRoleCodes(ctx context.Context) []string {
 	return nil
 }
 
-func JwtAuth(secret string, rds *redis.Redis) func(http.HandlerFunc) http.HandlerFunc {
+func JwtAuth(secret string, rds *redis.Client) func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
 			if strings.HasPrefix(r.URL.Path, "/init/") {
