@@ -73,7 +73,10 @@ func (l *UpdateMenuLogic) UpdateMenu(in *apps.MenuReq) (*apps.MenuResp, error) {
 		return nil, err
 	}
 
-	m, _ := l.svcCtx.DB.SysMenu.Query().Where(sysmenu.IDEQ(result.ID)).Only(ctx)
+	m, err := l.svcCtx.DB.SysMenu.Query().Where(sysmenu.IDEQ(result.ID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.MenuResp{
 		Code: 200,
 		Msg:  "success",

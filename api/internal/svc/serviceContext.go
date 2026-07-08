@@ -35,27 +35,41 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := zrpc.MustNewClient(c.Basedata)
 
+	// Casbin enforcer initialization with graceful degradation.
+	// If PostgreSQL or Casbin initialization fails, enforcer is nil and the
+	// CasbinAuth middleware will allow all requests (fail-open).
+	var enf *casbinapi.SyncedEnforcer
 	db, err := sql.Open("postgres", c.CasbinPostgres.DataSource)
 	if err != nil {
-		log.Fatalf("failed to open casbin db: %v", err)
-	}
-	enf, err := commcasbin.NewEnforcer(db, "casbin_rule")
-	if err != nil {
-		log.Fatalf("failed to init casbin enforcer: %v", err)
-	}
-	go func() {
-		ticker := time.NewTicker(60 * time.Second)
-		defer ticker.Stop()
-		for range ticker.C {
-			if err := enf.LoadPolicy(); err != nil {
-				log.Printf("casbin reload policy error: %v", err)
-			}
+		log.Printf("warning: failed to open casbin db: %v (casbin disabled)", err)
+	} else {
+		enf, err = commcasbin.NewEnforcer(db, "casbin_rule")
+		if err != nil {
+			log.Printf("warning: failed to init casbin enforcer: %v (casbin disabled)", err)
 		}
-	}()
+	}
+	if enf != nil {
+		// Background goroutine: periodically reload Casbin policies from DB.
+		// Policies are updated by basedata-rpc's AssignApis RPC.
+		// 300s interval balances freshness with DB load.
+		go func() {
+			ticker := time.NewTicker(300 * time.Second)
+			defer ticker.Stop()
+			for range ticker.C {
+				if err := enf.LoadPolicy(); err != nil {
+					log.Printf("casbin reload policy error: %v", err)
+				}
+			}
+		}()
+	}
 
-	rds, err := redis.NewClient(c.Redis)
+	// Redis client initialization with graceful degradation.
+	// If Redis is unavailable, JWT validation (token existence + version check)
+	// will be skipped, falling back to JWT signature verification only.
+	var rds *redis.Client
+	rds, err = redis.NewClient(c.Redis)
 	if err != nil {
-		log.Fatalf("failed to init redis: %v", err)
+		log.Printf("warning: failed to init redis: %v (redis disabled)", err)
 	}
 
 	return &ServiceContext{

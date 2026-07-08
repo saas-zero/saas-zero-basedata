@@ -62,7 +62,10 @@ func (l *UpdateDeptLogic) UpdateDept(in *apps.DeptReq) (*apps.DeptResp, error) {
 		return nil, err
 	}
 
-	d, _ := l.svcCtx.DB.SysDept.Query().Where(sysdept.IDEQ(result.ID)).WithLeader().Only(ctx)
+	d, err := l.svcCtx.DB.SysDept.Query().Where(sysdept.IDEQ(result.ID)).WithLeader().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.DeptResp{
 		Code: 200,
 		Msg:  "success",

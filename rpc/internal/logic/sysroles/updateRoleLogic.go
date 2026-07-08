@@ -55,7 +55,10 @@ func (l *UpdateRoleLogic) UpdateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 	if len(in.GetMenuIds()) > 0 {
 		l.svcCtx.DB.SysRole.UpdateOneID(result.ID).ClearMenus().AddMenuIDs(in.GetMenuIds()...).Exec(ctx)
 	}
-	r, _ := l.svcCtx.DB.SysRole.Query().Where(sysrole.IDEQ(result.ID)).WithMenus().Only(ctx)
+	r, err := l.svcCtx.DB.SysRole.Query().Where(sysrole.IDEQ(result.ID)).WithMenus().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.RoleResp{
 		Code: 200,
 		Msg:  "success",

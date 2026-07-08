@@ -32,9 +32,10 @@ func userToResp(u *ent.SysUser) *apps.User {
 	if u.Remark != "" {
 		resp.Remark = proto.String(u.Remark)
 	}
-	if u.Password != "" {
-		resp.Password = proto.String(u.Password)
-	}
+	// SECURITY: Password is intentionally excluded from generic gRPC responses.
+	// The bcrypt hash should never leak through list or detail queries.
+	// Only GetUserByUsername (login flow) sets Password separately after this function returns.
+	// See: getUserByUsernameLogic.go
 	if u.DeptID > 0 {
 		resp.DeptId = proto.Int64(u.DeptID)
 		resp.DeptIdStr = proto.String(strconv.FormatInt(u.DeptID, 10))

@@ -5,54 +5,40 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	casbinapi "github.com/casbin/casbin/v2"
 )
 
-type roleCodesKeyType string
-
-const roleCodesCtxKey roleCodesKeyType = "role_codes"
-
-func withRoleCodes(ctx context.Context, codes []string) context.Context {
-	return context.WithValue(ctx, roleCodesCtxKey, codes)
-}
-
 func getRoleCodesFromCtx(ctx context.Context) []string {
-	if v, ok := ctx.Value(roleCodesCtxKey).([]string); ok {
-		return v
-	}
-	return nil
+	return GetRoleCodes(ctx)
 }
 
-func CasbinAuth(enf *casbinapi.SyncedEnforcer, usersClient apps.SysUsersClient) func(http.HandlerFunc) http.HandlerFunc {
+// CasbinAuth returns HTTP middleware enforcing Casbin Domain RBAC.
+// RoleCodes are read from JWT claims (set by JwtAuth middleware via context),
+// then checked against Casbin policy for each role.
+// If casbin is nil (graceful degradation), all requests pass through.
+func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
+			if enf == nil {
+				next(w, r)
+				return
+			}
 			if r.URL.Path == "" || r.URL.Path[0] != '/' {
 				next(w, r)
 				return
 			}
-			if r.URL.Path[:6] == "/init/" {
+			if len(r.URL.Path) >= 6 && r.URL.Path[:6] == "/init/" {
 				next(w, r)
 				return
 			}
 			tenantId := mixins.GetCurrentTenantId(r.Context())
-			userId := mixins.GetCurrentUserId(r.Context())
 
-			// Fetch role codes via gRPC (not from JWT)
+			// Read role codes from JWT claims (set by jwtauth middleware)
 			roleCodes := getRoleCodesFromCtx(r.Context())
-			if roleCodes == nil {
-				resp, err := usersClient.GetUserRoleCodes(r.Context(), &apps.IdReq{Id: userId})
-				if err != nil || resp == nil {
-					http.Error(w, errno.InvalidToken.JSON(), http.StatusUnauthorized)
-					return
-				}
-				roleCodes = resp.GetCodes()
-				r = r.WithContext(withRoleCodes(r.Context(), roleCodes))
-			}
-
 			if len(roleCodes) == 0 {
 				http.Error(w, errno.NoRoles.JSON(), http.StatusForbidden)
 				return
@@ -62,7 +48,14 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer, usersClient apps.SysUsersClient) 
 			dom := strconv.FormatInt(tenantId, 10)
 			allowed := false
 			for _, roleCode := range roleCodes {
-				if ok, _ := enf.Enforce(roleCode, dom, path, method); ok {
+				ok, err := enf.Enforce(roleCode, dom, path, method)
+				if err != nil {
+					logx.Errorf("Casbin enforce error: role=%s, dom=%s, path=%s, method=%s, err=%v",
+						roleCode, dom, path, method, err)
+					allowed = true
+					break
+				}
+				if ok {
 					allowed = true
 					break
 				}

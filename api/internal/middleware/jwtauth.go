@@ -62,9 +62,14 @@ func JwtAuth(secret string, rds *redis.Client) func(http.HandlerFunc) http.Handl
 				}
 			}
 			ctx := r.Context()
+			// Inject JWT claims into request context for downstream use.
+			// - UserId/UserName/TenantId are used by ent mixin hooks for audit fields.
+			// - RoleCodes are consumed by CasbinAuth middleware for authorization checks,
+			//   eliminating a gRPC call to GetUserRoleCodes on every request.
 			ctx = mixins.SetCurrentUserId(ctx, claims.UserId)
 			ctx = mixins.SetCurrentUserName(ctx, claims.UserName)
 			ctx = mixins.SetCurrentTenantId(ctx, claims.TenantId)
+			ctx = context.WithValue(ctx, roleCodesKey, claims.RoleCodes)
 			next(w, r.WithContext(ctx))
 		}
 	}

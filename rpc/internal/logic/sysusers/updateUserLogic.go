@@ -62,10 +62,13 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 			Exec(ctx)
 	}
 
-	u, _ := l.svcCtx.DB.SysUser.Query().
+	u, err := l.svcCtx.DB.SysUser.Query().
 		Where(sysuser.IDEQ(result.ID)).
 		WithRoles().
 		Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 
 	return &apps.UserResp{Code: 200, Msg: "success", Data: userToResp(u)}, nil
 }

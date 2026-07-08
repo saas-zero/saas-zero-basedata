@@ -49,7 +49,10 @@ func (l *UpdateDictLogic) UpdateDict(in *apps.DictReq) (*apps.DictResp, error) {
 		return nil, err
 	}
 
-	d, _ := l.svcCtx.DB.SysDict.Query().Where(sysdict.IDEQ(result.ID)).WithSysDictDatas().Only(ctx)
+	d, err := l.svcCtx.DB.SysDict.Query().Where(sysdict.IDEQ(result.ID)).WithSysDictDatas().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.DictResp{
 		Code: 200,
 		Msg:  "success",

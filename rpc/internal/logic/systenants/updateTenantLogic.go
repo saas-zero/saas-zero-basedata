@@ -62,7 +62,10 @@ func (l *UpdateTenantLogic) UpdateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 		return nil, err
 	}
 
-	t, _ := l.svcCtx.DB.SysTenant.Query().Where(systenant.IDEQ(result.ID)).WithSysPackage().Only(ctx)
+	t, err := l.svcCtx.DB.SysTenant.Query().Where(systenant.IDEQ(result.ID)).WithSysPackage().Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.TenantResp{
 		Code: 200,
 		Msg:  "success",

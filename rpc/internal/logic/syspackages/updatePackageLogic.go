@@ -52,7 +52,10 @@ func (l *UpdatePackageLogic) UpdatePackage(in *apps.PackageReq) (*apps.PackageRe
 		return nil, err
 	}
 
-	p, _ := l.svcCtx.DB.SysPackage.Query().Where(syspackage.IDEQ(result.ID)).Only(ctx)
+	p, err := l.svcCtx.DB.SysPackage.Query().Where(syspackage.IDEQ(result.ID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.PackageResp{
 		Code: 200,
 		Msg:  "success",

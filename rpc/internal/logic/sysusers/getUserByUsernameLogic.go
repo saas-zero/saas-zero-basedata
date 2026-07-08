@@ -8,6 +8,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type GetUserByUsernameLogic struct {
@@ -34,9 +35,13 @@ func (l *GetUserByUsernameLogic) GetUserByUsername(in *apps.UserReq) (*apps.User
 	if err != nil {
 		return nil, err
 	}
+	resp := userToResp(u)
+	// Password is only returned via GetUserByUsername (login flow) for bcrypt verification.
+	// All other user queries intentionally exclude it for security.
+	resp.Password = proto.String(u.Password)
 	return &apps.UserResp{
 		Code: 200,
 		Msg:  "success",
-		Data: userToResp(u),
+		Data: resp,
 	}, nil
 }

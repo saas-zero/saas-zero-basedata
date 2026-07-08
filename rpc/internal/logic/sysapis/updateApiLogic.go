@@ -55,7 +55,10 @@ func (l *UpdateApiLogic) UpdateApi(in *apps.ApiReq) (*apps.ApiResp, error) {
 		return nil, err
 	}
 
-	a, _ := l.svcCtx.DB.SysApi.Query().Where(sysapi.IDEQ(result.ID)).Only(ctx)
+	a, err := l.svcCtx.DB.SysApi.Query().Where(sysapi.IDEQ(result.ID)).Only(ctx)
+	if err != nil {
+		return nil, err
+	}
 	return &apps.ApiResp{
 		Code: 200,
 		Msg:  "success",
