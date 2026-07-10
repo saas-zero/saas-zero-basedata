@@ -37,16 +37,6 @@ type seedApi struct {
 	path string
 }
 
-type seedMenu struct {
-	menuType  string
-	name      string
-	parentId  int64
-	component string
-	path      string
-	icon      string
-	sort      uint32
-}
-
 func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
@@ -66,17 +56,32 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		{name: "租户管理", path: "/system/tenant/*"},
 		{name: "套餐管理", path: "/system/package/*"},
 		{name: "API管理", path: "/system/api/*"},
+		{name: "日志管理", path: "/system/log/*"},
 	}
 
-	seedMenus := []seedMenu{
-		{menuType: "directory", name: "系统管理", path: "/system", icon: "Setting", sort: 1},
-		{menuType: "menu", name: "用户管理", parentId: 1, component: "system/user/index", path: "/system/user", icon: "User", sort: 1},
-		{menuType: "menu", name: "角色管理", parentId: 1, component: "system/role/index", path: "/system/role", icon: "SafetyCertificate", sort: 2},
-		{menuType: "menu", name: "菜单管理", parentId: 1, component: "system/menu/index", path: "/system/menu", icon: "Menu", sort: 3},
-		{menuType: "menu", name: "部门管理", parentId: 1, component: "system/dept/index", path: "/system/dept", icon: "Apartment", sort: 4},
-		{menuType: "menu", name: "字典管理", parentId: 1, component: "system/dict/index", path: "/system/dict", icon: "Book", sort: 5},
-		{menuType: "menu", name: "租户管理", parentId: 1, component: "system/tenant/index", path: "/system/tenant", icon: "Team", sort: 6},
-		{menuType: "menu", name: "套餐管理", parentId: 1, component: "system/package/index", path: "/system/package", icon: "Dollar", sort: 7},
+	seedMenus := []struct {
+		menuType  string
+		name      string
+		parentIdx int
+		component string
+		path      string
+		icon      string
+		sort      uint32
+	}{
+		{menuType: "menu", name: "控制台", parentIdx: -1, component: "dashboard/index", path: "/dashboard", icon: "Dashboard", sort: 1},
+		{menuType: "directory", name: "系统管理", parentIdx: -1, path: "/system", icon: "Setting", sort: 2},
+		{menuType: "menu", name: "用户管理", parentIdx: 1, component: "system/user/index", path: "/system/user", icon: "User", sort: 1},
+		{menuType: "menu", name: "角色管理", parentIdx: 1, component: "system/role/index", path: "/system/role", icon: "SafetyCertificate", sort: 2},
+		{menuType: "menu", name: "菜单管理", parentIdx: 1, component: "system/menu/index", path: "/system/menu", icon: "Menu", sort: 3},
+		{menuType: "menu", name: "部门管理", parentIdx: 1, component: "system/dept/index", path: "/system/dept", icon: "Apartment", sort: 4},
+		{menuType: "menu", name: "字典管理", parentIdx: -1, component: "dict/index", path: "/dict", icon: "Book", sort: 3},
+		{menuType: "directory", name: "租户管理", parentIdx: -1, path: "/tenant", icon: "Team", sort: 4},
+		{menuType: "menu", name: "租户列表", parentIdx: 7, component: "tenant/list/index", path: "/tenant/list", icon: "Team", sort: 1},
+		{menuType: "menu", name: "套餐管理", parentIdx: 7, component: "tenant/package/index", path: "/tenant/package", icon: "Dollar", sort: 2},
+		{menuType: "menu", name: "API管理", parentIdx: -1, component: "api/index", path: "/api", icon: "Code", sort: 5},
+		{menuType: "directory", name: "日志管理", parentIdx: -1, path: "/log", icon: "FileText", sort: 6},
+		{menuType: "menu", name: "登录日志", parentIdx: 11, component: "log/login-log/index", path: "/log/login-log", icon: "Login", sort: 1},
+		{menuType: "menu", name: "操作日志", parentIdx: 11, component: "log/operation-log/index", path: "/log/operation-log", icon: "SwapRight", sort: 2},
 	}
 
 	tx, err := l.svcCtx.DB.Tx(ctx)
@@ -102,9 +107,10 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		apiPaths = append(apiPaths, a.path)
 	}
 
-	// 2. Create Menus
+	// 2. Create Menus (use a map to resolve parent references by index)
+	menuIdxToId := make(map[int]int64)
 	menuIds := make([]int64, 0, len(seedMenus))
-	for _, m := range seedMenus {
+	for i, m := range seedMenus {
 		create := tx.SysMenu.Create().
 			SetStatus(sysmenu.StatusActive).
 			SetSort(m.sort).
@@ -115,13 +121,14 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		if m.component != "" {
 			create.SetComponent(m.component)
 		}
-		if m.parentId > 0 {
-			create.SetParentID(m.parentId)
+		if m.parentIdx >= 0 {
+			create.SetParentID(menuIdxToId[m.parentIdx])
 		}
 		menu, err := create.Save(ctx)
 		if err != nil {
 			return nil, err
 		}
+		menuIdxToId[i] = menu.ID
 		menuIds = append(menuIds, menu.ID)
 	}
 

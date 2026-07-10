@@ -31,6 +31,7 @@ func main() {
 
 	server.Use(middleware.JwtAuth(c.JwtSecret, ctx.Redis))
 	server.Use(middleware.CasbinAuth(ctx.Enforcer))
+	server.Use(middleware.OperationLog(ctx.SysLogs))
 
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterInitRoutes(server, ctx)

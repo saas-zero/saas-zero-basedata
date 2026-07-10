@@ -52,6 +52,18 @@ message User {
   optional int64 updatedAt = 21;
   optional string updatedBy = 22;
   optional string password = 23;
+  optional int32 loginErrorCount = 24;
+  optional int64 lockoutUntil = 25; // unix millis, 0/absent = 未锁定
+}
+
+// LoginRecordReq 用于登录后记录结果：更新锁定计数并写登录日志
+message LoginRecordReq {
+  optional int64 userId = 1;
+  optional string username = 2;
+  optional string ip = 3;
+  optional bool success = 4;
+  optional string message = 5;
+  optional int64 tenantId = 6;
 }
 
 message UserReq {
@@ -578,6 +590,7 @@ service SysUsers {
   rpc ResetPassword(UserReq) returns (EmptyResp);
   rpc AssignRoles(UserReq) returns (EmptyResp);
   rpc GetUserRoleCodes(IdReq) returns (RoleCodesResp);
+  rpc RecordLoginResult(LoginRecordReq) returns (EmptyResp);
 }
 
 message RoleCodesResp {
@@ -661,6 +674,7 @@ service SysApis {
 service SysLogs {
   rpc GetLoginLogList(LogPageReq) returns (LoginLogListResp);
   rpc GetOperationLogList(LogPageReq) returns (OperationLogListResp);
+  rpc CreateOperationLog(OperationLog) returns (EmptyResp);
 }
 
 service SysInit {

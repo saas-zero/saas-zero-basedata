@@ -67,3 +67,8 @@ func (s *SysUsersServer) GetUserRoleCodes(ctx context.Context, in *apps.IdReq) (
 	l := sysuserslogic.NewGetUserRoleCodesLogic(ctx, s.svcCtx)
 	return l.GetUserRoleCodes(in)
 }
+
+func (s *SysUsersServer) RecordLoginResult(ctx context.Context, in *apps.LoginRecordReq) (*apps.EmptyResp, error) {
+	l := sysuserslogic.NewRecordLoginResultLogic(ctx, s.svcCtx)
+	return l.RecordLoginResult(in)
+}

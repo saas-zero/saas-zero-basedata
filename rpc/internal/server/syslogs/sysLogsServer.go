@@ -32,3 +32,8 @@ func (s *SysLogsServer) GetOperationLogList(ctx context.Context, in *apps.LogPag
 	l := syslogslogic.NewGetOperationLogListLogic(ctx, s.svcCtx)
 	return l.GetOperationLogList(in)
 }
+
+func (s *SysLogsServer) CreateOperationLog(ctx context.Context, in *apps.OperationLog) (*apps.EmptyResp, error) {
+	l := syslogslogic.NewCreateOperationLogLogic(ctx, s.svcCtx)
+	return l.CreateOperationLog(in)
+}

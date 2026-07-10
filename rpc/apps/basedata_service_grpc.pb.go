@@ -28,6 +28,7 @@ const (
 	SysUsers_ResetPassword_FullMethodName     = "/basedata_service.SysUsers/ResetPassword"
 	SysUsers_AssignRoles_FullMethodName       = "/basedata_service.SysUsers/AssignRoles"
 	SysUsers_GetUserRoleCodes_FullMethodName  = "/basedata_service.SysUsers/GetUserRoleCodes"
+	SysUsers_RecordLoginResult_FullMethodName = "/basedata_service.SysUsers/RecordLoginResult"
 )
 
 // SysUsersClient is the client API for SysUsers service.
@@ -43,6 +44,7 @@ type SysUsersClient interface {
 	ResetPassword(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	AssignRoles(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	GetUserRoleCodes(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*RoleCodesResp, error)
+	RecordLoginResult(ctx context.Context, in *LoginRecordReq, opts ...grpc.CallOption) (*EmptyResp, error)
 }
 
 type sysUsersClient struct {
@@ -143,6 +145,16 @@ func (c *sysUsersClient) GetUserRoleCodes(ctx context.Context, in *IdReq, opts .
 	return out, nil
 }
 
+func (c *sysUsersClient) RecordLoginResult(ctx context.Context, in *LoginRecordReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EmptyResp)
+	err := c.cc.Invoke(ctx, SysUsers_RecordLoginResult_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SysUsersServer is the server API for SysUsers service.
 // All implementations must embed UnimplementedSysUsersServer
 // for forward compatibility.
@@ -156,6 +168,7 @@ type SysUsersServer interface {
 	ResetPassword(context.Context, *UserReq) (*EmptyResp, error)
 	AssignRoles(context.Context, *UserReq) (*EmptyResp, error)
 	GetUserRoleCodes(context.Context, *IdReq) (*RoleCodesResp, error)
+	RecordLoginResult(context.Context, *LoginRecordReq) (*EmptyResp, error)
 	mustEmbedUnimplementedSysUsersServer()
 }
 
@@ -192,6 +205,9 @@ func (UnimplementedSysUsersServer) AssignRoles(context.Context, *UserReq) (*Empt
 }
 func (UnimplementedSysUsersServer) GetUserRoleCodes(context.Context, *IdReq) (*RoleCodesResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserRoleCodes not implemented")
+}
+func (UnimplementedSysUsersServer) RecordLoginResult(context.Context, *LoginRecordReq) (*EmptyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RecordLoginResult not implemented")
 }
 func (UnimplementedSysUsersServer) mustEmbedUnimplementedSysUsersServer() {}
 func (UnimplementedSysUsersServer) testEmbeddedByValue()                  {}
@@ -376,6 +392,24 @@ func _SysUsers_GetUserRoleCodes_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SysUsers_RecordLoginResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysUsersServer).RecordLoginResult(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysUsers_RecordLoginResult_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysUsersServer).RecordLoginResult(ctx, req.(*LoginRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SysUsers_ServiceDesc is the grpc.ServiceDesc for SysUsers service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +452,10 @@ var SysUsers_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserRoleCodes",
 			Handler:    _SysUsers_GetUserRoleCodes_Handler,
+		},
+		{
+			MethodName: "RecordLoginResult",
+			Handler:    _SysUsers_RecordLoginResult_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -2763,6 +2801,7 @@ var SysApis_ServiceDesc = grpc.ServiceDesc{
 const (
 	SysLogs_GetLoginLogList_FullMethodName     = "/basedata_service.SysLogs/GetLoginLogList"
 	SysLogs_GetOperationLogList_FullMethodName = "/basedata_service.SysLogs/GetOperationLogList"
+	SysLogs_CreateOperationLog_FullMethodName  = "/basedata_service.SysLogs/CreateOperationLog"
 )
 
 // SysLogsClient is the client API for SysLogs service.
@@ -2771,6 +2810,7 @@ const (
 type SysLogsClient interface {
 	GetLoginLogList(ctx context.Context, in *LogPageReq, opts ...grpc.CallOption) (*LoginLogListResp, error)
 	GetOperationLogList(ctx context.Context, in *LogPageReq, opts ...grpc.CallOption) (*OperationLogListResp, error)
+	CreateOperationLog(ctx context.Context, in *OperationLog, opts ...grpc.CallOption) (*EmptyResp, error)
 }
 
 type sysLogsClient struct {
@@ -2801,12 +2841,23 @@ func (c *sysLogsClient) GetOperationLogList(ctx context.Context, in *LogPageReq,
 	return out, nil
 }
 
+func (c *sysLogsClient) CreateOperationLog(ctx context.Context, in *OperationLog, opts ...grpc.CallOption) (*EmptyResp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EmptyResp)
+	err := c.cc.Invoke(ctx, SysLogs_CreateOperationLog_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // SysLogsServer is the server API for SysLogs service.
 // All implementations must embed UnimplementedSysLogsServer
 // for forward compatibility.
 type SysLogsServer interface {
 	GetLoginLogList(context.Context, *LogPageReq) (*LoginLogListResp, error)
 	GetOperationLogList(context.Context, *LogPageReq) (*OperationLogListResp, error)
+	CreateOperationLog(context.Context, *OperationLog) (*EmptyResp, error)
 	mustEmbedUnimplementedSysLogsServer()
 }
 
@@ -2822,6 +2873,9 @@ func (UnimplementedSysLogsServer) GetLoginLogList(context.Context, *LogPageReq) 
 }
 func (UnimplementedSysLogsServer) GetOperationLogList(context.Context, *LogPageReq) (*OperationLogListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetOperationLogList not implemented")
+}
+func (UnimplementedSysLogsServer) CreateOperationLog(context.Context, *OperationLog) (*EmptyResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOperationLog not implemented")
 }
 func (UnimplementedSysLogsServer) mustEmbedUnimplementedSysLogsServer() {}
 func (UnimplementedSysLogsServer) testEmbeddedByValue()                 {}
@@ -2880,6 +2934,24 @@ func _SysLogs_GetOperationLogList_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _SysLogs_CreateOperationLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(OperationLog)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SysLogsServer).CreateOperationLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SysLogs_CreateOperationLog_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SysLogsServer).CreateOperationLog(ctx, req.(*OperationLog))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // SysLogs_ServiceDesc is the grpc.ServiceDesc for SysLogs service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -2894,6 +2966,10 @@ var SysLogs_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetOperationLogList",
 			Handler:    _SysLogs_GetOperationLogList_Handler,
+		},
+		{
+			MethodName: "CreateOperationLog",
+			Handler:    _SysLogs_CreateOperationLog_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

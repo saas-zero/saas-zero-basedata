@@ -274,32 +274,34 @@ func (x *IdsReq) GetIds() []int64 {
 }
 
 type User struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            *int64                 `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
-	IdStr         *string                `protobuf:"bytes,2,opt,name=idStr,proto3,oneof" json:"idStr,omitempty"`
-	Username      *string                `protobuf:"bytes,3,opt,name=username,proto3,oneof" json:"username,omitempty"`
-	Nickname      *string                `protobuf:"bytes,4,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
-	Mobile        *string                `protobuf:"bytes,5,opt,name=mobile,proto3,oneof" json:"mobile,omitempty"`
-	Email         *string                `protobuf:"bytes,6,opt,name=email,proto3,oneof" json:"email,omitempty"`
-	DeptId        *int64                 `protobuf:"varint,7,opt,name=deptId,proto3,oneof" json:"deptId,omitempty"`
-	DeptIdStr     *string                `protobuf:"bytes,8,opt,name=deptIdStr,proto3,oneof" json:"deptIdStr,omitempty"`
-	DeptName      *string                `protobuf:"bytes,9,opt,name=deptName,proto3,oneof" json:"deptName,omitempty"`
-	Status        *string                `protobuf:"bytes,10,opt,name=status,proto3,oneof" json:"status,omitempty"`
-	Remark        *string                `protobuf:"bytes,11,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
-	LoginIp       *string                `protobuf:"bytes,12,opt,name=loginIp,proto3,oneof" json:"loginIp,omitempty"`
-	LoginAt       *int64                 `protobuf:"varint,13,opt,name=loginAt,proto3,oneof" json:"loginAt,omitempty"`
-	RoleIds       []int64                `protobuf:"varint,14,rep,packed,name=roleIds,proto3" json:"roleIds,omitempty"`
-	RoleCodes     []string               `protobuf:"bytes,15,rep,name=roleCodes,proto3" json:"roleCodes,omitempty"`
-	RoleNames     []string               `protobuf:"bytes,16,rep,name=roleNames,proto3" json:"roleNames,omitempty"`
-	TenantId      *int64                 `protobuf:"varint,17,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
-	TenantIdStr   *string                `protobuf:"bytes,18,opt,name=tenantIdStr,proto3,oneof" json:"tenantIdStr,omitempty"`
-	CreatedAt     *int64                 `protobuf:"varint,19,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
-	CreatedBy     *string                `protobuf:"bytes,20,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
-	UpdatedAt     *int64                 `protobuf:"varint,21,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
-	UpdatedBy     *string                `protobuf:"bytes,22,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
-	Password      *string                `protobuf:"bytes,23,opt,name=password,proto3,oneof" json:"password,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              *int64                 `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+	IdStr           *string                `protobuf:"bytes,2,opt,name=idStr,proto3,oneof" json:"idStr,omitempty"`
+	Username        *string                `protobuf:"bytes,3,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Nickname        *string                `protobuf:"bytes,4,opt,name=nickname,proto3,oneof" json:"nickname,omitempty"`
+	Mobile          *string                `protobuf:"bytes,5,opt,name=mobile,proto3,oneof" json:"mobile,omitempty"`
+	Email           *string                `protobuf:"bytes,6,opt,name=email,proto3,oneof" json:"email,omitempty"`
+	DeptId          *int64                 `protobuf:"varint,7,opt,name=deptId,proto3,oneof" json:"deptId,omitempty"`
+	DeptIdStr       *string                `protobuf:"bytes,8,opt,name=deptIdStr,proto3,oneof" json:"deptIdStr,omitempty"`
+	DeptName        *string                `protobuf:"bytes,9,opt,name=deptName,proto3,oneof" json:"deptName,omitempty"`
+	Status          *string                `protobuf:"bytes,10,opt,name=status,proto3,oneof" json:"status,omitempty"`
+	Remark          *string                `protobuf:"bytes,11,opt,name=remark,proto3,oneof" json:"remark,omitempty"`
+	LoginIp         *string                `protobuf:"bytes,12,opt,name=loginIp,proto3,oneof" json:"loginIp,omitempty"`
+	LoginAt         *int64                 `protobuf:"varint,13,opt,name=loginAt,proto3,oneof" json:"loginAt,omitempty"`
+	RoleIds         []int64                `protobuf:"varint,14,rep,packed,name=roleIds,proto3" json:"roleIds,omitempty"`
+	RoleCodes       []string               `protobuf:"bytes,15,rep,name=roleCodes,proto3" json:"roleCodes,omitempty"`
+	RoleNames       []string               `protobuf:"bytes,16,rep,name=roleNames,proto3" json:"roleNames,omitempty"`
+	TenantId        *int64                 `protobuf:"varint,17,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
+	TenantIdStr     *string                `protobuf:"bytes,18,opt,name=tenantIdStr,proto3,oneof" json:"tenantIdStr,omitempty"`
+	CreatedAt       *int64                 `protobuf:"varint,19,opt,name=createdAt,proto3,oneof" json:"createdAt,omitempty"`
+	CreatedBy       *string                `protobuf:"bytes,20,opt,name=createdBy,proto3,oneof" json:"createdBy,omitempty"`
+	UpdatedAt       *int64                 `protobuf:"varint,21,opt,name=updatedAt,proto3,oneof" json:"updatedAt,omitempty"`
+	UpdatedBy       *string                `protobuf:"bytes,22,opt,name=updatedBy,proto3,oneof" json:"updatedBy,omitempty"`
+	Password        *string                `protobuf:"bytes,23,opt,name=password,proto3,oneof" json:"password,omitempty"`
+	LoginErrorCount *int32                 `protobuf:"varint,24,opt,name=loginErrorCount,proto3,oneof" json:"loginErrorCount,omitempty"`
+	LockoutUntil    *int64                 `protobuf:"varint,25,opt,name=lockoutUntil,proto3,oneof" json:"lockoutUntil,omitempty"` // unix millis, 0/absent = 未锁定
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *User) Reset() {
@@ -493,6 +495,105 @@ func (x *User) GetPassword() string {
 	return ""
 }
 
+func (x *User) GetLoginErrorCount() int32 {
+	if x != nil && x.LoginErrorCount != nil {
+		return *x.LoginErrorCount
+	}
+	return 0
+}
+
+func (x *User) GetLockoutUntil() int64 {
+	if x != nil && x.LockoutUntil != nil {
+		return *x.LockoutUntil
+	}
+	return 0
+}
+
+// LoginRecordReq 用于登录后记录结果：更新锁定计数并写登录日志
+type LoginRecordReq struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        *int64                 `protobuf:"varint,1,opt,name=userId,proto3,oneof" json:"userId,omitempty"`
+	Username      *string                `protobuf:"bytes,2,opt,name=username,proto3,oneof" json:"username,omitempty"`
+	Ip            *string                `protobuf:"bytes,3,opt,name=ip,proto3,oneof" json:"ip,omitempty"`
+	Success       *bool                  `protobuf:"varint,4,opt,name=success,proto3,oneof" json:"success,omitempty"`
+	Message       *string                `protobuf:"bytes,5,opt,name=message,proto3,oneof" json:"message,omitempty"`
+	TenantId      *int64                 `protobuf:"varint,6,opt,name=tenantId,proto3,oneof" json:"tenantId,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoginRecordReq) Reset() {
+	*x = LoginRecordReq{}
+	mi := &file_basedata_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoginRecordReq) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoginRecordReq) ProtoMessage() {}
+
+func (x *LoginRecordReq) ProtoReflect() protoreflect.Message {
+	mi := &file_basedata_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoginRecordReq.ProtoReflect.Descriptor instead.
+func (*LoginRecordReq) Descriptor() ([]byte, []int) {
+	return file_basedata_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *LoginRecordReq) GetUserId() int64 {
+	if x != nil && x.UserId != nil {
+		return *x.UserId
+	}
+	return 0
+}
+
+func (x *LoginRecordReq) GetUsername() string {
+	if x != nil && x.Username != nil {
+		return *x.Username
+	}
+	return ""
+}
+
+func (x *LoginRecordReq) GetIp() string {
+	if x != nil && x.Ip != nil {
+		return *x.Ip
+	}
+	return ""
+}
+
+func (x *LoginRecordReq) GetSuccess() bool {
+	if x != nil && x.Success != nil {
+		return *x.Success
+	}
+	return false
+}
+
+func (x *LoginRecordReq) GetMessage() string {
+	if x != nil && x.Message != nil {
+		return *x.Message
+	}
+	return ""
+}
+
+func (x *LoginRecordReq) GetTenantId() int64 {
+	if x != nil && x.TenantId != nil {
+		return *x.TenantId
+	}
+	return 0
+}
+
 type UserReq struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *int64                 `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
@@ -511,7 +612,7 @@ type UserReq struct {
 
 func (x *UserReq) Reset() {
 	*x = UserReq{}
-	mi := &file_basedata_service_proto_msgTypes[6]
+	mi := &file_basedata_service_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -523,7 +624,7 @@ func (x *UserReq) String() string {
 func (*UserReq) ProtoMessage() {}
 
 func (x *UserReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[6]
+	mi := &file_basedata_service_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -536,7 +637,7 @@ func (x *UserReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserReq.ProtoReflect.Descriptor instead.
 func (*UserReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{6}
+	return file_basedata_service_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *UserReq) GetId() int64 {
@@ -624,7 +725,7 @@ type UserPageReq struct {
 
 func (x *UserPageReq) Reset() {
 	*x = UserPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[7]
+	mi := &file_basedata_service_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -636,7 +737,7 @@ func (x *UserPageReq) String() string {
 func (*UserPageReq) ProtoMessage() {}
 
 func (x *UserPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[7]
+	mi := &file_basedata_service_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -649,7 +750,7 @@ func (x *UserPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserPageReq.ProtoReflect.Descriptor instead.
 func (*UserPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{7}
+	return file_basedata_service_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UserPageReq) GetPage() int32 {
@@ -713,7 +814,7 @@ type UserListResp struct {
 
 func (x *UserListResp) Reset() {
 	*x = UserListResp{}
-	mi := &file_basedata_service_proto_msgTypes[8]
+	mi := &file_basedata_service_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -725,7 +826,7 @@ func (x *UserListResp) String() string {
 func (*UserListResp) ProtoMessage() {}
 
 func (x *UserListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[8]
+	mi := &file_basedata_service_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -738,7 +839,7 @@ func (x *UserListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserListResp.ProtoReflect.Descriptor instead.
 func (*UserListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{8}
+	return file_basedata_service_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UserListResp) GetCode() int32 {
@@ -780,7 +881,7 @@ type UserResp struct {
 
 func (x *UserResp) Reset() {
 	*x = UserResp{}
-	mi := &file_basedata_service_proto_msgTypes[9]
+	mi := &file_basedata_service_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -792,7 +893,7 @@ func (x *UserResp) String() string {
 func (*UserResp) ProtoMessage() {}
 
 func (x *UserResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[9]
+	mi := &file_basedata_service_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -805,7 +906,7 @@ func (x *UserResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserResp.ProtoReflect.Descriptor instead.
 func (*UserResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{9}
+	return file_basedata_service_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *UserResp) GetCode() int32 {
@@ -852,7 +953,7 @@ type Role struct {
 
 func (x *Role) Reset() {
 	*x = Role{}
-	mi := &file_basedata_service_proto_msgTypes[10]
+	mi := &file_basedata_service_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -864,7 +965,7 @@ func (x *Role) String() string {
 func (*Role) ProtoMessage() {}
 
 func (x *Role) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[10]
+	mi := &file_basedata_service_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -877,7 +978,7 @@ func (x *Role) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Role.ProtoReflect.Descriptor instead.
 func (*Role) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{10}
+	return file_basedata_service_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *Role) GetId() int64 {
@@ -1001,7 +1102,7 @@ type RoleReq struct {
 
 func (x *RoleReq) Reset() {
 	*x = RoleReq{}
-	mi := &file_basedata_service_proto_msgTypes[11]
+	mi := &file_basedata_service_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1013,7 +1114,7 @@ func (x *RoleReq) String() string {
 func (*RoleReq) ProtoMessage() {}
 
 func (x *RoleReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[11]
+	mi := &file_basedata_service_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1026,7 +1127,7 @@ func (x *RoleReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleReq.ProtoReflect.Descriptor instead.
 func (*RoleReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{11}
+	return file_basedata_service_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *RoleReq) GetId() int64 {
@@ -1098,7 +1199,7 @@ type RolePageReq struct {
 
 func (x *RolePageReq) Reset() {
 	*x = RolePageReq{}
-	mi := &file_basedata_service_proto_msgTypes[12]
+	mi := &file_basedata_service_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1110,7 +1211,7 @@ func (x *RolePageReq) String() string {
 func (*RolePageReq) ProtoMessage() {}
 
 func (x *RolePageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[12]
+	mi := &file_basedata_service_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1123,7 +1224,7 @@ func (x *RolePageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RolePageReq.ProtoReflect.Descriptor instead.
 func (*RolePageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{12}
+	return file_basedata_service_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *RolePageReq) GetPage() int32 {
@@ -1173,7 +1274,7 @@ type RoleListResp struct {
 
 func (x *RoleListResp) Reset() {
 	*x = RoleListResp{}
-	mi := &file_basedata_service_proto_msgTypes[13]
+	mi := &file_basedata_service_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1185,7 +1286,7 @@ func (x *RoleListResp) String() string {
 func (*RoleListResp) ProtoMessage() {}
 
 func (x *RoleListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[13]
+	mi := &file_basedata_service_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1198,7 +1299,7 @@ func (x *RoleListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleListResp.ProtoReflect.Descriptor instead.
 func (*RoleListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{13}
+	return file_basedata_service_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *RoleListResp) GetCode() int32 {
@@ -1240,7 +1341,7 @@ type RoleResp struct {
 
 func (x *RoleResp) Reset() {
 	*x = RoleResp{}
-	mi := &file_basedata_service_proto_msgTypes[14]
+	mi := &file_basedata_service_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1252,7 +1353,7 @@ func (x *RoleResp) String() string {
 func (*RoleResp) ProtoMessage() {}
 
 func (x *RoleResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[14]
+	mi := &file_basedata_service_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1265,7 +1366,7 @@ func (x *RoleResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleResp.ProtoReflect.Descriptor instead.
 func (*RoleResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{14}
+	return file_basedata_service_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *RoleResp) GetCode() int32 {
@@ -1316,7 +1417,7 @@ type Dept struct {
 
 func (x *Dept) Reset() {
 	*x = Dept{}
-	mi := &file_basedata_service_proto_msgTypes[15]
+	mi := &file_basedata_service_proto_msgTypes[16]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1328,7 +1429,7 @@ func (x *Dept) String() string {
 func (*Dept) ProtoMessage() {}
 
 func (x *Dept) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[15]
+	mi := &file_basedata_service_proto_msgTypes[16]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1341,7 +1442,7 @@ func (x *Dept) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Dept.ProtoReflect.Descriptor instead.
 func (*Dept) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{15}
+	return file_basedata_service_proto_rawDescGZIP(), []int{16}
 }
 
 func (x *Dept) GetId() int64 {
@@ -1493,7 +1594,7 @@ type DeptReq struct {
 
 func (x *DeptReq) Reset() {
 	*x = DeptReq{}
-	mi := &file_basedata_service_proto_msgTypes[16]
+	mi := &file_basedata_service_proto_msgTypes[17]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1505,7 +1606,7 @@ func (x *DeptReq) String() string {
 func (*DeptReq) ProtoMessage() {}
 
 func (x *DeptReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[16]
+	mi := &file_basedata_service_proto_msgTypes[17]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1518,7 +1619,7 @@ func (x *DeptReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeptReq.ProtoReflect.Descriptor instead.
 func (*DeptReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{16}
+	return file_basedata_service_proto_rawDescGZIP(), []int{17}
 }
 
 func (x *DeptReq) GetId() int64 {
@@ -1589,7 +1690,7 @@ type DeptPageReq struct {
 
 func (x *DeptPageReq) Reset() {
 	*x = DeptPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[17]
+	mi := &file_basedata_service_proto_msgTypes[18]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1601,7 +1702,7 @@ func (x *DeptPageReq) String() string {
 func (*DeptPageReq) ProtoMessage() {}
 
 func (x *DeptPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[17]
+	mi := &file_basedata_service_proto_msgTypes[18]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1614,7 +1715,7 @@ func (x *DeptPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeptPageReq.ProtoReflect.Descriptor instead.
 func (*DeptPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{17}
+	return file_basedata_service_proto_rawDescGZIP(), []int{18}
 }
 
 func (x *DeptPageReq) GetPage() int32 {
@@ -1657,7 +1758,7 @@ type DeptListResp struct {
 
 func (x *DeptListResp) Reset() {
 	*x = DeptListResp{}
-	mi := &file_basedata_service_proto_msgTypes[18]
+	mi := &file_basedata_service_proto_msgTypes[19]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1669,7 +1770,7 @@ func (x *DeptListResp) String() string {
 func (*DeptListResp) ProtoMessage() {}
 
 func (x *DeptListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[18]
+	mi := &file_basedata_service_proto_msgTypes[19]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1682,7 +1783,7 @@ func (x *DeptListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeptListResp.ProtoReflect.Descriptor instead.
 func (*DeptListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{18}
+	return file_basedata_service_proto_rawDescGZIP(), []int{19}
 }
 
 func (x *DeptListResp) GetCode() int32 {
@@ -1724,7 +1825,7 @@ type DeptTreeResp struct {
 
 func (x *DeptTreeResp) Reset() {
 	*x = DeptTreeResp{}
-	mi := &file_basedata_service_proto_msgTypes[19]
+	mi := &file_basedata_service_proto_msgTypes[20]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1736,7 +1837,7 @@ func (x *DeptTreeResp) String() string {
 func (*DeptTreeResp) ProtoMessage() {}
 
 func (x *DeptTreeResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[19]
+	mi := &file_basedata_service_proto_msgTypes[20]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1749,7 +1850,7 @@ func (x *DeptTreeResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeptTreeResp.ProtoReflect.Descriptor instead.
 func (*DeptTreeResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{19}
+	return file_basedata_service_proto_rawDescGZIP(), []int{20}
 }
 
 func (x *DeptTreeResp) GetCode() int32 {
@@ -1784,7 +1885,7 @@ type DeptResp struct {
 
 func (x *DeptResp) Reset() {
 	*x = DeptResp{}
-	mi := &file_basedata_service_proto_msgTypes[20]
+	mi := &file_basedata_service_proto_msgTypes[21]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1796,7 +1897,7 @@ func (x *DeptResp) String() string {
 func (*DeptResp) ProtoMessage() {}
 
 func (x *DeptResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[20]
+	mi := &file_basedata_service_proto_msgTypes[21]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1809,7 +1910,7 @@ func (x *DeptResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeptResp.ProtoReflect.Descriptor instead.
 func (*DeptResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{20}
+	return file_basedata_service_proto_rawDescGZIP(), []int{21}
 }
 
 func (x *DeptResp) GetCode() int32 {
@@ -1861,7 +1962,7 @@ type Menu struct {
 
 func (x *Menu) Reset() {
 	*x = Menu{}
-	mi := &file_basedata_service_proto_msgTypes[21]
+	mi := &file_basedata_service_proto_msgTypes[22]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -1873,7 +1974,7 @@ func (x *Menu) String() string {
 func (*Menu) ProtoMessage() {}
 
 func (x *Menu) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[21]
+	mi := &file_basedata_service_proto_msgTypes[22]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1886,7 +1987,7 @@ func (x *Menu) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Menu.ProtoReflect.Descriptor instead.
 func (*Menu) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{21}
+	return file_basedata_service_proto_rawDescGZIP(), []int{22}
 }
 
 func (x *Menu) GetId() int64 {
@@ -2050,7 +2151,7 @@ type MenuReq struct {
 
 func (x *MenuReq) Reset() {
 	*x = MenuReq{}
-	mi := &file_basedata_service_proto_msgTypes[22]
+	mi := &file_basedata_service_proto_msgTypes[23]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2062,7 +2163,7 @@ func (x *MenuReq) String() string {
 func (*MenuReq) ProtoMessage() {}
 
 func (x *MenuReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[22]
+	mi := &file_basedata_service_proto_msgTypes[23]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2075,7 +2176,7 @@ func (x *MenuReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MenuReq.ProtoReflect.Descriptor instead.
 func (*MenuReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{22}
+	return file_basedata_service_proto_rawDescGZIP(), []int{23}
 }
 
 func (x *MenuReq) GetId() int64 {
@@ -2181,7 +2282,7 @@ type MenuPageReq struct {
 
 func (x *MenuPageReq) Reset() {
 	*x = MenuPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[23]
+	mi := &file_basedata_service_proto_msgTypes[24]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2193,7 +2294,7 @@ func (x *MenuPageReq) String() string {
 func (*MenuPageReq) ProtoMessage() {}
 
 func (x *MenuPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[23]
+	mi := &file_basedata_service_proto_msgTypes[24]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2206,7 +2307,7 @@ func (x *MenuPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MenuPageReq.ProtoReflect.Descriptor instead.
 func (*MenuPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{23}
+	return file_basedata_service_proto_rawDescGZIP(), []int{24}
 }
 
 func (x *MenuPageReq) GetPage() int32 {
@@ -2249,7 +2350,7 @@ type MenuListResp struct {
 
 func (x *MenuListResp) Reset() {
 	*x = MenuListResp{}
-	mi := &file_basedata_service_proto_msgTypes[24]
+	mi := &file_basedata_service_proto_msgTypes[25]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2261,7 +2362,7 @@ func (x *MenuListResp) String() string {
 func (*MenuListResp) ProtoMessage() {}
 
 func (x *MenuListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[24]
+	mi := &file_basedata_service_proto_msgTypes[25]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2274,7 +2375,7 @@ func (x *MenuListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MenuListResp.ProtoReflect.Descriptor instead.
 func (*MenuListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{24}
+	return file_basedata_service_proto_rawDescGZIP(), []int{25}
 }
 
 func (x *MenuListResp) GetCode() int32 {
@@ -2316,7 +2417,7 @@ type MenuTreeResp struct {
 
 func (x *MenuTreeResp) Reset() {
 	*x = MenuTreeResp{}
-	mi := &file_basedata_service_proto_msgTypes[25]
+	mi := &file_basedata_service_proto_msgTypes[26]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2328,7 +2429,7 @@ func (x *MenuTreeResp) String() string {
 func (*MenuTreeResp) ProtoMessage() {}
 
 func (x *MenuTreeResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[25]
+	mi := &file_basedata_service_proto_msgTypes[26]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2341,7 +2442,7 @@ func (x *MenuTreeResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MenuTreeResp.ProtoReflect.Descriptor instead.
 func (*MenuTreeResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{25}
+	return file_basedata_service_proto_rawDescGZIP(), []int{26}
 }
 
 func (x *MenuTreeResp) GetCode() int32 {
@@ -2376,7 +2477,7 @@ type MenuResp struct {
 
 func (x *MenuResp) Reset() {
 	*x = MenuResp{}
-	mi := &file_basedata_service_proto_msgTypes[26]
+	mi := &file_basedata_service_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2388,7 +2489,7 @@ func (x *MenuResp) String() string {
 func (*MenuResp) ProtoMessage() {}
 
 func (x *MenuResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[26]
+	mi := &file_basedata_service_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2401,7 +2502,7 @@ func (x *MenuResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use MenuResp.ProtoReflect.Descriptor instead.
 func (*MenuResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{26}
+	return file_basedata_service_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *MenuResp) GetCode() int32 {
@@ -2446,7 +2547,7 @@ type Dict struct {
 
 func (x *Dict) Reset() {
 	*x = Dict{}
-	mi := &file_basedata_service_proto_msgTypes[27]
+	mi := &file_basedata_service_proto_msgTypes[28]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2458,7 +2559,7 @@ func (x *Dict) String() string {
 func (*Dict) ProtoMessage() {}
 
 func (x *Dict) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[27]
+	mi := &file_basedata_service_proto_msgTypes[28]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2471,7 +2572,7 @@ func (x *Dict) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Dict.ProtoReflect.Descriptor instead.
 func (*Dict) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{27}
+	return file_basedata_service_proto_rawDescGZIP(), []int{28}
 }
 
 func (x *Dict) GetId() int64 {
@@ -2588,7 +2689,7 @@ type DictData struct {
 
 func (x *DictData) Reset() {
 	*x = DictData{}
-	mi := &file_basedata_service_proto_msgTypes[28]
+	mi := &file_basedata_service_proto_msgTypes[29]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2600,7 +2701,7 @@ func (x *DictData) String() string {
 func (*DictData) ProtoMessage() {}
 
 func (x *DictData) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[28]
+	mi := &file_basedata_service_proto_msgTypes[29]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2613,7 +2714,7 @@ func (x *DictData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictData.ProtoReflect.Descriptor instead.
 func (*DictData) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{28}
+	return file_basedata_service_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *DictData) GetId() int64 {
@@ -2734,7 +2835,7 @@ type DictReq struct {
 
 func (x *DictReq) Reset() {
 	*x = DictReq{}
-	mi := &file_basedata_service_proto_msgTypes[29]
+	mi := &file_basedata_service_proto_msgTypes[30]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2746,7 +2847,7 @@ func (x *DictReq) String() string {
 func (*DictReq) ProtoMessage() {}
 
 func (x *DictReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[29]
+	mi := &file_basedata_service_proto_msgTypes[30]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2759,7 +2860,7 @@ func (x *DictReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictReq.ProtoReflect.Descriptor instead.
 func (*DictReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{29}
+	return file_basedata_service_proto_rawDescGZIP(), []int{30}
 }
 
 func (x *DictReq) GetId() int64 {
@@ -2810,7 +2911,7 @@ type DictPageReq struct {
 
 func (x *DictPageReq) Reset() {
 	*x = DictPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[30]
+	mi := &file_basedata_service_proto_msgTypes[31]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2822,7 +2923,7 @@ func (x *DictPageReq) String() string {
 func (*DictPageReq) ProtoMessage() {}
 
 func (x *DictPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[30]
+	mi := &file_basedata_service_proto_msgTypes[31]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2835,7 +2936,7 @@ func (x *DictPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictPageReq.ProtoReflect.Descriptor instead.
 func (*DictPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{30}
+	return file_basedata_service_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *DictPageReq) GetPage() int32 {
@@ -2885,7 +2986,7 @@ type DictListResp struct {
 
 func (x *DictListResp) Reset() {
 	*x = DictListResp{}
-	mi := &file_basedata_service_proto_msgTypes[31]
+	mi := &file_basedata_service_proto_msgTypes[32]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2897,7 +2998,7 @@ func (x *DictListResp) String() string {
 func (*DictListResp) ProtoMessage() {}
 
 func (x *DictListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[31]
+	mi := &file_basedata_service_proto_msgTypes[32]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2910,7 +3011,7 @@ func (x *DictListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictListResp.ProtoReflect.Descriptor instead.
 func (*DictListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{31}
+	return file_basedata_service_proto_rawDescGZIP(), []int{32}
 }
 
 func (x *DictListResp) GetCode() int32 {
@@ -2952,7 +3053,7 @@ type DictResp struct {
 
 func (x *DictResp) Reset() {
 	*x = DictResp{}
-	mi := &file_basedata_service_proto_msgTypes[32]
+	mi := &file_basedata_service_proto_msgTypes[33]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2964,7 +3065,7 @@ func (x *DictResp) String() string {
 func (*DictResp) ProtoMessage() {}
 
 func (x *DictResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[32]
+	mi := &file_basedata_service_proto_msgTypes[33]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2977,7 +3078,7 @@ func (x *DictResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictResp.ProtoReflect.Descriptor instead.
 func (*DictResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{32}
+	return file_basedata_service_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *DictResp) GetCode() int32 {
@@ -3016,7 +3117,7 @@ type DictDataReq struct {
 
 func (x *DictDataReq) Reset() {
 	*x = DictDataReq{}
-	mi := &file_basedata_service_proto_msgTypes[33]
+	mi := &file_basedata_service_proto_msgTypes[34]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3028,7 +3129,7 @@ func (x *DictDataReq) String() string {
 func (*DictDataReq) ProtoMessage() {}
 
 func (x *DictDataReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[33]
+	mi := &file_basedata_service_proto_msgTypes[34]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3041,7 +3142,7 @@ func (x *DictDataReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictDataReq.ProtoReflect.Descriptor instead.
 func (*DictDataReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{33}
+	return file_basedata_service_proto_rawDescGZIP(), []int{34}
 }
 
 func (x *DictDataReq) GetId() int64 {
@@ -3107,7 +3208,7 @@ type DictDataPageReq struct {
 
 func (x *DictDataPageReq) Reset() {
 	*x = DictDataPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[34]
+	mi := &file_basedata_service_proto_msgTypes[35]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3119,7 +3220,7 @@ func (x *DictDataPageReq) String() string {
 func (*DictDataPageReq) ProtoMessage() {}
 
 func (x *DictDataPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[34]
+	mi := &file_basedata_service_proto_msgTypes[35]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3132,7 +3233,7 @@ func (x *DictDataPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictDataPageReq.ProtoReflect.Descriptor instead.
 func (*DictDataPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{34}
+	return file_basedata_service_proto_rawDescGZIP(), []int{35}
 }
 
 func (x *DictDataPageReq) GetPage() int32 {
@@ -3189,7 +3290,7 @@ type DictDataListResp struct {
 
 func (x *DictDataListResp) Reset() {
 	*x = DictDataListResp{}
-	mi := &file_basedata_service_proto_msgTypes[35]
+	mi := &file_basedata_service_proto_msgTypes[36]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3201,7 +3302,7 @@ func (x *DictDataListResp) String() string {
 func (*DictDataListResp) ProtoMessage() {}
 
 func (x *DictDataListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[35]
+	mi := &file_basedata_service_proto_msgTypes[36]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3214,7 +3315,7 @@ func (x *DictDataListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictDataListResp.ProtoReflect.Descriptor instead.
 func (*DictDataListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{35}
+	return file_basedata_service_proto_rawDescGZIP(), []int{36}
 }
 
 func (x *DictDataListResp) GetCode() int32 {
@@ -3256,7 +3357,7 @@ type DictDataResp struct {
 
 func (x *DictDataResp) Reset() {
 	*x = DictDataResp{}
-	mi := &file_basedata_service_proto_msgTypes[36]
+	mi := &file_basedata_service_proto_msgTypes[37]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3268,7 +3369,7 @@ func (x *DictDataResp) String() string {
 func (*DictDataResp) ProtoMessage() {}
 
 func (x *DictDataResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[36]
+	mi := &file_basedata_service_proto_msgTypes[37]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3281,7 +3382,7 @@ func (x *DictDataResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DictDataResp.ProtoReflect.Descriptor instead.
 func (*DictDataResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{36}
+	return file_basedata_service_proto_rawDescGZIP(), []int{37}
 }
 
 func (x *DictDataResp) GetCode() int32 {
@@ -3331,7 +3432,7 @@ type Tenant struct {
 
 func (x *Tenant) Reset() {
 	*x = Tenant{}
-	mi := &file_basedata_service_proto_msgTypes[37]
+	mi := &file_basedata_service_proto_msgTypes[38]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3343,7 +3444,7 @@ func (x *Tenant) String() string {
 func (*Tenant) ProtoMessage() {}
 
 func (x *Tenant) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[37]
+	mi := &file_basedata_service_proto_msgTypes[38]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3356,7 +3457,7 @@ func (x *Tenant) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Tenant.ProtoReflect.Descriptor instead.
 func (*Tenant) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{37}
+	return file_basedata_service_proto_rawDescGZIP(), []int{38}
 }
 
 func (x *Tenant) GetId() int64 {
@@ -3502,7 +3603,7 @@ type TenantReq struct {
 
 func (x *TenantReq) Reset() {
 	*x = TenantReq{}
-	mi := &file_basedata_service_proto_msgTypes[38]
+	mi := &file_basedata_service_proto_msgTypes[39]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3514,7 +3615,7 @@ func (x *TenantReq) String() string {
 func (*TenantReq) ProtoMessage() {}
 
 func (x *TenantReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[38]
+	mi := &file_basedata_service_proto_msgTypes[39]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3527,7 +3628,7 @@ func (x *TenantReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantReq.ProtoReflect.Descriptor instead.
 func (*TenantReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{38}
+	return file_basedata_service_proto_rawDescGZIP(), []int{39}
 }
 
 func (x *TenantReq) GetId() int64 {
@@ -3606,7 +3707,7 @@ type TenantPageReq struct {
 
 func (x *TenantPageReq) Reset() {
 	*x = TenantPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[39]
+	mi := &file_basedata_service_proto_msgTypes[40]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3618,7 +3719,7 @@ func (x *TenantPageReq) String() string {
 func (*TenantPageReq) ProtoMessage() {}
 
 func (x *TenantPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[39]
+	mi := &file_basedata_service_proto_msgTypes[40]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3631,7 +3732,7 @@ func (x *TenantPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantPageReq.ProtoReflect.Descriptor instead.
 func (*TenantPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{39}
+	return file_basedata_service_proto_rawDescGZIP(), []int{40}
 }
 
 func (x *TenantPageReq) GetPage() int32 {
@@ -3681,7 +3782,7 @@ type TenantListResp struct {
 
 func (x *TenantListResp) Reset() {
 	*x = TenantListResp{}
-	mi := &file_basedata_service_proto_msgTypes[40]
+	mi := &file_basedata_service_proto_msgTypes[41]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3693,7 +3794,7 @@ func (x *TenantListResp) String() string {
 func (*TenantListResp) ProtoMessage() {}
 
 func (x *TenantListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[40]
+	mi := &file_basedata_service_proto_msgTypes[41]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3706,7 +3807,7 @@ func (x *TenantListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantListResp.ProtoReflect.Descriptor instead.
 func (*TenantListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{40}
+	return file_basedata_service_proto_rawDescGZIP(), []int{41}
 }
 
 func (x *TenantListResp) GetCode() int32 {
@@ -3748,7 +3849,7 @@ type TenantResp struct {
 
 func (x *TenantResp) Reset() {
 	*x = TenantResp{}
-	mi := &file_basedata_service_proto_msgTypes[41]
+	mi := &file_basedata_service_proto_msgTypes[42]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3760,7 +3861,7 @@ func (x *TenantResp) String() string {
 func (*TenantResp) ProtoMessage() {}
 
 func (x *TenantResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[41]
+	mi := &file_basedata_service_proto_msgTypes[42]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3773,7 +3874,7 @@ func (x *TenantResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TenantResp.ProtoReflect.Descriptor instead.
 func (*TenantResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{41}
+	return file_basedata_service_proto_rawDescGZIP(), []int{42}
 }
 
 func (x *TenantResp) GetCode() int32 {
@@ -3816,7 +3917,7 @@ type Package struct {
 
 func (x *Package) Reset() {
 	*x = Package{}
-	mi := &file_basedata_service_proto_msgTypes[42]
+	mi := &file_basedata_service_proto_msgTypes[43]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3828,7 +3929,7 @@ func (x *Package) String() string {
 func (*Package) ProtoMessage() {}
 
 func (x *Package) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[42]
+	mi := &file_basedata_service_proto_msgTypes[43]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3841,7 +3942,7 @@ func (x *Package) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Package.ProtoReflect.Descriptor instead.
 func (*Package) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{42}
+	return file_basedata_service_proto_rawDescGZIP(), []int{43}
 }
 
 func (x *Package) GetId() int64 {
@@ -3935,7 +4036,7 @@ type PackageReq struct {
 
 func (x *PackageReq) Reset() {
 	*x = PackageReq{}
-	mi := &file_basedata_service_proto_msgTypes[43]
+	mi := &file_basedata_service_proto_msgTypes[44]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -3947,7 +4048,7 @@ func (x *PackageReq) String() string {
 func (*PackageReq) ProtoMessage() {}
 
 func (x *PackageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[43]
+	mi := &file_basedata_service_proto_msgTypes[44]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -3960,7 +4061,7 @@ func (x *PackageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PackageReq.ProtoReflect.Descriptor instead.
 func (*PackageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{43}
+	return file_basedata_service_proto_rawDescGZIP(), []int{44}
 }
 
 func (x *PackageReq) GetId() int64 {
@@ -4018,7 +4119,7 @@ type PackagePageReq struct {
 
 func (x *PackagePageReq) Reset() {
 	*x = PackagePageReq{}
-	mi := &file_basedata_service_proto_msgTypes[44]
+	mi := &file_basedata_service_proto_msgTypes[45]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4030,7 +4131,7 @@ func (x *PackagePageReq) String() string {
 func (*PackagePageReq) ProtoMessage() {}
 
 func (x *PackagePageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[44]
+	mi := &file_basedata_service_proto_msgTypes[45]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4043,7 +4144,7 @@ func (x *PackagePageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PackagePageReq.ProtoReflect.Descriptor instead.
 func (*PackagePageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{44}
+	return file_basedata_service_proto_rawDescGZIP(), []int{45}
 }
 
 func (x *PackagePageReq) GetPage() int32 {
@@ -4093,7 +4194,7 @@ type PackageListResp struct {
 
 func (x *PackageListResp) Reset() {
 	*x = PackageListResp{}
-	mi := &file_basedata_service_proto_msgTypes[45]
+	mi := &file_basedata_service_proto_msgTypes[46]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4105,7 +4206,7 @@ func (x *PackageListResp) String() string {
 func (*PackageListResp) ProtoMessage() {}
 
 func (x *PackageListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[45]
+	mi := &file_basedata_service_proto_msgTypes[46]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4118,7 +4219,7 @@ func (x *PackageListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PackageListResp.ProtoReflect.Descriptor instead.
 func (*PackageListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{45}
+	return file_basedata_service_proto_rawDescGZIP(), []int{46}
 }
 
 func (x *PackageListResp) GetCode() int32 {
@@ -4160,7 +4261,7 @@ type PackageResp struct {
 
 func (x *PackageResp) Reset() {
 	*x = PackageResp{}
-	mi := &file_basedata_service_proto_msgTypes[46]
+	mi := &file_basedata_service_proto_msgTypes[47]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4172,7 +4273,7 @@ func (x *PackageResp) String() string {
 func (*PackageResp) ProtoMessage() {}
 
 func (x *PackageResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[46]
+	mi := &file_basedata_service_proto_msgTypes[47]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4185,7 +4286,7 @@ func (x *PackageResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PackageResp.ProtoReflect.Descriptor instead.
 func (*PackageResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{46}
+	return file_basedata_service_proto_rawDescGZIP(), []int{47}
 }
 
 func (x *PackageResp) GetCode() int32 {
@@ -4229,7 +4330,7 @@ type Api struct {
 
 func (x *Api) Reset() {
 	*x = Api{}
-	mi := &file_basedata_service_proto_msgTypes[47]
+	mi := &file_basedata_service_proto_msgTypes[48]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4241,7 +4342,7 @@ func (x *Api) String() string {
 func (*Api) ProtoMessage() {}
 
 func (x *Api) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[47]
+	mi := &file_basedata_service_proto_msgTypes[48]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4254,7 +4355,7 @@ func (x *Api) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Api.ProtoReflect.Descriptor instead.
 func (*Api) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{47}
+	return file_basedata_service_proto_rawDescGZIP(), []int{48}
 }
 
 func (x *Api) GetId() int64 {
@@ -4356,7 +4457,7 @@ type ApiReq struct {
 
 func (x *ApiReq) Reset() {
 	*x = ApiReq{}
-	mi := &file_basedata_service_proto_msgTypes[48]
+	mi := &file_basedata_service_proto_msgTypes[49]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4368,7 +4469,7 @@ func (x *ApiReq) String() string {
 func (*ApiReq) ProtoMessage() {}
 
 func (x *ApiReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[48]
+	mi := &file_basedata_service_proto_msgTypes[49]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4381,7 +4482,7 @@ func (x *ApiReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApiReq.ProtoReflect.Descriptor instead.
 func (*ApiReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{48}
+	return file_basedata_service_proto_rawDescGZIP(), []int{49}
 }
 
 func (x *ApiReq) GetId() int64 {
@@ -4447,7 +4548,7 @@ type ApiPageReq struct {
 
 func (x *ApiPageReq) Reset() {
 	*x = ApiPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[49]
+	mi := &file_basedata_service_proto_msgTypes[50]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4459,7 +4560,7 @@ func (x *ApiPageReq) String() string {
 func (*ApiPageReq) ProtoMessage() {}
 
 func (x *ApiPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[49]
+	mi := &file_basedata_service_proto_msgTypes[50]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4472,7 +4573,7 @@ func (x *ApiPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApiPageReq.ProtoReflect.Descriptor instead.
 func (*ApiPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{49}
+	return file_basedata_service_proto_rawDescGZIP(), []int{50}
 }
 
 func (x *ApiPageReq) GetPage() int32 {
@@ -4529,7 +4630,7 @@ type ApiListResp struct {
 
 func (x *ApiListResp) Reset() {
 	*x = ApiListResp{}
-	mi := &file_basedata_service_proto_msgTypes[50]
+	mi := &file_basedata_service_proto_msgTypes[51]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4541,7 +4642,7 @@ func (x *ApiListResp) String() string {
 func (*ApiListResp) ProtoMessage() {}
 
 func (x *ApiListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[50]
+	mi := &file_basedata_service_proto_msgTypes[51]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4554,7 +4655,7 @@ func (x *ApiListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApiListResp.ProtoReflect.Descriptor instead.
 func (*ApiListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{50}
+	return file_basedata_service_proto_rawDescGZIP(), []int{51}
 }
 
 func (x *ApiListResp) GetCode() int32 {
@@ -4596,7 +4697,7 @@ type ApiResp struct {
 
 func (x *ApiResp) Reset() {
 	*x = ApiResp{}
-	mi := &file_basedata_service_proto_msgTypes[51]
+	mi := &file_basedata_service_proto_msgTypes[52]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4608,7 +4709,7 @@ func (x *ApiResp) String() string {
 func (*ApiResp) ProtoMessage() {}
 
 func (x *ApiResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[51]
+	mi := &file_basedata_service_proto_msgTypes[52]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4621,7 +4722,7 @@ func (x *ApiResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ApiResp.ProtoReflect.Descriptor instead.
 func (*ApiResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{51}
+	return file_basedata_service_proto_rawDescGZIP(), []int{52}
 }
 
 func (x *ApiResp) GetCode() int32 {
@@ -4660,7 +4761,7 @@ type LoginLog struct {
 
 func (x *LoginLog) Reset() {
 	*x = LoginLog{}
-	mi := &file_basedata_service_proto_msgTypes[52]
+	mi := &file_basedata_service_proto_msgTypes[53]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4672,7 +4773,7 @@ func (x *LoginLog) String() string {
 func (*LoginLog) ProtoMessage() {}
 
 func (x *LoginLog) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[52]
+	mi := &file_basedata_service_proto_msgTypes[53]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4685,7 +4786,7 @@ func (x *LoginLog) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginLog.ProtoReflect.Descriptor instead.
 func (*LoginLog) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{52}
+	return file_basedata_service_proto_rawDescGZIP(), []int{53}
 }
 
 func (x *LoginLog) GetId() int64 {
@@ -4763,7 +4864,7 @@ type OperationLog struct {
 
 func (x *OperationLog) Reset() {
 	*x = OperationLog{}
-	mi := &file_basedata_service_proto_msgTypes[53]
+	mi := &file_basedata_service_proto_msgTypes[54]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4775,7 +4876,7 @@ func (x *OperationLog) String() string {
 func (*OperationLog) ProtoMessage() {}
 
 func (x *OperationLog) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[53]
+	mi := &file_basedata_service_proto_msgTypes[54]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4788,7 +4889,7 @@ func (x *OperationLog) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationLog.ProtoReflect.Descriptor instead.
 func (*OperationLog) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{53}
+	return file_basedata_service_proto_rawDescGZIP(), []int{54}
 }
 
 func (x *OperationLog) GetId() int64 {
@@ -4925,7 +5026,7 @@ type EmptyReq struct {
 
 func (x *EmptyReq) Reset() {
 	*x = EmptyReq{}
-	mi := &file_basedata_service_proto_msgTypes[54]
+	mi := &file_basedata_service_proto_msgTypes[55]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4937,7 +5038,7 @@ func (x *EmptyReq) String() string {
 func (*EmptyReq) ProtoMessage() {}
 
 func (x *EmptyReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[54]
+	mi := &file_basedata_service_proto_msgTypes[55]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4950,7 +5051,7 @@ func (x *EmptyReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EmptyReq.ProtoReflect.Descriptor instead.
 func (*EmptyReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{54}
+	return file_basedata_service_proto_rawDescGZIP(), []int{55}
 }
 
 type EmptyResp struct {
@@ -4963,7 +5064,7 @@ type EmptyResp struct {
 
 func (x *EmptyResp) Reset() {
 	*x = EmptyResp{}
-	mi := &file_basedata_service_proto_msgTypes[55]
+	mi := &file_basedata_service_proto_msgTypes[56]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -4975,7 +5076,7 @@ func (x *EmptyResp) String() string {
 func (*EmptyResp) ProtoMessage() {}
 
 func (x *EmptyResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[55]
+	mi := &file_basedata_service_proto_msgTypes[56]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -4988,7 +5089,7 @@ func (x *EmptyResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use EmptyResp.ProtoReflect.Descriptor instead.
 func (*EmptyResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{55}
+	return file_basedata_service_proto_rawDescGZIP(), []int{56}
 }
 
 func (x *EmptyResp) GetCode() int32 {
@@ -5022,7 +5123,7 @@ type LogPageReq struct {
 
 func (x *LogPageReq) Reset() {
 	*x = LogPageReq{}
-	mi := &file_basedata_service_proto_msgTypes[56]
+	mi := &file_basedata_service_proto_msgTypes[57]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5034,7 +5135,7 @@ func (x *LogPageReq) String() string {
 func (*LogPageReq) ProtoMessage() {}
 
 func (x *LogPageReq) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[56]
+	mi := &file_basedata_service_proto_msgTypes[57]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5047,7 +5148,7 @@ func (x *LogPageReq) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LogPageReq.ProtoReflect.Descriptor instead.
 func (*LogPageReq) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{56}
+	return file_basedata_service_proto_rawDescGZIP(), []int{57}
 }
 
 func (x *LogPageReq) GetPage() int32 {
@@ -5125,7 +5226,7 @@ type LoginLogListResp struct {
 
 func (x *LoginLogListResp) Reset() {
 	*x = LoginLogListResp{}
-	mi := &file_basedata_service_proto_msgTypes[57]
+	mi := &file_basedata_service_proto_msgTypes[58]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5137,7 +5238,7 @@ func (x *LoginLogListResp) String() string {
 func (*LoginLogListResp) ProtoMessage() {}
 
 func (x *LoginLogListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[57]
+	mi := &file_basedata_service_proto_msgTypes[58]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5150,7 +5251,7 @@ func (x *LoginLogListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use LoginLogListResp.ProtoReflect.Descriptor instead.
 func (*LoginLogListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{57}
+	return file_basedata_service_proto_rawDescGZIP(), []int{58}
 }
 
 func (x *LoginLogListResp) GetCode() int32 {
@@ -5193,7 +5294,7 @@ type OperationLogListResp struct {
 
 func (x *OperationLogListResp) Reset() {
 	*x = OperationLogListResp{}
-	mi := &file_basedata_service_proto_msgTypes[58]
+	mi := &file_basedata_service_proto_msgTypes[59]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5205,7 +5306,7 @@ func (x *OperationLogListResp) String() string {
 func (*OperationLogListResp) ProtoMessage() {}
 
 func (x *OperationLogListResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[58]
+	mi := &file_basedata_service_proto_msgTypes[59]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5218,7 +5319,7 @@ func (x *OperationLogListResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use OperationLogListResp.ProtoReflect.Descriptor instead.
 func (*OperationLogListResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{58}
+	return file_basedata_service_proto_rawDescGZIP(), []int{59}
 }
 
 func (x *OperationLogListResp) GetCode() int32 {
@@ -5260,7 +5361,7 @@ type RoleCodesResp struct {
 
 func (x *RoleCodesResp) Reset() {
 	*x = RoleCodesResp{}
-	mi := &file_basedata_service_proto_msgTypes[59]
+	mi := &file_basedata_service_proto_msgTypes[60]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -5272,7 +5373,7 @@ func (x *RoleCodesResp) String() string {
 func (*RoleCodesResp) ProtoMessage() {}
 
 func (x *RoleCodesResp) ProtoReflect() protoreflect.Message {
-	mi := &file_basedata_service_proto_msgTypes[59]
+	mi := &file_basedata_service_proto_msgTypes[60]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -5285,7 +5386,7 @@ func (x *RoleCodesResp) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use RoleCodesResp.ProtoReflect.Descriptor instead.
 func (*RoleCodesResp) Descriptor() ([]byte, []int) {
-	return file_basedata_service_proto_rawDescGZIP(), []int{59}
+	return file_basedata_service_proto_rawDescGZIP(), []int{60}
 }
 
 func (x *RoleCodesResp) GetCode() int32 {
@@ -5327,7 +5428,7 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x05IdReq\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\"\x1a\n" +
 	"\x06IdsReq\x12\x10\n" +
-	"\x03ids\x18\x01 \x03(\x03R\x03ids\"\xca\a\n" +
+	"\x03ids\x18\x01 \x03(\x03R\x03ids\"\xc7\b\n" +
 	"\x04User\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x19\n" +
 	"\x05idStr\x18\x02 \x01(\tH\x01R\x05idStr\x88\x01\x01\x12\x1f\n" +
@@ -5353,7 +5454,9 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\tcreatedBy\x18\x14 \x01(\tH\x10R\tcreatedBy\x88\x01\x01\x12!\n" +
 	"\tupdatedAt\x18\x15 \x01(\x03H\x11R\tupdatedAt\x88\x01\x01\x12!\n" +
 	"\tupdatedBy\x18\x16 \x01(\tH\x12R\tupdatedBy\x88\x01\x01\x12\x1f\n" +
-	"\bpassword\x18\x17 \x01(\tH\x13R\bpassword\x88\x01\x01B\x05\n" +
+	"\bpassword\x18\x17 \x01(\tH\x13R\bpassword\x88\x01\x01\x12-\n" +
+	"\x0floginErrorCount\x18\x18 \x01(\x05H\x14R\x0floginErrorCount\x88\x01\x01\x12'\n" +
+	"\flockoutUntil\x18\x19 \x01(\x03H\x15R\flockoutUntil\x88\x01\x01B\x05\n" +
 	"\x03_idB\b\n" +
 	"\x06_idStrB\v\n" +
 	"\t_usernameB\v\n" +
@@ -5380,7 +5483,24 @@ const file_basedata_service_proto_rawDesc = "" +
 	"_updatedAtB\f\n" +
 	"\n" +
 	"_updatedByB\v\n" +
-	"\t_password\"\x8e\x03\n" +
+	"\t_passwordB\x12\n" +
+	"\x10_loginErrorCountB\x0f\n" +
+	"\r_lockoutUntil\"\x86\x02\n" +
+	"\x0eLoginRecordReq\x12\x1b\n" +
+	"\x06userId\x18\x01 \x01(\x03H\x00R\x06userId\x88\x01\x01\x12\x1f\n" +
+	"\busername\x18\x02 \x01(\tH\x01R\busername\x88\x01\x01\x12\x13\n" +
+	"\x02ip\x18\x03 \x01(\tH\x02R\x02ip\x88\x01\x01\x12\x1d\n" +
+	"\asuccess\x18\x04 \x01(\bH\x03R\asuccess\x88\x01\x01\x12\x1d\n" +
+	"\amessage\x18\x05 \x01(\tH\x04R\amessage\x88\x01\x01\x12\x1f\n" +
+	"\btenantId\x18\x06 \x01(\x03H\x05R\btenantId\x88\x01\x01B\t\n" +
+	"\a_userIdB\v\n" +
+	"\t_usernameB\x05\n" +
+	"\x03_ipB\n" +
+	"\n" +
+	"\b_successB\n" +
+	"\n" +
+	"\b_messageB\v\n" +
+	"\t_tenantId\"\x8e\x03\n" +
 	"\aUserReq\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\x03H\x00R\x02id\x88\x01\x01\x12\x1f\n" +
 	"\busername\x18\x02 \x01(\tH\x01R\busername\x88\x01\x01\x12\x1f\n" +
@@ -6148,7 +6268,7 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\rRoleCodesResp\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\x05R\x04code\x12\x10\n" +
 	"\x03msg\x18\x02 \x01(\tR\x03msg\x12\x14\n" +
-	"\x05codes\x18\x03 \x03(\tR\x05codes2\x95\x05\n" +
+	"\x05codes\x18\x03 \x03(\tR\x05codes2\xe9\x05\n" +
 	"\bSysUsers\x12C\n" +
 	"\n" +
 	"CreateUser\x12\x19.basedata_service.UserReq\x1a\x1a.basedata_service.UserResp\x12C\n" +
@@ -6161,7 +6281,8 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\x11GetUserByUsername\x12\x19.basedata_service.UserReq\x1a\x1a.basedata_service.UserResp\x12G\n" +
 	"\rResetPassword\x12\x19.basedata_service.UserReq\x1a\x1b.basedata_service.EmptyResp\x12E\n" +
 	"\vAssignRoles\x12\x19.basedata_service.UserReq\x1a\x1b.basedata_service.EmptyResp\x12L\n" +
-	"\x10GetUserRoleCodes\x12\x17.basedata_service.IdReq\x1a\x1f.basedata_service.RoleCodesResp2\xf8\x03\n" +
+	"\x10GetUserRoleCodes\x12\x17.basedata_service.IdReq\x1a\x1f.basedata_service.RoleCodesResp\x12R\n" +
+	"\x11RecordLoginResult\x12 .basedata_service.LoginRecordReq\x1a\x1b.basedata_service.EmptyResp2\xf8\x03\n" +
 	"\bSysRoles\x12C\n" +
 	"\n" +
 	"CreateRole\x12\x19.basedata_service.RoleReq\x1a\x1a.basedata_service.RoleResp\x12C\n" +
@@ -6233,10 +6354,11 @@ const file_basedata_service_proto_rawDesc = "" +
 	"\n" +
 	"GetApiList\x12\x1c.basedata_service.ApiPageReq\x1a\x1d.basedata_service.ApiListResp\x12@\n" +
 	"\n" +
-	"GetApiById\x12\x17.basedata_service.IdReq\x1a\x19.basedata_service.ApiResp2\xbb\x01\n" +
+	"GetApiById\x12\x17.basedata_service.IdReq\x1a\x19.basedata_service.ApiResp2\x8e\x02\n" +
 	"\aSysLogs\x12S\n" +
 	"\x0fGetLoginLogList\x12\x1c.basedata_service.LogPageReq\x1a\".basedata_service.LoginLogListResp\x12[\n" +
-	"\x13GetOperationLogList\x12\x1c.basedata_service.LogPageReq\x1a&.basedata_service.OperationLogListResp2M\n" +
+	"\x13GetOperationLogList\x12\x1c.basedata_service.LogPageReq\x1a&.basedata_service.OperationLogListResp\x12Q\n" +
+	"\x12CreateOperationLog\x12\x1e.basedata_service.OperationLog\x1a\x1b.basedata_service.EmptyResp2M\n" +
 	"\aSysInit\x12B\n" +
 	"\aInitAll\x12\x1a.basedata_service.EmptyReq\x1a\x1b.basedata_service.EmptyRespB\bZ\x06./appsb\x06proto3"
 
@@ -6252,7 +6374,7 @@ func file_basedata_service_proto_rawDescGZIP() []byte {
 	return file_basedata_service_proto_rawDescData
 }
 
-var file_basedata_service_proto_msgTypes = make([]protoimpl.MessageInfo, 60)
+var file_basedata_service_proto_msgTypes = make([]protoimpl.MessageInfo, 61)
 var file_basedata_service_proto_goTypes = []any{
 	(*BaseResp)(nil),             // 0: basedata_service.BaseResp
 	(*PageReq)(nil),              // 1: basedata_service.PageReq
@@ -6260,209 +6382,214 @@ var file_basedata_service_proto_goTypes = []any{
 	(*IdReq)(nil),                // 3: basedata_service.IdReq
 	(*IdsReq)(nil),               // 4: basedata_service.IdsReq
 	(*User)(nil),                 // 5: basedata_service.User
-	(*UserReq)(nil),              // 6: basedata_service.UserReq
-	(*UserPageReq)(nil),          // 7: basedata_service.UserPageReq
-	(*UserListResp)(nil),         // 8: basedata_service.UserListResp
-	(*UserResp)(nil),             // 9: basedata_service.UserResp
-	(*Role)(nil),                 // 10: basedata_service.Role
-	(*RoleReq)(nil),              // 11: basedata_service.RoleReq
-	(*RolePageReq)(nil),          // 12: basedata_service.RolePageReq
-	(*RoleListResp)(nil),         // 13: basedata_service.RoleListResp
-	(*RoleResp)(nil),             // 14: basedata_service.RoleResp
-	(*Dept)(nil),                 // 15: basedata_service.Dept
-	(*DeptReq)(nil),              // 16: basedata_service.DeptReq
-	(*DeptPageReq)(nil),          // 17: basedata_service.DeptPageReq
-	(*DeptListResp)(nil),         // 18: basedata_service.DeptListResp
-	(*DeptTreeResp)(nil),         // 19: basedata_service.DeptTreeResp
-	(*DeptResp)(nil),             // 20: basedata_service.DeptResp
-	(*Menu)(nil),                 // 21: basedata_service.Menu
-	(*MenuReq)(nil),              // 22: basedata_service.MenuReq
-	(*MenuPageReq)(nil),          // 23: basedata_service.MenuPageReq
-	(*MenuListResp)(nil),         // 24: basedata_service.MenuListResp
-	(*MenuTreeResp)(nil),         // 25: basedata_service.MenuTreeResp
-	(*MenuResp)(nil),             // 26: basedata_service.MenuResp
-	(*Dict)(nil),                 // 27: basedata_service.Dict
-	(*DictData)(nil),             // 28: basedata_service.DictData
-	(*DictReq)(nil),              // 29: basedata_service.DictReq
-	(*DictPageReq)(nil),          // 30: basedata_service.DictPageReq
-	(*DictListResp)(nil),         // 31: basedata_service.DictListResp
-	(*DictResp)(nil),             // 32: basedata_service.DictResp
-	(*DictDataReq)(nil),          // 33: basedata_service.DictDataReq
-	(*DictDataPageReq)(nil),      // 34: basedata_service.DictDataPageReq
-	(*DictDataListResp)(nil),     // 35: basedata_service.DictDataListResp
-	(*DictDataResp)(nil),         // 36: basedata_service.DictDataResp
-	(*Tenant)(nil),               // 37: basedata_service.Tenant
-	(*TenantReq)(nil),            // 38: basedata_service.TenantReq
-	(*TenantPageReq)(nil),        // 39: basedata_service.TenantPageReq
-	(*TenantListResp)(nil),       // 40: basedata_service.TenantListResp
-	(*TenantResp)(nil),           // 41: basedata_service.TenantResp
-	(*Package)(nil),              // 42: basedata_service.Package
-	(*PackageReq)(nil),           // 43: basedata_service.PackageReq
-	(*PackagePageReq)(nil),       // 44: basedata_service.PackagePageReq
-	(*PackageListResp)(nil),      // 45: basedata_service.PackageListResp
-	(*PackageResp)(nil),          // 46: basedata_service.PackageResp
-	(*Api)(nil),                  // 47: basedata_service.Api
-	(*ApiReq)(nil),               // 48: basedata_service.ApiReq
-	(*ApiPageReq)(nil),           // 49: basedata_service.ApiPageReq
-	(*ApiListResp)(nil),          // 50: basedata_service.ApiListResp
-	(*ApiResp)(nil),              // 51: basedata_service.ApiResp
-	(*LoginLog)(nil),             // 52: basedata_service.LoginLog
-	(*OperationLog)(nil),         // 53: basedata_service.OperationLog
-	(*EmptyReq)(nil),             // 54: basedata_service.EmptyReq
-	(*EmptyResp)(nil),            // 55: basedata_service.EmptyResp
-	(*LogPageReq)(nil),           // 56: basedata_service.LogPageReq
-	(*LoginLogListResp)(nil),     // 57: basedata_service.LoginLogListResp
-	(*OperationLogListResp)(nil), // 58: basedata_service.OperationLogListResp
-	(*RoleCodesResp)(nil),        // 59: basedata_service.RoleCodesResp
+	(*LoginRecordReq)(nil),       // 6: basedata_service.LoginRecordReq
+	(*UserReq)(nil),              // 7: basedata_service.UserReq
+	(*UserPageReq)(nil),          // 8: basedata_service.UserPageReq
+	(*UserListResp)(nil),         // 9: basedata_service.UserListResp
+	(*UserResp)(nil),             // 10: basedata_service.UserResp
+	(*Role)(nil),                 // 11: basedata_service.Role
+	(*RoleReq)(nil),              // 12: basedata_service.RoleReq
+	(*RolePageReq)(nil),          // 13: basedata_service.RolePageReq
+	(*RoleListResp)(nil),         // 14: basedata_service.RoleListResp
+	(*RoleResp)(nil),             // 15: basedata_service.RoleResp
+	(*Dept)(nil),                 // 16: basedata_service.Dept
+	(*DeptReq)(nil),              // 17: basedata_service.DeptReq
+	(*DeptPageReq)(nil),          // 18: basedata_service.DeptPageReq
+	(*DeptListResp)(nil),         // 19: basedata_service.DeptListResp
+	(*DeptTreeResp)(nil),         // 20: basedata_service.DeptTreeResp
+	(*DeptResp)(nil),             // 21: basedata_service.DeptResp
+	(*Menu)(nil),                 // 22: basedata_service.Menu
+	(*MenuReq)(nil),              // 23: basedata_service.MenuReq
+	(*MenuPageReq)(nil),          // 24: basedata_service.MenuPageReq
+	(*MenuListResp)(nil),         // 25: basedata_service.MenuListResp
+	(*MenuTreeResp)(nil),         // 26: basedata_service.MenuTreeResp
+	(*MenuResp)(nil),             // 27: basedata_service.MenuResp
+	(*Dict)(nil),                 // 28: basedata_service.Dict
+	(*DictData)(nil),             // 29: basedata_service.DictData
+	(*DictReq)(nil),              // 30: basedata_service.DictReq
+	(*DictPageReq)(nil),          // 31: basedata_service.DictPageReq
+	(*DictListResp)(nil),         // 32: basedata_service.DictListResp
+	(*DictResp)(nil),             // 33: basedata_service.DictResp
+	(*DictDataReq)(nil),          // 34: basedata_service.DictDataReq
+	(*DictDataPageReq)(nil),      // 35: basedata_service.DictDataPageReq
+	(*DictDataListResp)(nil),     // 36: basedata_service.DictDataListResp
+	(*DictDataResp)(nil),         // 37: basedata_service.DictDataResp
+	(*Tenant)(nil),               // 38: basedata_service.Tenant
+	(*TenantReq)(nil),            // 39: basedata_service.TenantReq
+	(*TenantPageReq)(nil),        // 40: basedata_service.TenantPageReq
+	(*TenantListResp)(nil),       // 41: basedata_service.TenantListResp
+	(*TenantResp)(nil),           // 42: basedata_service.TenantResp
+	(*Package)(nil),              // 43: basedata_service.Package
+	(*PackageReq)(nil),           // 44: basedata_service.PackageReq
+	(*PackagePageReq)(nil),       // 45: basedata_service.PackagePageReq
+	(*PackageListResp)(nil),      // 46: basedata_service.PackageListResp
+	(*PackageResp)(nil),          // 47: basedata_service.PackageResp
+	(*Api)(nil),                  // 48: basedata_service.Api
+	(*ApiReq)(nil),               // 49: basedata_service.ApiReq
+	(*ApiPageReq)(nil),           // 50: basedata_service.ApiPageReq
+	(*ApiListResp)(nil),          // 51: basedata_service.ApiListResp
+	(*ApiResp)(nil),              // 52: basedata_service.ApiResp
+	(*LoginLog)(nil),             // 53: basedata_service.LoginLog
+	(*OperationLog)(nil),         // 54: basedata_service.OperationLog
+	(*EmptyReq)(nil),             // 55: basedata_service.EmptyReq
+	(*EmptyResp)(nil),            // 56: basedata_service.EmptyResp
+	(*LogPageReq)(nil),           // 57: basedata_service.LogPageReq
+	(*LoginLogListResp)(nil),     // 58: basedata_service.LoginLogListResp
+	(*OperationLogListResp)(nil), // 59: basedata_service.OperationLogListResp
+	(*RoleCodesResp)(nil),        // 60: basedata_service.RoleCodesResp
 }
 var file_basedata_service_proto_depIdxs = []int32{
 	5,  // 0: basedata_service.UserListResp.list:type_name -> basedata_service.User
 	5,  // 1: basedata_service.UserResp.data:type_name -> basedata_service.User
-	10, // 2: basedata_service.RoleListResp.list:type_name -> basedata_service.Role
-	10, // 3: basedata_service.RoleResp.data:type_name -> basedata_service.Role
-	15, // 4: basedata_service.Dept.children:type_name -> basedata_service.Dept
-	15, // 5: basedata_service.DeptListResp.list:type_name -> basedata_service.Dept
-	15, // 6: basedata_service.DeptTreeResp.data:type_name -> basedata_service.Dept
-	15, // 7: basedata_service.DeptResp.data:type_name -> basedata_service.Dept
-	21, // 8: basedata_service.Menu.children:type_name -> basedata_service.Menu
-	21, // 9: basedata_service.MenuListResp.list:type_name -> basedata_service.Menu
-	21, // 10: basedata_service.MenuTreeResp.data:type_name -> basedata_service.Menu
-	21, // 11: basedata_service.MenuResp.data:type_name -> basedata_service.Menu
-	28, // 12: basedata_service.Dict.dictData:type_name -> basedata_service.DictData
-	27, // 13: basedata_service.DictListResp.list:type_name -> basedata_service.Dict
-	27, // 14: basedata_service.DictResp.data:type_name -> basedata_service.Dict
-	28, // 15: basedata_service.DictDataListResp.list:type_name -> basedata_service.DictData
-	28, // 16: basedata_service.DictDataResp.data:type_name -> basedata_service.DictData
-	37, // 17: basedata_service.TenantListResp.list:type_name -> basedata_service.Tenant
-	37, // 18: basedata_service.TenantResp.data:type_name -> basedata_service.Tenant
-	42, // 19: basedata_service.PackageListResp.list:type_name -> basedata_service.Package
-	42, // 20: basedata_service.PackageResp.data:type_name -> basedata_service.Package
-	47, // 21: basedata_service.ApiListResp.list:type_name -> basedata_service.Api
-	47, // 22: basedata_service.ApiResp.data:type_name -> basedata_service.Api
-	52, // 23: basedata_service.LoginLogListResp.list:type_name -> basedata_service.LoginLog
-	53, // 24: basedata_service.OperationLogListResp.list:type_name -> basedata_service.OperationLog
-	6,  // 25: basedata_service.SysUsers.CreateUser:input_type -> basedata_service.UserReq
-	6,  // 26: basedata_service.SysUsers.UpdateUser:input_type -> basedata_service.UserReq
+	11, // 2: basedata_service.RoleListResp.list:type_name -> basedata_service.Role
+	11, // 3: basedata_service.RoleResp.data:type_name -> basedata_service.Role
+	16, // 4: basedata_service.Dept.children:type_name -> basedata_service.Dept
+	16, // 5: basedata_service.DeptListResp.list:type_name -> basedata_service.Dept
+	16, // 6: basedata_service.DeptTreeResp.data:type_name -> basedata_service.Dept
+	16, // 7: basedata_service.DeptResp.data:type_name -> basedata_service.Dept
+	22, // 8: basedata_service.Menu.children:type_name -> basedata_service.Menu
+	22, // 9: basedata_service.MenuListResp.list:type_name -> basedata_service.Menu
+	22, // 10: basedata_service.MenuTreeResp.data:type_name -> basedata_service.Menu
+	22, // 11: basedata_service.MenuResp.data:type_name -> basedata_service.Menu
+	29, // 12: basedata_service.Dict.dictData:type_name -> basedata_service.DictData
+	28, // 13: basedata_service.DictListResp.list:type_name -> basedata_service.Dict
+	28, // 14: basedata_service.DictResp.data:type_name -> basedata_service.Dict
+	29, // 15: basedata_service.DictDataListResp.list:type_name -> basedata_service.DictData
+	29, // 16: basedata_service.DictDataResp.data:type_name -> basedata_service.DictData
+	38, // 17: basedata_service.TenantListResp.list:type_name -> basedata_service.Tenant
+	38, // 18: basedata_service.TenantResp.data:type_name -> basedata_service.Tenant
+	43, // 19: basedata_service.PackageListResp.list:type_name -> basedata_service.Package
+	43, // 20: basedata_service.PackageResp.data:type_name -> basedata_service.Package
+	48, // 21: basedata_service.ApiListResp.list:type_name -> basedata_service.Api
+	48, // 22: basedata_service.ApiResp.data:type_name -> basedata_service.Api
+	53, // 23: basedata_service.LoginLogListResp.list:type_name -> basedata_service.LoginLog
+	54, // 24: basedata_service.OperationLogListResp.list:type_name -> basedata_service.OperationLog
+	7,  // 25: basedata_service.SysUsers.CreateUser:input_type -> basedata_service.UserReq
+	7,  // 26: basedata_service.SysUsers.UpdateUser:input_type -> basedata_service.UserReq
 	4,  // 27: basedata_service.SysUsers.DeleteUser:input_type -> basedata_service.IdsReq
-	7,  // 28: basedata_service.SysUsers.GetUserList:input_type -> basedata_service.UserPageReq
+	8,  // 28: basedata_service.SysUsers.GetUserList:input_type -> basedata_service.UserPageReq
 	3,  // 29: basedata_service.SysUsers.GetUserById:input_type -> basedata_service.IdReq
-	6,  // 30: basedata_service.SysUsers.GetUserByUsername:input_type -> basedata_service.UserReq
-	6,  // 31: basedata_service.SysUsers.ResetPassword:input_type -> basedata_service.UserReq
-	6,  // 32: basedata_service.SysUsers.AssignRoles:input_type -> basedata_service.UserReq
+	7,  // 30: basedata_service.SysUsers.GetUserByUsername:input_type -> basedata_service.UserReq
+	7,  // 31: basedata_service.SysUsers.ResetPassword:input_type -> basedata_service.UserReq
+	7,  // 32: basedata_service.SysUsers.AssignRoles:input_type -> basedata_service.UserReq
 	3,  // 33: basedata_service.SysUsers.GetUserRoleCodes:input_type -> basedata_service.IdReq
-	11, // 34: basedata_service.SysRoles.CreateRole:input_type -> basedata_service.RoleReq
-	11, // 35: basedata_service.SysRoles.UpdateRole:input_type -> basedata_service.RoleReq
-	4,  // 36: basedata_service.SysRoles.DeleteRole:input_type -> basedata_service.IdsReq
-	12, // 37: basedata_service.SysRoles.GetRoleList:input_type -> basedata_service.RolePageReq
-	3,  // 38: basedata_service.SysRoles.GetRoleById:input_type -> basedata_service.IdReq
-	11, // 39: basedata_service.SysRoles.AssignMenus:input_type -> basedata_service.RoleReq
-	11, // 40: basedata_service.SysRoles.AssignApis:input_type -> basedata_service.RoleReq
-	16, // 41: basedata_service.SysDepts.CreateDept:input_type -> basedata_service.DeptReq
-	16, // 42: basedata_service.SysDepts.UpdateDept:input_type -> basedata_service.DeptReq
-	4,  // 43: basedata_service.SysDepts.DeleteDept:input_type -> basedata_service.IdsReq
-	17, // 44: basedata_service.SysDepts.GetDeptList:input_type -> basedata_service.DeptPageReq
-	3,  // 45: basedata_service.SysDepts.GetDeptById:input_type -> basedata_service.IdReq
-	54, // 46: basedata_service.SysDepts.GetDeptTree:input_type -> basedata_service.EmptyReq
-	22, // 47: basedata_service.SysMenus.CreateMenu:input_type -> basedata_service.MenuReq
-	22, // 48: basedata_service.SysMenus.UpdateMenu:input_type -> basedata_service.MenuReq
-	4,  // 49: basedata_service.SysMenus.DeleteMenu:input_type -> basedata_service.IdsReq
-	23, // 50: basedata_service.SysMenus.GetMenuList:input_type -> basedata_service.MenuPageReq
-	3,  // 51: basedata_service.SysMenus.GetMenuById:input_type -> basedata_service.IdReq
-	54, // 52: basedata_service.SysMenus.GetMenuTree:input_type -> basedata_service.EmptyReq
-	54, // 53: basedata_service.SysMenus.GetMenuRouters:input_type -> basedata_service.EmptyReq
-	29, // 54: basedata_service.SysDicts.CreateDict:input_type -> basedata_service.DictReq
-	29, // 55: basedata_service.SysDicts.UpdateDict:input_type -> basedata_service.DictReq
-	4,  // 56: basedata_service.SysDicts.DeleteDict:input_type -> basedata_service.IdsReq
-	30, // 57: basedata_service.SysDicts.GetDictList:input_type -> basedata_service.DictPageReq
-	3,  // 58: basedata_service.SysDicts.GetDictById:input_type -> basedata_service.IdReq
-	33, // 59: basedata_service.SysDictDatas.CreateDictData:input_type -> basedata_service.DictDataReq
-	33, // 60: basedata_service.SysDictDatas.UpdateDictData:input_type -> basedata_service.DictDataReq
-	4,  // 61: basedata_service.SysDictDatas.DeleteDictData:input_type -> basedata_service.IdsReq
-	34, // 62: basedata_service.SysDictDatas.GetDictDataList:input_type -> basedata_service.DictDataPageReq
-	3,  // 63: basedata_service.SysDictDatas.GetDictDataById:input_type -> basedata_service.IdReq
-	29, // 64: basedata_service.SysDictDatas.GetDictDataByDictKey:input_type -> basedata_service.DictReq
-	38, // 65: basedata_service.SysTenants.CreateTenant:input_type -> basedata_service.TenantReq
-	38, // 66: basedata_service.SysTenants.UpdateTenant:input_type -> basedata_service.TenantReq
-	4,  // 67: basedata_service.SysTenants.DeleteTenant:input_type -> basedata_service.IdsReq
-	39, // 68: basedata_service.SysTenants.GetTenantList:input_type -> basedata_service.TenantPageReq
-	3,  // 69: basedata_service.SysTenants.GetTenantById:input_type -> basedata_service.IdReq
-	38, // 70: basedata_service.SysTenants.GetTenantByCode:input_type -> basedata_service.TenantReq
-	38, // 71: basedata_service.SysTenants.ChangeTenantStatus:input_type -> basedata_service.TenantReq
-	43, // 72: basedata_service.SysPackages.CreatePackage:input_type -> basedata_service.PackageReq
-	43, // 73: basedata_service.SysPackages.UpdatePackage:input_type -> basedata_service.PackageReq
-	4,  // 74: basedata_service.SysPackages.DeletePackage:input_type -> basedata_service.IdsReq
-	44, // 75: basedata_service.SysPackages.GetPackageList:input_type -> basedata_service.PackagePageReq
-	3,  // 76: basedata_service.SysPackages.GetPackageById:input_type -> basedata_service.IdReq
-	48, // 77: basedata_service.SysApis.CreateApi:input_type -> basedata_service.ApiReq
-	48, // 78: basedata_service.SysApis.UpdateApi:input_type -> basedata_service.ApiReq
-	4,  // 79: basedata_service.SysApis.DeleteApi:input_type -> basedata_service.IdsReq
-	49, // 80: basedata_service.SysApis.GetApiList:input_type -> basedata_service.ApiPageReq
-	3,  // 81: basedata_service.SysApis.GetApiById:input_type -> basedata_service.IdReq
-	56, // 82: basedata_service.SysLogs.GetLoginLogList:input_type -> basedata_service.LogPageReq
-	56, // 83: basedata_service.SysLogs.GetOperationLogList:input_type -> basedata_service.LogPageReq
-	54, // 84: basedata_service.SysInit.InitAll:input_type -> basedata_service.EmptyReq
-	9,  // 85: basedata_service.SysUsers.CreateUser:output_type -> basedata_service.UserResp
-	9,  // 86: basedata_service.SysUsers.UpdateUser:output_type -> basedata_service.UserResp
-	55, // 87: basedata_service.SysUsers.DeleteUser:output_type -> basedata_service.EmptyResp
-	8,  // 88: basedata_service.SysUsers.GetUserList:output_type -> basedata_service.UserListResp
-	9,  // 89: basedata_service.SysUsers.GetUserById:output_type -> basedata_service.UserResp
-	9,  // 90: basedata_service.SysUsers.GetUserByUsername:output_type -> basedata_service.UserResp
-	55, // 91: basedata_service.SysUsers.ResetPassword:output_type -> basedata_service.EmptyResp
-	55, // 92: basedata_service.SysUsers.AssignRoles:output_type -> basedata_service.EmptyResp
-	59, // 93: basedata_service.SysUsers.GetUserRoleCodes:output_type -> basedata_service.RoleCodesResp
-	14, // 94: basedata_service.SysRoles.CreateRole:output_type -> basedata_service.RoleResp
-	14, // 95: basedata_service.SysRoles.UpdateRole:output_type -> basedata_service.RoleResp
-	55, // 96: basedata_service.SysRoles.DeleteRole:output_type -> basedata_service.EmptyResp
-	13, // 97: basedata_service.SysRoles.GetRoleList:output_type -> basedata_service.RoleListResp
-	14, // 98: basedata_service.SysRoles.GetRoleById:output_type -> basedata_service.RoleResp
-	55, // 99: basedata_service.SysRoles.AssignMenus:output_type -> basedata_service.EmptyResp
-	55, // 100: basedata_service.SysRoles.AssignApis:output_type -> basedata_service.EmptyResp
-	20, // 101: basedata_service.SysDepts.CreateDept:output_type -> basedata_service.DeptResp
-	20, // 102: basedata_service.SysDepts.UpdateDept:output_type -> basedata_service.DeptResp
-	55, // 103: basedata_service.SysDepts.DeleteDept:output_type -> basedata_service.EmptyResp
-	18, // 104: basedata_service.SysDepts.GetDeptList:output_type -> basedata_service.DeptListResp
-	20, // 105: basedata_service.SysDepts.GetDeptById:output_type -> basedata_service.DeptResp
-	19, // 106: basedata_service.SysDepts.GetDeptTree:output_type -> basedata_service.DeptTreeResp
-	26, // 107: basedata_service.SysMenus.CreateMenu:output_type -> basedata_service.MenuResp
-	26, // 108: basedata_service.SysMenus.UpdateMenu:output_type -> basedata_service.MenuResp
-	55, // 109: basedata_service.SysMenus.DeleteMenu:output_type -> basedata_service.EmptyResp
-	24, // 110: basedata_service.SysMenus.GetMenuList:output_type -> basedata_service.MenuListResp
-	26, // 111: basedata_service.SysMenus.GetMenuById:output_type -> basedata_service.MenuResp
-	25, // 112: basedata_service.SysMenus.GetMenuTree:output_type -> basedata_service.MenuTreeResp
-	25, // 113: basedata_service.SysMenus.GetMenuRouters:output_type -> basedata_service.MenuTreeResp
-	32, // 114: basedata_service.SysDicts.CreateDict:output_type -> basedata_service.DictResp
-	32, // 115: basedata_service.SysDicts.UpdateDict:output_type -> basedata_service.DictResp
-	55, // 116: basedata_service.SysDicts.DeleteDict:output_type -> basedata_service.EmptyResp
-	31, // 117: basedata_service.SysDicts.GetDictList:output_type -> basedata_service.DictListResp
-	32, // 118: basedata_service.SysDicts.GetDictById:output_type -> basedata_service.DictResp
-	36, // 119: basedata_service.SysDictDatas.CreateDictData:output_type -> basedata_service.DictDataResp
-	36, // 120: basedata_service.SysDictDatas.UpdateDictData:output_type -> basedata_service.DictDataResp
-	55, // 121: basedata_service.SysDictDatas.DeleteDictData:output_type -> basedata_service.EmptyResp
-	35, // 122: basedata_service.SysDictDatas.GetDictDataList:output_type -> basedata_service.DictDataListResp
-	36, // 123: basedata_service.SysDictDatas.GetDictDataById:output_type -> basedata_service.DictDataResp
-	35, // 124: basedata_service.SysDictDatas.GetDictDataByDictKey:output_type -> basedata_service.DictDataListResp
-	41, // 125: basedata_service.SysTenants.CreateTenant:output_type -> basedata_service.TenantResp
-	41, // 126: basedata_service.SysTenants.UpdateTenant:output_type -> basedata_service.TenantResp
-	55, // 127: basedata_service.SysTenants.DeleteTenant:output_type -> basedata_service.EmptyResp
-	40, // 128: basedata_service.SysTenants.GetTenantList:output_type -> basedata_service.TenantListResp
-	41, // 129: basedata_service.SysTenants.GetTenantById:output_type -> basedata_service.TenantResp
-	41, // 130: basedata_service.SysTenants.GetTenantByCode:output_type -> basedata_service.TenantResp
-	55, // 131: basedata_service.SysTenants.ChangeTenantStatus:output_type -> basedata_service.EmptyResp
-	46, // 132: basedata_service.SysPackages.CreatePackage:output_type -> basedata_service.PackageResp
-	46, // 133: basedata_service.SysPackages.UpdatePackage:output_type -> basedata_service.PackageResp
-	55, // 134: basedata_service.SysPackages.DeletePackage:output_type -> basedata_service.EmptyResp
-	45, // 135: basedata_service.SysPackages.GetPackageList:output_type -> basedata_service.PackageListResp
-	46, // 136: basedata_service.SysPackages.GetPackageById:output_type -> basedata_service.PackageResp
-	51, // 137: basedata_service.SysApis.CreateApi:output_type -> basedata_service.ApiResp
-	51, // 138: basedata_service.SysApis.UpdateApi:output_type -> basedata_service.ApiResp
-	55, // 139: basedata_service.SysApis.DeleteApi:output_type -> basedata_service.EmptyResp
-	50, // 140: basedata_service.SysApis.GetApiList:output_type -> basedata_service.ApiListResp
-	51, // 141: basedata_service.SysApis.GetApiById:output_type -> basedata_service.ApiResp
-	57, // 142: basedata_service.SysLogs.GetLoginLogList:output_type -> basedata_service.LoginLogListResp
-	58, // 143: basedata_service.SysLogs.GetOperationLogList:output_type -> basedata_service.OperationLogListResp
-	55, // 144: basedata_service.SysInit.InitAll:output_type -> basedata_service.EmptyResp
-	85, // [85:145] is the sub-list for method output_type
-	25, // [25:85] is the sub-list for method input_type
+	6,  // 34: basedata_service.SysUsers.RecordLoginResult:input_type -> basedata_service.LoginRecordReq
+	12, // 35: basedata_service.SysRoles.CreateRole:input_type -> basedata_service.RoleReq
+	12, // 36: basedata_service.SysRoles.UpdateRole:input_type -> basedata_service.RoleReq
+	4,  // 37: basedata_service.SysRoles.DeleteRole:input_type -> basedata_service.IdsReq
+	13, // 38: basedata_service.SysRoles.GetRoleList:input_type -> basedata_service.RolePageReq
+	3,  // 39: basedata_service.SysRoles.GetRoleById:input_type -> basedata_service.IdReq
+	12, // 40: basedata_service.SysRoles.AssignMenus:input_type -> basedata_service.RoleReq
+	12, // 41: basedata_service.SysRoles.AssignApis:input_type -> basedata_service.RoleReq
+	17, // 42: basedata_service.SysDepts.CreateDept:input_type -> basedata_service.DeptReq
+	17, // 43: basedata_service.SysDepts.UpdateDept:input_type -> basedata_service.DeptReq
+	4,  // 44: basedata_service.SysDepts.DeleteDept:input_type -> basedata_service.IdsReq
+	18, // 45: basedata_service.SysDepts.GetDeptList:input_type -> basedata_service.DeptPageReq
+	3,  // 46: basedata_service.SysDepts.GetDeptById:input_type -> basedata_service.IdReq
+	55, // 47: basedata_service.SysDepts.GetDeptTree:input_type -> basedata_service.EmptyReq
+	23, // 48: basedata_service.SysMenus.CreateMenu:input_type -> basedata_service.MenuReq
+	23, // 49: basedata_service.SysMenus.UpdateMenu:input_type -> basedata_service.MenuReq
+	4,  // 50: basedata_service.SysMenus.DeleteMenu:input_type -> basedata_service.IdsReq
+	24, // 51: basedata_service.SysMenus.GetMenuList:input_type -> basedata_service.MenuPageReq
+	3,  // 52: basedata_service.SysMenus.GetMenuById:input_type -> basedata_service.IdReq
+	55, // 53: basedata_service.SysMenus.GetMenuTree:input_type -> basedata_service.EmptyReq
+	55, // 54: basedata_service.SysMenus.GetMenuRouters:input_type -> basedata_service.EmptyReq
+	30, // 55: basedata_service.SysDicts.CreateDict:input_type -> basedata_service.DictReq
+	30, // 56: basedata_service.SysDicts.UpdateDict:input_type -> basedata_service.DictReq
+	4,  // 57: basedata_service.SysDicts.DeleteDict:input_type -> basedata_service.IdsReq
+	31, // 58: basedata_service.SysDicts.GetDictList:input_type -> basedata_service.DictPageReq
+	3,  // 59: basedata_service.SysDicts.GetDictById:input_type -> basedata_service.IdReq
+	34, // 60: basedata_service.SysDictDatas.CreateDictData:input_type -> basedata_service.DictDataReq
+	34, // 61: basedata_service.SysDictDatas.UpdateDictData:input_type -> basedata_service.DictDataReq
+	4,  // 62: basedata_service.SysDictDatas.DeleteDictData:input_type -> basedata_service.IdsReq
+	35, // 63: basedata_service.SysDictDatas.GetDictDataList:input_type -> basedata_service.DictDataPageReq
+	3,  // 64: basedata_service.SysDictDatas.GetDictDataById:input_type -> basedata_service.IdReq
+	30, // 65: basedata_service.SysDictDatas.GetDictDataByDictKey:input_type -> basedata_service.DictReq
+	39, // 66: basedata_service.SysTenants.CreateTenant:input_type -> basedata_service.TenantReq
+	39, // 67: basedata_service.SysTenants.UpdateTenant:input_type -> basedata_service.TenantReq
+	4,  // 68: basedata_service.SysTenants.DeleteTenant:input_type -> basedata_service.IdsReq
+	40, // 69: basedata_service.SysTenants.GetTenantList:input_type -> basedata_service.TenantPageReq
+	3,  // 70: basedata_service.SysTenants.GetTenantById:input_type -> basedata_service.IdReq
+	39, // 71: basedata_service.SysTenants.GetTenantByCode:input_type -> basedata_service.TenantReq
+	39, // 72: basedata_service.SysTenants.ChangeTenantStatus:input_type -> basedata_service.TenantReq
+	44, // 73: basedata_service.SysPackages.CreatePackage:input_type -> basedata_service.PackageReq
+	44, // 74: basedata_service.SysPackages.UpdatePackage:input_type -> basedata_service.PackageReq
+	4,  // 75: basedata_service.SysPackages.DeletePackage:input_type -> basedata_service.IdsReq
+	45, // 76: basedata_service.SysPackages.GetPackageList:input_type -> basedata_service.PackagePageReq
+	3,  // 77: basedata_service.SysPackages.GetPackageById:input_type -> basedata_service.IdReq
+	49, // 78: basedata_service.SysApis.CreateApi:input_type -> basedata_service.ApiReq
+	49, // 79: basedata_service.SysApis.UpdateApi:input_type -> basedata_service.ApiReq
+	4,  // 80: basedata_service.SysApis.DeleteApi:input_type -> basedata_service.IdsReq
+	50, // 81: basedata_service.SysApis.GetApiList:input_type -> basedata_service.ApiPageReq
+	3,  // 82: basedata_service.SysApis.GetApiById:input_type -> basedata_service.IdReq
+	57, // 83: basedata_service.SysLogs.GetLoginLogList:input_type -> basedata_service.LogPageReq
+	57, // 84: basedata_service.SysLogs.GetOperationLogList:input_type -> basedata_service.LogPageReq
+	54, // 85: basedata_service.SysLogs.CreateOperationLog:input_type -> basedata_service.OperationLog
+	55, // 86: basedata_service.SysInit.InitAll:input_type -> basedata_service.EmptyReq
+	10, // 87: basedata_service.SysUsers.CreateUser:output_type -> basedata_service.UserResp
+	10, // 88: basedata_service.SysUsers.UpdateUser:output_type -> basedata_service.UserResp
+	56, // 89: basedata_service.SysUsers.DeleteUser:output_type -> basedata_service.EmptyResp
+	9,  // 90: basedata_service.SysUsers.GetUserList:output_type -> basedata_service.UserListResp
+	10, // 91: basedata_service.SysUsers.GetUserById:output_type -> basedata_service.UserResp
+	10, // 92: basedata_service.SysUsers.GetUserByUsername:output_type -> basedata_service.UserResp
+	56, // 93: basedata_service.SysUsers.ResetPassword:output_type -> basedata_service.EmptyResp
+	56, // 94: basedata_service.SysUsers.AssignRoles:output_type -> basedata_service.EmptyResp
+	60, // 95: basedata_service.SysUsers.GetUserRoleCodes:output_type -> basedata_service.RoleCodesResp
+	56, // 96: basedata_service.SysUsers.RecordLoginResult:output_type -> basedata_service.EmptyResp
+	15, // 97: basedata_service.SysRoles.CreateRole:output_type -> basedata_service.RoleResp
+	15, // 98: basedata_service.SysRoles.UpdateRole:output_type -> basedata_service.RoleResp
+	56, // 99: basedata_service.SysRoles.DeleteRole:output_type -> basedata_service.EmptyResp
+	14, // 100: basedata_service.SysRoles.GetRoleList:output_type -> basedata_service.RoleListResp
+	15, // 101: basedata_service.SysRoles.GetRoleById:output_type -> basedata_service.RoleResp
+	56, // 102: basedata_service.SysRoles.AssignMenus:output_type -> basedata_service.EmptyResp
+	56, // 103: basedata_service.SysRoles.AssignApis:output_type -> basedata_service.EmptyResp
+	21, // 104: basedata_service.SysDepts.CreateDept:output_type -> basedata_service.DeptResp
+	21, // 105: basedata_service.SysDepts.UpdateDept:output_type -> basedata_service.DeptResp
+	56, // 106: basedata_service.SysDepts.DeleteDept:output_type -> basedata_service.EmptyResp
+	19, // 107: basedata_service.SysDepts.GetDeptList:output_type -> basedata_service.DeptListResp
+	21, // 108: basedata_service.SysDepts.GetDeptById:output_type -> basedata_service.DeptResp
+	20, // 109: basedata_service.SysDepts.GetDeptTree:output_type -> basedata_service.DeptTreeResp
+	27, // 110: basedata_service.SysMenus.CreateMenu:output_type -> basedata_service.MenuResp
+	27, // 111: basedata_service.SysMenus.UpdateMenu:output_type -> basedata_service.MenuResp
+	56, // 112: basedata_service.SysMenus.DeleteMenu:output_type -> basedata_service.EmptyResp
+	25, // 113: basedata_service.SysMenus.GetMenuList:output_type -> basedata_service.MenuListResp
+	27, // 114: basedata_service.SysMenus.GetMenuById:output_type -> basedata_service.MenuResp
+	26, // 115: basedata_service.SysMenus.GetMenuTree:output_type -> basedata_service.MenuTreeResp
+	26, // 116: basedata_service.SysMenus.GetMenuRouters:output_type -> basedata_service.MenuTreeResp
+	33, // 117: basedata_service.SysDicts.CreateDict:output_type -> basedata_service.DictResp
+	33, // 118: basedata_service.SysDicts.UpdateDict:output_type -> basedata_service.DictResp
+	56, // 119: basedata_service.SysDicts.DeleteDict:output_type -> basedata_service.EmptyResp
+	32, // 120: basedata_service.SysDicts.GetDictList:output_type -> basedata_service.DictListResp
+	33, // 121: basedata_service.SysDicts.GetDictById:output_type -> basedata_service.DictResp
+	37, // 122: basedata_service.SysDictDatas.CreateDictData:output_type -> basedata_service.DictDataResp
+	37, // 123: basedata_service.SysDictDatas.UpdateDictData:output_type -> basedata_service.DictDataResp
+	56, // 124: basedata_service.SysDictDatas.DeleteDictData:output_type -> basedata_service.EmptyResp
+	36, // 125: basedata_service.SysDictDatas.GetDictDataList:output_type -> basedata_service.DictDataListResp
+	37, // 126: basedata_service.SysDictDatas.GetDictDataById:output_type -> basedata_service.DictDataResp
+	36, // 127: basedata_service.SysDictDatas.GetDictDataByDictKey:output_type -> basedata_service.DictDataListResp
+	42, // 128: basedata_service.SysTenants.CreateTenant:output_type -> basedata_service.TenantResp
+	42, // 129: basedata_service.SysTenants.UpdateTenant:output_type -> basedata_service.TenantResp
+	56, // 130: basedata_service.SysTenants.DeleteTenant:output_type -> basedata_service.EmptyResp
+	41, // 131: basedata_service.SysTenants.GetTenantList:output_type -> basedata_service.TenantListResp
+	42, // 132: basedata_service.SysTenants.GetTenantById:output_type -> basedata_service.TenantResp
+	42, // 133: basedata_service.SysTenants.GetTenantByCode:output_type -> basedata_service.TenantResp
+	56, // 134: basedata_service.SysTenants.ChangeTenantStatus:output_type -> basedata_service.EmptyResp
+	47, // 135: basedata_service.SysPackages.CreatePackage:output_type -> basedata_service.PackageResp
+	47, // 136: basedata_service.SysPackages.UpdatePackage:output_type -> basedata_service.PackageResp
+	56, // 137: basedata_service.SysPackages.DeletePackage:output_type -> basedata_service.EmptyResp
+	46, // 138: basedata_service.SysPackages.GetPackageList:output_type -> basedata_service.PackageListResp
+	47, // 139: basedata_service.SysPackages.GetPackageById:output_type -> basedata_service.PackageResp
+	52, // 140: basedata_service.SysApis.CreateApi:output_type -> basedata_service.ApiResp
+	52, // 141: basedata_service.SysApis.UpdateApi:output_type -> basedata_service.ApiResp
+	56, // 142: basedata_service.SysApis.DeleteApi:output_type -> basedata_service.EmptyResp
+	51, // 143: basedata_service.SysApis.GetApiList:output_type -> basedata_service.ApiListResp
+	52, // 144: basedata_service.SysApis.GetApiById:output_type -> basedata_service.ApiResp
+	58, // 145: basedata_service.SysLogs.GetLoginLogList:output_type -> basedata_service.LoginLogListResp
+	59, // 146: basedata_service.SysLogs.GetOperationLogList:output_type -> basedata_service.OperationLogListResp
+	56, // 147: basedata_service.SysLogs.CreateOperationLog:output_type -> basedata_service.EmptyResp
+	56, // 148: basedata_service.SysInit.InitAll:output_type -> basedata_service.EmptyResp
+	87, // [87:149] is the sub-list for method output_type
+	25, // [25:87] is the sub-list for method input_type
 	25, // [25:25] is the sub-list for extension type_name
 	25, // [25:25] is the sub-list for extension extendee
 	0,  // [0:25] is the sub-list for field type_name
@@ -6476,49 +6603,50 @@ func file_basedata_service_proto_init() {
 	file_basedata_service_proto_msgTypes[5].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[6].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[7].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[9].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[8].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[10].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[11].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[12].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[14].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[13].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[15].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[16].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[17].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[20].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[18].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[21].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[22].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[23].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[26].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[24].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[27].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[28].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[29].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[30].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[32].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[31].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[33].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[34].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[36].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[35].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[37].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[38].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[39].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[41].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[40].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[42].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[43].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[44].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[46].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[45].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[47].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[48].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[49].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[51].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[50].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[52].OneofWrappers = []any{}
 	file_basedata_service_proto_msgTypes[53].OneofWrappers = []any{}
-	file_basedata_service_proto_msgTypes[56].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[54].OneofWrappers = []any{}
+	file_basedata_service_proto_msgTypes[57].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_basedata_service_proto_rawDesc), len(file_basedata_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   60,
+			NumMessages:   61,
 			NumExtensions: 0,
 			NumServices:   11,
 		},

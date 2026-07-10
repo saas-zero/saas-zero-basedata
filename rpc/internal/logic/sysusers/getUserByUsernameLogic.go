@@ -39,6 +39,12 @@ func (l *GetUserByUsernameLogic) GetUserByUsername(in *apps.UserReq) (*apps.User
 	// Password is only returned via GetUserByUsername (login flow) for bcrypt verification.
 	// All other user queries intentionally exclude it for security.
 	resp.Password = proto.String(u.Password)
+	// Lockout state is only exposed on the login flow so auth can pre-check
+	// whether the account is currently locked before verifying the password.
+	resp.LoginErrorCount = proto.Int32(u.LoginErrorCount)
+	if !u.LockoutUntil.IsZero() {
+		resp.LockoutUntil = proto.Int64(u.LockoutUntil.UnixMilli())
+	}
 	return &apps.UserResp{
 		Code: 200,
 		Msg:  "success",

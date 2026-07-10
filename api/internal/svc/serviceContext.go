@@ -51,9 +51,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if enf != nil {
 		// Background goroutine: periodically reload Casbin policies from DB.
 		// Policies are updated by basedata-rpc's AssignApis RPC.
-		// 300s interval balances freshness with DB load.
+		// 30s interval for faster policy propagation during development.
 		go func() {
-			ticker := time.NewTicker(300 * time.Second)
+			ticker := time.NewTicker(30 * time.Second)
 			defer ticker.Stop()
 			for range ticker.C {
 				if err := enf.LoadPolicy(); err != nil {
