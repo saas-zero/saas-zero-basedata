@@ -4,6 +4,7 @@ import (
 	"context"
 	"strconv"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
@@ -14,6 +15,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -90,111 +92,146 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	}
 	defer tx.Rollback()
 
-	// 1. Create APIs
-	apiIds := make([]int64, 0, len(seedApis))
+	// 1. Create or fetch APIs (keyed by unique path)
 	apiPaths := make([]string, 0, len(seedApis))
+	apiIds := make([]int64, 0, len(seedApis))
 	for _, a := range seedApis {
-		api, err := tx.SysApi.Create().
-			SetStatus(sysapi.StatusActive).
-			SetAPIName(a.name).
-			SetAPIType(sysapi.APITypeGroup).
-			SetAPIPath(a.path).
-			Save(ctx)
-		if err != nil {
+		api, err := tx.SysApi.Query().Where(sysapi.APIPathEQ(a.path)).First(ctx)
+		if ent.IsNotFound(err) {
+			api, err = tx.SysApi.Create().
+				SetStatus(sysapi.StatusActive).
+				SetAPIName(a.name).
+				SetAPIType(sysapi.APITypeGroup).
+				SetAPIPath(a.path).
+				Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else if err != nil {
 			return nil, err
 		}
-		apiIds = append(apiIds, api.ID)
 		apiPaths = append(apiPaths, a.path)
+		apiIds = append(apiIds, api.ID)
 	}
 
-	// 2. Create Menus (use a map to resolve parent references by index)
+	// 2. Create or fetch Menus (keyed by unique name)
 	menuIdxToId := make(map[int]int64)
 	menuIds := make([]int64, 0, len(seedMenus))
 	for i, m := range seedMenus {
-		create := tx.SysMenu.Create().
-			SetStatus(sysmenu.StatusActive).
-			SetSort(m.sort).
-			SetMenuType(sysmenu.MenuType(m.menuType)).
-			SetName(m.name).
-			SetPath(m.path).
-			SetIcon(m.icon)
-		if m.component != "" {
-			create.SetComponent(m.component)
-		}
-		if m.parentIdx >= 0 {
-			create.SetParentID(menuIdxToId[m.parentIdx])
-		}
-		menu, err := create.Save(ctx)
-		if err != nil {
+		menu, err := tx.SysMenu.Query().Where(sysmenu.NameEQ(m.name)).First(ctx)
+		if ent.IsNotFound(err) {
+			create := tx.SysMenu.Create().
+				SetStatus(sysmenu.StatusActive).
+				SetSort(m.sort).
+				SetMenuType(sysmenu.MenuType(m.menuType)).
+				SetName(m.name).
+				SetPath(m.path).
+				SetIcon(m.icon)
+			if m.component != "" {
+				create.SetComponent(m.component)
+			}
+			if m.parentIdx >= 0 {
+				create.SetParentID(menuIdxToId[m.parentIdx])
+			}
+			menu, err = create.Save(ctx)
+			if err != nil {
+				return nil, err
+			}
+		} else if err != nil {
 			return nil, err
 		}
 		menuIdxToId[i] = menu.ID
 		menuIds = append(menuIds, menu.ID)
 	}
 
-	// 3. Create Package (linked to all menus and APIs)
-	pkg, err := tx.SysPackage.Create().
-		SetName("标准版").
-		SetCode("standard").
-		SetSort(1).
-		SetStatus(syspackage.StatusActive).
-		AddMenuIDs(menuIds...).
-		AddAPIIDs(apiIds...).
-		Save(ctx)
-	if err != nil {
+	// 3. Create or fetch Package (code "standard")
+	pkg, err := tx.SysPackage.Query().Where(syspackage.CodeEQ("standard")).First(ctx)
+	if ent.IsNotFound(err) {
+		pkg, err = tx.SysPackage.Create().
+			SetName("标准套餐").
+			SetCode("standard").
+			SetSort(1).
+			SetStatus(syspackage.StatusActive).
+			AddMenuIDs(menuIds...).
+			AddAPIIDs(apiIds...).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
 
-	// 4. Create Tenant
-	tenant, err := tx.SysTenant.Create().
-		SetName("默认租户").
-		SetCode("default").
-		SetAdminID(1).
-		SetPackageID(pkg.ID).
-		SetStatus(systenant.StatusActive).
-		Save(ctx)
-	if err != nil {
+	// 4. Create or fetch Tenant (code "default")
+	tenant, err := tx.SysTenant.Query().Where(systenant.CodeEQ("default")).First(ctx)
+	if ent.IsNotFound(err) {
+		tenant, err = tx.SysTenant.Create().
+			SetName("默认租户").
+			SetCode("default").
+			SetAdminID(1).
+			SetPackageID(pkg.ID).
+			SetStatus(systenant.StatusActive).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
-	// Update context with actual tenant ID so subsequent TenantMixin hooks use the correct value
+	// Update context with actual tenant ID
 	ctx = mixins.SetCurrentTenantId(ctx, tenant.ID)
 
-	// 5. Create Role (linked to all menus)
-	role, err := tx.SysRole.Create().
-		SetName("超级管理员").
-		SetCode("admin").
-		SetSort(1).
-		SetStatus(sysrole.StatusActive).
-		AddMenuIDs(menuIds...).
-		Save(ctx)
-	if err != nil {
+	// 5. Create or fetch Role (code "admin")
+	role, err := tx.SysRole.Query().Where(sysrole.CodeEQ("admin")).First(ctx)
+	if ent.IsNotFound(err) {
+		role, err = tx.SysRole.Create().
+			SetName("超级管理员").
+			SetCode("admin").
+			SetSort(1).
+			SetStatus(sysrole.StatusActive).
+			AddMenuIDs(menuIds...).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
 
-	// 6. Create Default Department
-	dept, err := tx.SysDept.Create().
-		SetName("默认部门").
-		SetSort(1).
-		SetStatus(sysdept.StatusActive).
-		Save(ctx)
-	if err != nil {
+	// 6. Create or fetch Department (name "默认部门")
+	dept, err := tx.SysDept.Query().Where(sysdept.NameEQ("默认部门")).First(ctx)
+	if ent.IsNotFound(err) {
+		dept, err = tx.SysDept.Create().
+			SetName("默认部门").
+			SetSort(1).
+			SetStatus(sysdept.StatusActive).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
 
-	// 7. Create User (linked to role and dept)
-	hash, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
-	if err != nil {
-		return nil, err
-	}
-	_, err = tx.SysUser.Create().
-		SetUsername("admin").
-		SetPassword(string(hash)).
-		SetNickname("系统管理员").
-		SetDeptID(dept.ID).
-		SetStatus(sysuser.StatusActive).
-		AddRoleIDs(role.ID).
-		Save(ctx)
-	if err != nil {
+	// 7. Create or fetch User (username "admin")
+	_, err = tx.SysUser.Query().Where(sysuser.UsernameEQ("admin")).First(ctx)
+	if ent.IsNotFound(err) {
+		hash, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
+		if err != nil {
+			return nil, err
+		}
+		_, err = tx.SysUser.Create().
+			SetUsername("admin").
+			SetPassword(string(hash)).
+			SetNickname("系统管理员").
+			SetDeptID(dept.ID).
+			SetStatus(sysuser.StatusActive).
+			AddRoleIDs(role.ID).
+			Save(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
 		return nil, err
 	}
 
@@ -202,11 +239,16 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 8. Casbin policies (after ent tx commits)
+	// 8. Casbin policies: clear old ones for this role+tenant, then re-add
 	dom := strconv.FormatInt(tenant.ID, 10)
+	if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(0, "admin", dom); err != nil {
+		logx.Errorf("initAll: failed to clear casbin policies: %v", err)
+	}
 	for i, id := range apiIds {
-		l.svcCtx.Enforcer.AddPolicy("admin", dom, apiPaths[i], ".*", strconv.FormatInt(id, 10))
+		if _, err := l.svcCtx.Enforcer.AddPolicy("admin", dom, apiPaths[i], ".*", strconv.FormatInt(id, 10)); err != nil {
+			logx.Errorf("initAll: failed to add casbin policy: %v", err)
+		}
 	}
 
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

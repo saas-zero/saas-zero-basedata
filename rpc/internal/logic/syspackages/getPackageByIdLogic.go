@@ -6,6 +6,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,8 +32,8 @@ func (l *GetPackageByIdLogic) GetPackageById(in *apps.IdReq) (*apps.PackageResp,
 		return nil, err
 	}
 	return &apps.PackageResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: packageToResp(p),
 	}, nil
 }

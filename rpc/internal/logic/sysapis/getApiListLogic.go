@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -67,8 +68,8 @@ func (l *GetApiListLogic) GetApiList(in *apps.ApiPageReq) (*apps.ApiListResp, er
 		list[i] = apiToResp(a)
 	}
 	return &apps.ApiListResp{
-		Code:  200,
-		Msg:   "success",
+		Code:  int32(errno.Success.Code),
+		Msg:   errno.Success.Msg,
 		List:  list,
 		Total: int64(total),
 	}, nil

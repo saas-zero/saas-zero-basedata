@@ -1,11 +1,12 @@
-package syslogslogic
+﻿package syslogslogic
 
 import (
 	"context"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
-	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	
 )
 
 type CreateOperationLogLogic struct {
@@ -46,5 +47,5 @@ func (l *CreateOperationLogLogic) CreateOperationLog(in *apps.OperationLog) (*ap
 	if err != nil {
 		return nil, err
 	}
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

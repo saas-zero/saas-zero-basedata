@@ -27,6 +27,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
+	client = client.Debug()
 	if err := client.Schema.Create(context.Background()); err != nil {
 		log.Printf("warning: failed creating schema resources: %v (service will retry on next restart)", err)
 	}

@@ -1,4 +1,4 @@
-package sysroleslogic
+﻿package sysroleslogic
 
 import (
 	"context"
@@ -11,7 +11,8 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
-	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	
 )
 
 type AssignApisLogic struct {
@@ -50,5 +51,5 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 		}
 	}
 
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

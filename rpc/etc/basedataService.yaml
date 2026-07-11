@@ -1,5 +1,6 @@
 Name: basedataservice.rpc
 ListenOn: 0.0.0.0:18084
+Timeout: 10000
 
 Etcd:
   Hosts:

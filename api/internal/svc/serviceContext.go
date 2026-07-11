@@ -33,7 +33,7 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	conn := zrpc.MustNewClient(c.Basedata)
+	conn := zrpc.MustNewClient(c.Basedata, zrpc.WithUnaryClientInterceptor(authClientInterceptor))
 
 	// Casbin enforcer initialization with graceful degradation.
 	// If PostgreSQL or Casbin initialization fails, enforcer is nil and the

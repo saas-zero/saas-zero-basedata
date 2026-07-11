@@ -45,6 +45,7 @@ func (l *GetUserListLogic) GetUserList(req *types.UserPageReq) (*types.BaseResp,
 	}
 	resp, err := l.svcCtx.SysUsers.GetUserList(l.ctx, rpcReq)
 	if err != nil {
+		logx.Errorf("GetUserList gRPC error: %v", err)
 		return nil, err
 	}
 	return &types.BaseResp{

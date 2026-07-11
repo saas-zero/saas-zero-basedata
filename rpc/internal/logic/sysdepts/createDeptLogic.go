@@ -1,4 +1,4 @@
-package sysdeptslogic
+﻿package sysdeptslogic
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/p
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 )
@@ -54,8 +55,8 @@ func (l *CreateDeptLogic) CreateDept(in *apps.DeptReq) (*apps.DeptResp, error) {
 		return nil, err
 	}
 	return &apps.DeptResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: &apps.Dept{
 			Id:    proto.Int64(result.ID),
 			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),

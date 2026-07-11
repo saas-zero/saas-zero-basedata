@@ -32,5 +32,10 @@ func (l *AssignApisLogic) AssignApis(req *types.RoleReq) (*types.BaseResp, error
 	if err != nil {
 		return nil, err
 	}
+	if l.svcCtx.Enforcer != nil {
+		if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
+			logx.Errorf("assignApis: failed to reload casbin policies: %v", err)
+		}
+	}
 	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg}, nil
 }

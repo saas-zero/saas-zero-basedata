@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,8 +35,8 @@ func (l *GetMenuRoutersLogic) GetMenuRouters(_ *apps.EmptyReq) (*apps.MenuTreeRe
 
 	tree := buildRouterTree(allMenus, 0)
 	return &apps.MenuTreeResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: tree,
 	}, nil
 }

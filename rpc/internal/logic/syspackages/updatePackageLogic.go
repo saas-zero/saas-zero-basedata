@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -57,8 +58,8 @@ func (l *UpdatePackageLogic) UpdatePackage(in *apps.PackageReq) (*apps.PackageRe
 		return nil, err
 	}
 	return &apps.PackageResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: packageToResp(p),
 	}, nil
 }

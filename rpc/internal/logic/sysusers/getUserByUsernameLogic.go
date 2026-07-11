@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 )
@@ -46,8 +47,8 @@ func (l *GetUserByUsernameLogic) GetUserByUsername(in *apps.UserReq) (*apps.User
 		resp.LockoutUntil = proto.Int64(u.LockoutUntil.UnixMilli())
 	}
 	return &apps.UserResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: resp,
 	}, nil
 }

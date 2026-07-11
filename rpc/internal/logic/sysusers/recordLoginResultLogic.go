@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysloginlog"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,7 +31,7 @@ func NewRecordLoginResultLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 	}
 }
 
-// RecordLoginResult 在一次登录尝试后被调用：既更新用户锁定计数/最近登录信息，
+// RecordLoginResult 在一次登录尝试后被调用：既更新用户锁定计数和最近登录信息，
 // 又写入一条登录审计日志（成功或失败）。
 func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*apps.EmptyResp, error) {
 	now := time.Now()
@@ -61,7 +62,7 @@ func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*ap
 		}
 	}
 
-	// 写登录日志（sys_login_logs 无 TenantMixin，tenant_id 显式设置）
+	// 写登录日志（sys_login_logs 有 TenantMixin，tenant_id 显式设置）
 	status := sysloginlog.StatusSuccess
 	if !in.GetSuccess() {
 		status = sysloginlog.StatusFail
@@ -83,5 +84,5 @@ func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*ap
 		logx.WithContext(l.ctx).Errorf("record login log error: %v", err)
 	}
 
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

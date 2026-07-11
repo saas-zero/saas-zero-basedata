@@ -49,5 +49,5 @@ func (l *DeleteMenuLogic) DeleteMenu(in *apps.IdsReq) (*apps.EmptyResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

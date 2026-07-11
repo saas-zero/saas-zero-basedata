@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -65,8 +66,8 @@ func (l *GetTenantListLogic) GetTenantList(in *apps.TenantPageReq) (*apps.Tenant
 		list[i] = tenantToResp(t)
 	}
 	return &apps.TenantListResp{
-		Code:  200,
-		Msg:   "success",
+		Code:  int32(errno.Success.Code),
+		Msg:   errno.Success.Msg,
 		List:  list,
 		Total: int64(total),
 	}, nil

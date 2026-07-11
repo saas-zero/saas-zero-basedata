@@ -52,5 +52,5 @@ func (l *DeletePackageLogic) DeletePackage(in *apps.IdsReq) (*apps.EmptyResp, er
 	if err != nil {
 		return nil, err
 	}
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

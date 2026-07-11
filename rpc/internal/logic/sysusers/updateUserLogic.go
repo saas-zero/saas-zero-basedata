@@ -7,6 +7,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -70,5 +71,5 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 		return nil, err
 	}
 
-	return &apps.UserResp{Code: 200, Msg: "success", Data: userToResp(u)}, nil
+	return &apps.UserResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg, Data: userToResp(u)}, nil
 }

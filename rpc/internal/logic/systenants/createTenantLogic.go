@@ -9,6 +9,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 )
@@ -59,8 +60,8 @@ func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 		return nil, err
 	}
 	return &apps.TenantResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: &apps.Tenant{
 			Id:    proto.Int64(result.ID),
 			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),

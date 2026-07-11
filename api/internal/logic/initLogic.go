@@ -113,7 +113,18 @@ func (l *InitLogic) InitAll() (*types.BaseResp, error) {
 	if err != nil {
 		return nil, err
 	}
+	l.reloadCasbin()
 	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg}, nil
+}
+
+// reloadCasbin forces the API Casbin enforcer to reload policies from DB.
+// Must be called after any RPC operation that modifies Casbin policies.
+func (l *InitLogic) reloadCasbin() {
+	if l.svcCtx.Enforcer != nil {
+		if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
+			logx.Errorf("reloadCasbin: failed to reload casbin policies: %v", err)
+		}
+	}
 }
 
 func (l *InitLogic) InitCreateRole(req *types.RoleReq) (*types.BaseResp, error) {

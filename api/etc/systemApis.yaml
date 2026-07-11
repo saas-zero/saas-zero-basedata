@@ -1,6 +1,7 @@
 Name: SystemApis
 Host: 0.0.0.0
 Port: 18083
+Timeout: 10000
 
 JwtSecret: saas-zero-secret-key-2024
 

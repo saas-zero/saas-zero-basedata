@@ -6,6 +6,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,8 +32,8 @@ func (l *GetMenuByIdLogic) GetMenuById(in *apps.IdReq) (*apps.MenuResp, error) {
 		return nil, err
 	}
 	return &apps.MenuResp{
-		Code: 200,
-		Msg:  "success",
+		Code: int32(errno.Success.Code),
+		Msg:  errno.Success.Msg,
 		Data: menuToResp(m),
 	}, nil
 }

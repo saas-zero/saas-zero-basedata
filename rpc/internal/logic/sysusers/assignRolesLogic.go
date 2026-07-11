@@ -1,4 +1,4 @@
-package sysuserslogic
+﻿package sysuserslogic
 
 import (
 	"context"
@@ -7,7 +7,8 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
-	"github.com/zeromicro/go-zero/core/logx"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	
 )
 
 type AssignRolesLogic struct {
@@ -38,5 +39,5 @@ func (l *AssignRolesLogic) AssignRoles(in *apps.UserReq) (*apps.EmptyResp, error
 		return nil, err
 	}
 	l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", in.GetId()))
-	return &apps.EmptyResp{Code: 200, Msg: "success"}, nil
+	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }
