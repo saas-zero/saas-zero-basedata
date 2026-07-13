@@ -25,13 +25,19 @@ func NewCreateMenuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Create
 }
 
 func (l *CreateMenuLogic) CreateMenu(req *types.MenuReq) (*types.BaseResp, error) {
+	menuType := req.MenuType
+	if menuType == "" {
+		menuType = "directory"
+		l.Logger.Infof("menuType is empty, defaulting to directory, req=%+v", req)
+	}
 	rpcReq := &apps.MenuReq{
-		Name:   proto.String(req.Name),
-		Path:   proto.String(req.Path),
-		Icon:   proto.String(req.Icon),
-		Status: proto.String(req.Status),
-		Sort:   proto.Int32(req.Sort),
-		Hidden: proto.Bool(req.Hidden),
+		Name:     proto.String(req.Name),
+		MenuType: proto.String(menuType),
+		Path:     proto.String(req.Path),
+		Icon:     proto.String(req.Icon),
+		Status:   proto.String(req.Status),
+		Sort:     proto.Int32(req.Sort),
+		Hidden:   proto.Bool(req.Hidden),
 	}
 	if req.ParentId > 0 {
 		rpcReq.ParentId = proto.Int64(req.ParentId)
