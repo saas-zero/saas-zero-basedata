@@ -1,14 +1,14 @@
-﻿package sysapislogic
+package sysapislogic
 
 import (
 	"context"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"strconv"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
-	"github.com/saas-zero/saas-zero-common/p
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 )

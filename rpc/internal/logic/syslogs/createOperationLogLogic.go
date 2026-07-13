@@ -1,12 +1,12 @@
-﻿package syslogslogic
+package syslogslogic
 
 import (
 	"context"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
-	
 )
 
 type CreateOperationLogLogic struct {
