@@ -3,7 +3,7 @@ package sysdeptslogic
 import (
 	"context"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -59,7 +59,7 @@ func (l *CreateDeptLogic) CreateDept(in *apps.DeptReq) (*apps.DeptResp, error) {
 		Msg:  errno.Success.Msg,
 		Data: &apps.Dept{
 			Id:    proto.Int64(result.ID),
-			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+			IdStr: proto.String(id.ToString(result.ID)),
 		},
 	}, nil
 }

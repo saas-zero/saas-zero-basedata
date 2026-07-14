@@ -25,7 +25,7 @@ func NewUpdatePackageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upd
 }
 
 func (l *UpdatePackageLogic) UpdatePackage(req *types.PackageReq) (*types.BaseResp, error) {
-	rpcReq := &apps.PackageReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.PackageReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Name != "" {
 		rpcReq.Name = proto.String(req.Name)
 	}

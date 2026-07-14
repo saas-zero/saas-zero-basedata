@@ -24,9 +24,9 @@ func NewGetUserDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetUserDetailLogic) GetUserDetail(req *types.IdReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysUsers.GetUserById(l.ctx, &apps.IdReq{Id: req.Id})
+	resp, err := l.svcCtx.SysUsers.GetUserById(l.ctx, &apps.IdReq{Id: parseId(req.Id)})
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toSysUser(resp.GetData())}, nil
 }

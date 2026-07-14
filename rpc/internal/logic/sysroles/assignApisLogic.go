@@ -3,8 +3,8 @@ package sysroleslogic
 import (
 	"context"
 	"fmt"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 	"github.com/zeromicro/go-zero/core/logx"
-	"strconv"
 	"strings"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
@@ -32,7 +32,7 @@ func NewAssignApisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assign
 func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) {
 	roleCode := in.GetCode()
 	tenantId := mixins.GetCurrentTenantId(l.ctx)
-	dom := strconv.FormatInt(tenantId, 10)
+	dom := id.ToString(tenantId)
 
 	l.svcCtx.Enforcer.RemoveFilteredPolicy(0, roleCode, dom)
 
@@ -41,7 +41,7 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 		if err != nil {
 			continue
 		}
-		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), strconv.FormatInt(apiId, 10))
+		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), id.ToString(apiId))
 	}
 
 	users, err := l.svcCtx.DB.SysUser.Query().Where(sysuser.HasRolesWith(sysrole.CodeEQ(roleCode))).All(l.ctx)

@@ -24,7 +24,7 @@ func NewDeleteApiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DeleteA
 }
 
 func (l *DeleteApiLogic) DeleteApi(req *types.IdsReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysApis.DeleteApi(l.ctx, &apps.IdsReq{Ids: req.Ids})
+	resp, err := l.svcCtx.SysApis.DeleteApi(l.ctx, &apps.IdsReq{Ids: parseIds(req.Ids)})
 	if err != nil {
 		return nil, err
 	}

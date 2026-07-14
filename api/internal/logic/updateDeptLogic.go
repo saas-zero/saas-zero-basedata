@@ -25,7 +25,7 @@ func NewUpdateDeptLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateDeptLogic) UpdateDept(req *types.DeptReq) (*types.BaseResp, error) {
-	rpcReq := &apps.DeptReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.DeptReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Name != "" {
 		rpcReq.Name = proto.String(req.Name)
 	}

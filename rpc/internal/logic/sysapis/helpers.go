@@ -1,7 +1,7 @@
 package sysapislogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,7 +11,7 @@ import (
 func apiToResp(a *ent.SysApi) *apps.Api {
 	resp := &apps.Api{
 		Id:        proto.Int64(a.ID),
-		IdStr:     proto.String(strconv.FormatInt(a.ID, 10)),
+		IdStr:     proto.String(id.ToString(a.ID)),
 		ApiName:   proto.String(a.APIName),
 		ApiType:   proto.String(string(a.APIType)),
 		ApiPath:   proto.String(a.APIPath),

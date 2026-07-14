@@ -26,7 +26,7 @@ func NewResetPasswordLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Res
 
 func (l *ResetPasswordLogic) ResetPassword(req *types.UserReq) (*types.BaseResp, error) {
 	resp, err := l.svcCtx.SysUsers.ResetPassword(l.ctx, &apps.UserReq{
-		Id:       proto.Int64(req.Id),
+		Id:       proto.Int64(parseId(req.Id)),
 		Password: proto.String(req.Password),
 	})
 	if err != nil {

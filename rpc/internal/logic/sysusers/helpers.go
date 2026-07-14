@@ -1,7 +1,7 @@
 package sysuserslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,7 +11,7 @@ import (
 func userToResp(u *ent.SysUser) *apps.User {
 	resp := &apps.User{
 		Id:          proto.Int64(u.ID),
-		IdStr:       proto.String(strconv.FormatInt(u.ID, 10)),
+		IdStr:       proto.String(id.ToString(u.ID)),
 		Username:    proto.String(u.Username),
 		Nickname:    proto.String(u.Nickname),
 		Mobile:      proto.String(u.Mobile),
@@ -19,7 +19,7 @@ func userToResp(u *ent.SysUser) *apps.User {
 		Status:      proto.String(string(u.Status)),
 		LoginIp:     proto.String(u.LoginIP),
 		TenantId:    proto.Int64(u.TenantID),
-		TenantIdStr: proto.String(strconv.FormatInt(u.TenantID, 10)),
+		TenantIdStr: proto.String(id.ToString(u.TenantID)),
 		CreatedAt:   proto.Int64(u.CreatedAt.UnixMilli()),
 		UpdatedAt:   proto.Int64(u.UpdatedAt.UnixMilli()),
 	}
@@ -38,7 +38,7 @@ func userToResp(u *ent.SysUser) *apps.User {
 	// See: getUserByUsernameLogic.go
 	if u.DeptID > 0 {
 		resp.DeptId = proto.Int64(u.DeptID)
-		resp.DeptIdStr = proto.String(strconv.FormatInt(u.DeptID, 10))
+		resp.DeptIdStr = proto.String(id.ToString(u.DeptID))
 	}
 	if !u.LoginAt.IsZero() {
 		resp.LoginAt = proto.Int64(u.LoginAt.UnixMilli())

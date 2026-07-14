@@ -51,6 +51,6 @@ func (l *GetUserListLogic) GetUserList(req *types.UserPageReq) (*types.BaseResp,
 	return &types.BaseResp{
 		Code: int(resp.Code),
 		Msg:  resp.Msg,
-		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+		Data: &types.PageResp{List: toSysUserList(resp.List), Total: resp.Total},
 	}, nil
 }

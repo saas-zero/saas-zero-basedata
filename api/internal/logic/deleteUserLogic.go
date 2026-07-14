@@ -24,7 +24,7 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 }
 
 func (l *DeleteUserLogic) DeleteUser(req *types.IdsReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysUsers.DeleteUser(l.ctx, &apps.IdsReq{Ids: req.Ids})
+	resp, err := l.svcCtx.SysUsers.DeleteUser(l.ctx, &apps.IdsReq{Ids: parseIds(req.Ids)})
 	if err != nil {
 		return nil, err
 	}

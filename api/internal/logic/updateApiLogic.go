@@ -25,7 +25,7 @@ func NewUpdateApiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateA
 }
 
 func (l *UpdateApiLogic) UpdateApi(req *types.ApiReq) (*types.BaseResp, error) {
-	rpcReq := &apps.ApiReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.ApiReq{Id: proto.Int64(parseId(req.Id))}
 	if req.ApiName != "" {
 		rpcReq.ApiName = proto.String(req.ApiName)
 	}

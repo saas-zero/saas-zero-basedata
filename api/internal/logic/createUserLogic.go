@@ -40,7 +40,7 @@ func (l *CreateUserLogic) CreateUser(req *types.UserReq) (*types.BaseResp, error
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.RoleIds) > 0 {
-		rpcReq.RoleIds = req.RoleIds
+		rpcReq.RoleIds = parseIds(req.RoleIds)
 	}
 	resp, err := l.svcCtx.SysUsers.CreateUser(l.ctx, rpcReq)
 	if err != nil {

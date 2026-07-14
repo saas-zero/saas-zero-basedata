@@ -99,7 +99,7 @@ func (l *InitLogic) InitCreateUser(req *types.UserReq) (*types.BaseResp, error) 
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.RoleIds) > 0 {
-		rpcReq.RoleIds = req.RoleIds
+		rpcReq.RoleIds = parseIds(req.RoleIds)
 	}
 	resp, err := l.svcCtx.SysUsers.CreateUser(l.initCtx(), rpcReq)
 	if err != nil {
@@ -140,10 +140,10 @@ func (l *InitLogic) InitCreateRole(req *types.RoleReq) (*types.BaseResp, error) 
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.MenuIds) > 0 {
-		rpcReq.MenuIds = req.MenuIds
+		rpcReq.MenuIds = parseIds(req.MenuIds)
 	}
 	if len(req.ApiIds) > 0 {
-		rpcReq.ApiIds = req.ApiIds
+		rpcReq.ApiIds = parseIds(req.ApiIds)
 	}
 	resp, err := l.svcCtx.SysRoles.CreateRole(l.initCtx(), rpcReq)
 	if err != nil {

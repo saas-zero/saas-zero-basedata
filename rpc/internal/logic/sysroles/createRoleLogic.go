@@ -2,7 +2,7 @@ package sysroleslogic
 
 import (
 	"context"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -58,7 +58,7 @@ func (l *CreateRoleLogic) CreateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 		Msg:  errno.Success.Msg,
 		Data: &apps.Role{
 			Id:     proto.Int64(result.ID),
-			IdStr:  proto.String(strconv.FormatInt(result.ID, 10)),
+			IdStr:  proto.String(id.ToString(result.ID)),
 			Status: proto.String(string(result.Status)),
 		},
 	}, nil

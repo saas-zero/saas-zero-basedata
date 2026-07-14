@@ -25,7 +25,7 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateUserLogic) UpdateUser(req *types.UserReq) (*types.BaseResp, error) {
-	rpcReq := &apps.UserReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.UserReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Nickname != "" {
 		rpcReq.Nickname = proto.String(req.Nickname)
 	}
@@ -45,7 +45,7 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UserReq) (*types.BaseResp, error
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.RoleIds) > 0 {
-		rpcReq.RoleIds = req.RoleIds
+		rpcReq.RoleIds = parseIds(req.RoleIds)
 	}
 	resp, err := l.svcCtx.SysUsers.UpdateUser(l.ctx, rpcReq)
 	if err != nil {

@@ -2,7 +2,7 @@ package sysuserslogic
 
 import (
 	"context"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -73,7 +73,7 @@ func (l *CreateUserLogic) CreateUser(in *apps.UserReq) (*apps.UserResp, error) {
 		Msg:  errno.Success.Msg,
 		Data: &apps.User{
 			Id:     proto.Int64(result.ID),
-			IdStr:  proto.String(strconv.FormatInt(result.ID, 10)),
+			IdStr:  proto.String(id.ToString(result.ID)),
 			Status: proto.String(string(result.Status)),
 		},
 	}, nil

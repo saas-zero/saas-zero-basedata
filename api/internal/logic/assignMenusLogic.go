@@ -26,8 +26,8 @@ func NewAssignMenusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 
 func (l *AssignMenusLogic) AssignMenus(req *types.RoleReq) (*types.BaseResp, error) {
 	resp, err := l.svcCtx.SysRoles.AssignMenus(l.ctx, &apps.RoleReq{
-		Id:      proto.Int64(req.Id),
-		MenuIds: req.MenuIds,
+		Id:      proto.Int64(parseId(req.Id)),
+		MenuIds: parseIds(req.MenuIds),
 	})
 	if err != nil {
 		return nil, err

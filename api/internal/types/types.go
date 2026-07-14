@@ -28,7 +28,7 @@ type ApiPageReq struct {
 }
 
 type ApiReq struct {
-	Id        int64  `json:"id,optional"`
+	Id        string `json:"id,optional"`
 	ApiName   string `json:"apiName,optional"`
 	ApiType   string `json:"apiType,optional"`
 	ApiPath   string `json:"apiPath,optional"`
@@ -73,7 +73,7 @@ type DeptPageReq struct {
 }
 
 type DeptReq struct {
-	Id       int64  `json:"id,optional"`
+	Id       string `json:"id,optional"`
 	Name     string `json:"name,optional"`
 	ParentId int64  `json:"parentId,optional"`
 	LeaderId int64  `json:"leaderId,optional"`
@@ -111,7 +111,7 @@ type DictDataPageReq struct {
 }
 
 type DictDataReq struct {
-	Id     int64  `json:"id,optional"`
+	Id     string `json:"id,optional"`
 	DictId int64  `json:"dictId,optional"`
 	Name   string `json:"name,optional"`
 	Key    string `json:"key,optional"`
@@ -145,7 +145,7 @@ type DictPageReq struct {
 }
 
 type DictReq struct {
-	Id     int64  `json:"id,optional"`
+	Id     string `json:"id,optional"`
 	Name   string `json:"name,optional"`
 	Key    string `json:"key,optional"`
 	Status string `json:"status,optional"`
@@ -153,11 +153,11 @@ type DictReq struct {
 }
 
 type IdReq struct {
-	Id int64 `path:"id"`
+	Id string `path:"id"`
 }
 
 type IdsReq struct {
-	Ids []int64 `json:"ids"`
+	Ids []string `json:"ids"`
 }
 
 type MenuInfo struct {
@@ -191,7 +191,7 @@ type MenuPageReq struct {
 }
 
 type MenuReq struct {
-	Id         int64  `json:"id,optional"`
+	Id         string `json:"id,optional"`
 	MenuType   string `json:"menuType,optional"`
 	Name       string `json:"name,optional"`
 	ParentId   int64  `json:"parentId,optional"`
@@ -229,7 +229,7 @@ type PackagePageReq struct {
 }
 
 type PackageReq struct {
-	Id     int64  `json:"id,optional"`
+	Id     string `json:"id,optional"`
 	Name   string `json:"name,optional"`
 	Code   string `json:"code,optional"`
 	Status string `json:"status,optional"`
@@ -274,14 +274,14 @@ type RolePageReq struct {
 }
 
 type RoleReq struct {
-	Id      int64   `json:"id,optional"`
-	Name    string  `json:"name,optional"`
-	Code    string  `json:"code,optional"`
-	Status  string  `json:"status,optional"`
-	Sort    int32   `json:"sort,optional"`
-	Remark  string  `json:"remark,optional"`
-	MenuIds []int64 `json:"menuIds,optional"`
-	ApiIds  []int64 `json:"apiIds,optional"`
+	Id      string   `json:"id,optional"`
+	Name    string   `json:"name,optional"`
+	Code    string   `json:"code,optional"`
+	Status  string   `json:"status,optional"`
+	Sort    int32    `json:"sort,optional"`
+	Remark  string   `json:"remark,optional"`
+	MenuIds []string `json:"menuIds,optional"`
+	ApiIds  []string `json:"apiIds,optional"`
 }
 
 type TenantInfo struct {
@@ -314,7 +314,7 @@ type TenantPageReq struct {
 }
 
 type TenantReq struct {
-	Id        int64  `json:"id,optional"`
+	Id        string `json:"id,optional"`
 	Name      string `json:"name,optional"`
 	Code      string `json:"code,optional"`
 	AdminId   int64  `json:"adminId,optional"`
@@ -361,14 +361,41 @@ type UserPageReq struct {
 }
 
 type UserReq struct {
-	Id       int64   `json:"id,optional"`
-	Username string  `json:"username,optional"`
-	Password string  `json:"password,optional"`
-	Nickname string  `json:"nickname,optional"`
-	Mobile   string  `json:"mobile,optional"`
-	Email    string  `json:"email,optional"`
-	DeptId   int64   `json:"deptId,optional"`
-	Status   string  `json:"status,optional"`
-	Remark   string  `json:"remark,optional"`
-	RoleIds  []int64 `json:"roleIds,optional"`
+	Id       string   `json:"id,optional"`
+	Username string   `json:"username,optional"`
+	Password string   `json:"password,optional"`
+	Nickname string   `json:"nickname,optional"`
+	Mobile   string   `json:"mobile,optional"`
+	Email    string   `json:"email,optional"`
+	DeptId   int64    `json:"deptId,optional"`
+	Status   string   `json:"status,optional"`
+	Remark   string   `json:"remark,optional"`
+	RoleIds  []string `json:"roleIds,optional"`
+}
+
+// SysUser is the user list/detail HTTP response. roleIds/Id are returned as
+// strings to avoid JS int64 precision loss (see AGENTS.md "ID 精度处理").
+type SysUser struct {
+	Id          string   `json:"id"`
+	IdStr       string   `json:"idStr"`
+	Username    string   `json:"username"`
+	Nickname    string   `json:"nickname"`
+	Mobile      string   `json:"mobile"`
+	Email       string   `json:"email"`
+	DeptId      string   `json:"deptId"`
+	DeptIdStr   string   `json:"deptIdStr"`
+	DeptName    string   `json:"deptName"`
+	Status      string   `json:"status"`
+	Remark      string   `json:"remark"`
+	LoginIp     string   `json:"loginIp"`
+	LastLoginAt string   `json:"lastLoginAt"`
+	RoleIds     []string `json:"roleIds"`
+	RoleCodes   []string `json:"roleCodes"`
+	RoleNames   []string `json:"roleNames"`
+	TenantId    string   `json:"tenantId"`
+	TenantIdStr string   `json:"tenantIdStr"`
+	CreatedAt   string   `json:"createdAt"`
+	CreatedBy   string   `json:"createdBy"`
+	UpdatedAt   string   `json:"updatedAt"`
+	UpdatedBy   string   `json:"updatedBy"`
 }

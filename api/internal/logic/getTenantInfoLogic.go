@@ -24,7 +24,7 @@ func NewGetTenantInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetTenantInfoLogic) GetTenantInfo(req *types.IdReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysTenants.GetTenantById(l.ctx, &apps.IdReq{Id: req.Id})
+	resp, err := l.svcCtx.SysTenants.GetTenantById(l.ctx, &apps.IdReq{Id: parseId(req.Id)})
 	if err != nil {
 		return nil, err
 	}

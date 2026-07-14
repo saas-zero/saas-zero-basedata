@@ -1,7 +1,7 @@
 package sysdictdataslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,16 +11,16 @@ import (
 func dictDataToResp(d *ent.SysDictData) *apps.DictData {
 	resp := &apps.DictData{
 		Id:          proto.Int64(d.ID),
-		IdStr:       proto.String(strconv.FormatInt(d.ID, 10)),
+		IdStr:       proto.String(id.ToString(d.ID)),
 		DictId:      proto.Int64(d.DictID),
-		DictIdStr:   proto.String(strconv.FormatInt(d.DictID, 10)),
+		DictIdStr:   proto.String(id.ToString(d.DictID)),
 		Name:        proto.String(d.Name),
 		Key:         proto.String(d.Key),
 		Value:       proto.String(d.Value),
 		Status:      proto.String(string(d.Status)),
 		Remark:      proto.String(d.Remark),
 		TenantId:    proto.Int64(d.TenantID),
-		TenantIdStr: proto.String(strconv.FormatInt(d.TenantID, 10)),
+		TenantIdStr: proto.String(id.ToString(d.TenantID)),
 		CreatedAt:   proto.Int64(d.CreatedAt.UnixMilli()),
 		UpdatedAt:   proto.Int64(d.UpdatedAt.UnixMilli()),
 	}

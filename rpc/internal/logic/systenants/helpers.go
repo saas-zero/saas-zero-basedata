@@ -1,7 +1,7 @@
 package systenantslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,7 +11,7 @@ import (
 func tenantToResp(t *ent.SysTenant) *apps.Tenant {
 	resp := &apps.Tenant{
 		Id:        proto.Int64(t.ID),
-		IdStr:     proto.String(strconv.FormatInt(t.ID, 10)),
+		IdStr:     proto.String(id.ToString(t.ID)),
 		Name:      proto.String(t.Name),
 		Code:      proto.String(t.Code),
 		Status:    proto.String(string(t.Status)),
@@ -27,15 +27,15 @@ func tenantToResp(t *ent.SysTenant) *apps.Tenant {
 	}
 	if t.AdminID > 0 {
 		resp.AdminId = proto.Int64(t.AdminID)
-		resp.AdminIdStr = proto.String(strconv.FormatInt(t.AdminID, 10))
+		resp.AdminIdStr = proto.String(id.ToString(t.AdminID))
 	}
 	if t.ParentID > 0 {
 		resp.ParentId = proto.Int64(t.ParentID)
-		resp.ParentIdStr = proto.String(strconv.FormatInt(t.ParentID, 10))
+		resp.ParentIdStr = proto.String(id.ToString(t.ParentID))
 	}
 	if t.PackageID > 0 {
 		resp.PackageId = proto.Int64(t.PackageID)
-		resp.PackageIdStr = proto.String(strconv.FormatInt(t.PackageID, 10))
+		resp.PackageIdStr = proto.String(id.ToString(t.PackageID))
 	}
 	if t.Edges.SysPackage != nil {
 		resp.PackageName = proto.String(t.Edges.SysPackage.Name)

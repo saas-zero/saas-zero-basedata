@@ -37,10 +37,10 @@ func (l *CreateRoleLogic) CreateRole(req *types.RoleReq) (*types.BaseResp, error
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.MenuIds) > 0 {
-		rpcReq.MenuIds = req.MenuIds
+		rpcReq.MenuIds = parseIds(req.MenuIds)
 	}
 	if len(req.ApiIds) > 0 {
-		rpcReq.ApiIds = req.ApiIds
+		rpcReq.ApiIds = parseIds(req.ApiIds)
 	}
 	resp, err := l.svcCtx.SysRoles.CreateRole(l.ctx, rpcReq)
 	if err != nil {

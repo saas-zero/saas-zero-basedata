@@ -25,7 +25,7 @@ func NewUpdateDictDataLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Up
 }
 
 func (l *UpdateDictDataLogic) UpdateDictData(req *types.DictDataReq) (*types.BaseResp, error) {
-	rpcReq := &apps.DictDataReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.DictDataReq{Id: proto.Int64(parseId(req.Id))}
 	if req.DictId > 0 {
 		rpcReq.DictId = proto.Int64(req.DictId)
 	}

@@ -24,7 +24,7 @@ func NewGetDeptDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Get
 }
 
 func (l *GetDeptDetailLogic) GetDeptDetail(req *types.IdReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysDepts.GetDeptById(l.ctx, &apps.IdReq{Id: req.Id})
+	resp, err := l.svcCtx.SysDepts.GetDeptById(l.ctx, &apps.IdReq{Id: parseId(req.Id)})
 	if err != nil {
 		return nil, err
 	}

@@ -24,7 +24,7 @@ func NewGetPackageDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *GetPackageDetailLogic) GetPackageDetail(req *types.IdReq) (*types.BaseResp, error) {
-	resp, err := l.svcCtx.SysPackages.GetPackageById(l.ctx, &apps.IdReq{Id: req.Id})
+	resp, err := l.svcCtx.SysPackages.GetPackageById(l.ctx, &apps.IdReq{Id: parseId(req.Id)})
 	if err != nil {
 		return nil, err
 	}

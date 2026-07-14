@@ -26,7 +26,7 @@ func NewChangeTenantStatusLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *ChangeTenantStatusLogic) ChangeTenantStatus(req *types.TenantReq) (*types.BaseResp, error) {
 	resp, err := l.svcCtx.SysTenants.ChangeTenantStatus(l.ctx, &apps.TenantReq{
-		Id:     proto.Int64(req.Id),
+		Id:     proto.Int64(parseId(req.Id)),
 		Status: proto.String(req.Status),
 	})
 	if err != nil {

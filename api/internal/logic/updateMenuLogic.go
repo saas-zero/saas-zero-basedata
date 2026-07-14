@@ -25,7 +25,7 @@ func NewUpdateMenuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateMenuLogic) UpdateMenu(req *types.MenuReq) (*types.BaseResp, error) {
-	rpcReq := &apps.MenuReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.MenuReq{Id: proto.Int64(parseId(req.Id))}
 	if req.MenuType != "" {
 		rpcReq.MenuType = proto.String(req.MenuType)
 	}

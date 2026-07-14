@@ -26,8 +26,8 @@ func NewAssignApisLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assign
 
 func (l *AssignApisLogic) AssignApis(req *types.RoleReq) (*types.BaseResp, error) {
 	resp, err := l.svcCtx.SysRoles.AssignApis(l.ctx, &apps.RoleReq{
-		Id:     proto.Int64(req.Id),
-		ApiIds: req.ApiIds,
+		Id:     proto.Int64(parseId(req.Id)),
+		ApiIds: parseIds(req.ApiIds),
 	})
 	if err != nil {
 		return nil, err

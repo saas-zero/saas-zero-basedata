@@ -1,7 +1,7 @@
 package sysmenuslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
@@ -12,7 +12,7 @@ import (
 func menuToResp(m *ent.SysMenu) *apps.Menu {
 	resp := &apps.Menu{
 		Id:         proto.Int64(m.ID),
-		IdStr:      proto.String(strconv.FormatInt(m.ID, 10)),
+		IdStr:      proto.String(id.ToString(m.ID)),
 		MenuType:   proto.String(string(m.MenuType)),
 		Name:       proto.String(m.Name),
 		Component:  proto.String(m.Component),
@@ -35,7 +35,7 @@ func menuToResp(m *ent.SysMenu) *apps.Menu {
 	}
 	if m.ParentID > 0 {
 		resp.ParentId = proto.Int64(m.ParentID)
-		resp.ParentIdStr = proto.String(strconv.FormatInt(m.ParentID, 10))
+		resp.ParentIdStr = proto.String(id.ToString(m.ParentID))
 	}
 	return resp
 }

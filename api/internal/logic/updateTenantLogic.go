@@ -26,7 +26,7 @@ func NewUpdateTenantLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Upda
 }
 
 func (l *UpdateTenantLogic) UpdateTenant(req *types.TenantReq) (*types.BaseResp, error) {
-	rpcReq := &apps.TenantReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.TenantReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Name != "" {
 		rpcReq.Name = proto.String(req.Name)
 	}

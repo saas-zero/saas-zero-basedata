@@ -1,7 +1,7 @@
 package syslogslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,7 +11,7 @@ import (
 func loginLogToResp(l *ent.SysLoginLog) *apps.LoginLog {
 	return &apps.LoginLog{
 		Id:       proto.Int64(l.ID),
-		IdStr:    proto.String(strconv.FormatInt(l.ID, 10)),
+		IdStr:    proto.String(id.ToString(l.ID)),
 		Username: proto.String(l.Username),
 		LoginIp:  proto.String(l.IP),
 		Status:   proto.String(string(l.Status)),
@@ -23,7 +23,7 @@ func loginLogToResp(l *ent.SysLoginLog) *apps.LoginLog {
 func operationLogToResp(o *ent.SysOperationLog) *apps.OperationLog {
 	return &apps.OperationLog{
 		Id:            proto.Int64(o.ID),
-		IdStr:         proto.String(strconv.FormatInt(o.ID, 10)),
+		IdStr:         proto.String(id.ToString(o.ID)),
 		Module:        proto.String(o.Module),
 		Operation:     proto.String(o.Operation),
 		RequestMethod: proto.String(o.Method),
@@ -33,10 +33,10 @@ func operationLogToResp(o *ent.SysOperationLog) *apps.OperationLog {
 		Duration:      proto.Int64(o.Duration),
 		Status:        proto.String("success"),
 		OperatorId:    proto.Int64(o.OperatorID),
-		OperatorIdStr: proto.String(strconv.FormatInt(o.OperatorID, 10)),
+		OperatorIdStr: proto.String(id.ToString(o.OperatorID)),
 		OperatorName:  proto.String(o.OperatorName),
 		OperatorIp:    proto.String(o.IP),
 		TenantId:      proto.Int64(o.TenantID),
-		TenantIdStr:   proto.String(strconv.FormatInt(o.TenantID, 10)),
+		TenantIdStr:   proto.String(id.ToString(o.TenantID)),
 	}
 }

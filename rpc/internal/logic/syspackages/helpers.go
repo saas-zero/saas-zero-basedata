@@ -1,7 +1,7 @@
 package syspackageslogic
 
 import (
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -11,7 +11,7 @@ import (
 func packageToResp(p *ent.SysPackage) *apps.Package {
 	resp := &apps.Package{
 		Id:        proto.Int64(p.ID),
-		IdStr:     proto.String(strconv.FormatInt(p.ID, 10)),
+		IdStr:     proto.String(id.ToString(p.ID)),
 		Name:      proto.String(p.Name),
 		Code:      proto.String(p.Code),
 		Status:    proto.String(string(p.Status)),

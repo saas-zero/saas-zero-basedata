@@ -2,7 +2,7 @@ package systenantslogic
 
 import (
 	"context"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 	"time"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
@@ -64,7 +64,7 @@ func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 		Msg:  errno.Success.Msg,
 		Data: &apps.Tenant{
 			Id:    proto.Int64(result.ID),
-			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+			IdStr: proto.String(id.ToString(result.ID)),
 		},
 	}, nil
 }

@@ -2,7 +2,7 @@ package sysinitlogic
 
 import (
 	"context"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
@@ -240,12 +240,12 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	}
 
 	// 8. Casbin policies: clear old ones for this role+tenant, then re-add
-	dom := strconv.FormatInt(tenant.ID, 10)
+	dom := id.ToString(tenant.ID)
 	if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(0, "admin", dom); err != nil {
 		logx.Errorf("initAll: failed to clear casbin policies: %v", err)
 	}
-	for i, id := range apiIds {
-		if _, err := l.svcCtx.Enforcer.AddPolicy("admin", dom, apiPaths[i], ".*", strconv.FormatInt(id, 10)); err != nil {
+	for i, apiId := range apiIds {
+		if _, err := l.svcCtx.Enforcer.AddPolicy("admin", dom, apiPaths[i], ".*", id.ToString(apiId)); err != nil {
 			logx.Errorf("initAll: failed to add casbin policy: %v", err)
 		}
 	}

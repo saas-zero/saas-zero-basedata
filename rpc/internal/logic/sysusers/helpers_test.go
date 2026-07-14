@@ -11,19 +11,19 @@ import (
 func TestUserToResp_BasicFields(t *testing.T) {
 	now := time.Now()
 	u := &ent.SysUser{
-		ID:       123456789012345678,
-		Username: "admin",
-		Nickname: "管理员",
-		Mobile:   "13800138000",
-		Email:    "admin@example.com",
-		Status:   sysuser.StatusActive,
-		LoginIP:  "192.168.1.1",
-		TenantID: 1001,
+		ID:        123456789012345678,
+		Username:  "admin",
+		Nickname:  "管理员",
+		Mobile:    "13800138000",
+		Email:     "admin@example.com",
+		Status:    sysuser.StatusActive,
+		LoginIP:   "192.168.1.1",
+		TenantID:  1001,
 		CreatedAt: now,
 		UpdatedAt: now,
 		CreatedBy: "system",
 		UpdatedBy: "system",
-		Remark:   "测试用户",
+		Remark:    "测试用户",
 	}
 	u.LoginAt = now
 

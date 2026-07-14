@@ -3,7 +3,7 @@ package sysdictslogic
 import (
 	"context"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
-	"strconv"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -54,7 +54,7 @@ func (l *CreateDictLogic) CreateDict(in *apps.DictReq) (*apps.DictResp, error) {
 		Msg:  errno.Success.Msg,
 		Data: &apps.Dict{
 			Id:    proto.Int64(result.ID),
-			IdStr: proto.String(strconv.FormatInt(result.ID, 10)),
+			IdStr: proto.String(id.ToString(result.ID)),
 		},
 	}, nil
 }

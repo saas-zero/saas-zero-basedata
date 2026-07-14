@@ -25,7 +25,7 @@ func NewUpdateRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateRoleLogic) UpdateRole(req *types.RoleReq) (*types.BaseResp, error) {
-	rpcReq := &apps.RoleReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.RoleReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Name != "" {
 		rpcReq.Name = proto.String(req.Name)
 	}
@@ -42,10 +42,10 @@ func (l *UpdateRoleLogic) UpdateRole(req *types.RoleReq) (*types.BaseResp, error
 		rpcReq.Remark = proto.String(req.Remark)
 	}
 	if len(req.MenuIds) > 0 {
-		rpcReq.MenuIds = req.MenuIds
+		rpcReq.MenuIds = parseIds(req.MenuIds)
 	}
 	if len(req.ApiIds) > 0 {
-		rpcReq.ApiIds = req.ApiIds
+		rpcReq.ApiIds = parseIds(req.ApiIds)
 	}
 	resp, err := l.svcCtx.SysRoles.UpdateRole(l.ctx, rpcReq)
 	if err != nil {

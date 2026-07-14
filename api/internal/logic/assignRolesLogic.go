@@ -26,8 +26,8 @@ func NewAssignRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 
 func (l *AssignRolesLogic) AssignRoles(req *types.UserReq) (*types.BaseResp, error) {
 	resp, err := l.svcCtx.SysUsers.AssignRoles(l.ctx, &apps.UserReq{
-		Id:      proto.Int64(req.Id),
-		RoleIds: req.RoleIds,
+		Id:      proto.Int64(parseId(req.Id)),
+		RoleIds: parseIds(req.RoleIds),
 	})
 	if err != nil {
 		return nil, err

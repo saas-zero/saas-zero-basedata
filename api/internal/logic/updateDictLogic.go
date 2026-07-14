@@ -25,7 +25,7 @@ func NewUpdateDictLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateDictLogic) UpdateDict(req *types.DictReq) (*types.BaseResp, error) {
-	rpcReq := &apps.DictReq{Id: proto.Int64(req.Id)}
+	rpcReq := &apps.DictReq{Id: proto.Int64(parseId(req.Id))}
 	if req.Name != "" {
 		rpcReq.Name = proto.String(req.Name)
 	}

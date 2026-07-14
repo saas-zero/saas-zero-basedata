@@ -1,6 +1,7 @@
 package sysroleslogic
 
 import (
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 	"strconv"
 
 	casbinapi "github.com/casbin/casbin/v2"
@@ -12,13 +13,13 @@ import (
 func roleToResp(r *ent.SysRole) *apps.Role {
 	resp := &apps.Role{
 		Id:          proto.Int64(r.ID),
-		IdStr:       proto.String(strconv.FormatInt(r.ID, 10)),
+		IdStr:       proto.String(id.ToString(r.ID)),
 		Name:        proto.String(r.Name),
 		Code:        proto.String(r.Code),
 		Status:      proto.String(string(r.Status)),
 		Sort:        proto.Int32(int32(r.Sort)),
 		TenantId:    proto.Int64(r.TenantID),
-		TenantIdStr: proto.String(strconv.FormatInt(r.TenantID, 10)),
+		TenantIdStr: proto.String(id.ToString(r.TenantID)),
 		CreatedAt:   proto.Int64(r.CreatedAt.UnixMilli()),
 		UpdatedAt:   proto.Int64(r.UpdatedAt.UnixMilli()),
 	}
@@ -42,7 +43,7 @@ func roleToResp(r *ent.SysRole) *apps.Role {
 }
 
 func roleApiIds(enf *casbinapi.SyncedEnforcer, roleCode string, tenantId int64) []int64 {
-	dom := strconv.FormatInt(tenantId, 10)
+	dom := id.ToString(tenantId)
 	policies, _ := enf.GetFilteredPolicy(0, roleCode, dom)
 	ids := make([]int64, 0, len(policies))
 	for _, p := range policies {
