@@ -35,6 +35,7 @@ func main() {
 
 	handler.RegisterHandlers(server, ctx)
 	handler.RegisterInitRoutes(server, ctx)
+	handler.RegisterLogRoutes(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
 	server.Start()

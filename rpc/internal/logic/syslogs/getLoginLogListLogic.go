@@ -9,6 +9,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/pagination"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -45,17 +46,10 @@ func (l *GetLoginLogListLogic) GetLoginLogList(in *apps.LogPageReq) (*apps.Login
 		return nil, err
 	}
 
-	page := int(in.GetPage())
-	size := int(in.GetSize())
-	if page < 1 {
-		page = 1
-	}
-	if size < 1 || size > 100 {
-		size = 20
-	}
+	_, size, offset := pagination.Normalize(int(in.GetPage()), int(in.GetSize()))
 
 	logs, err := query.
-		Offset((page - 1) * size).
+		Offset(offset).
 		Limit(size).
 		Order(ent.Desc(sysloginlog.FieldLoginTime)).
 		All(l.ctx)

@@ -27,6 +27,7 @@ func NewCreatePackageLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cre
 func (l *CreatePackageLogic) CreatePackage(req *types.PackageReq) (*types.BaseResp, error) {
 	rpcReq := &apps.PackageReq{
 		Name:   proto.String(req.Name),
+		Code:   proto.String(req.Code),
 		Status: proto.String(req.Status),
 	}
 	if req.Sort > 0 {

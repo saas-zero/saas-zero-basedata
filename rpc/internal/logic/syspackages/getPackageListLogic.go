@@ -8,6 +8,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/pagination"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -42,17 +43,10 @@ func (l *GetPackageListLogic) GetPackageList(in *apps.PackagePageReq) (*apps.Pac
 		return nil, err
 	}
 
-	page := int(in.GetPage())
-	size := int(in.GetSize())
-	if page < 1 {
-		page = 1
-	}
-	if size < 1 || size > 100 {
-		size = 20
-	}
+	_, size, offset := pagination.Normalize(int(in.GetPage()), int(in.GetSize()))
 
 	packages, err := query.
-		Offset((page - 1) * size).
+		Offset(offset).
 		Limit(size).
 		Order(ent.Asc(syspackage.FieldSort)).
 		All(l.ctx)
