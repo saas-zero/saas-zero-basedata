@@ -44,8 +44,8 @@ func (l *UpdateMenuLogic) UpdateMenu(req *types.MenuReq) (*types.BaseResp, error
 	if req.Status != "" {
 		rpcReq.Status = proto.String(req.Status)
 	}
-	if req.ParentId > 0 {
-		rpcReq.ParentId = proto.Int64(req.ParentId)
+	if pid := parseId(req.ParentId); pid > 0 {
+		rpcReq.ParentId = proto.Int64(pid)
 	}
 	if req.Sort > 0 {
 		rpcReq.Sort = proto.Int32(req.Sort)

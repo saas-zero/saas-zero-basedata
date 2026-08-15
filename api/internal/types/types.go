@@ -75,8 +75,8 @@ type DeptPageReq struct {
 type DeptReq struct {
 	Id       string `json:"id,optional"`
 	Name     string `json:"name,optional"`
-	ParentId int64  `json:"parentId,optional"`
-	LeaderId int64  `json:"leaderId,optional"`
+	ParentId string `json:"parentId,optional"`
+	LeaderId string `json:"leaderId,optional"`
 	Mobile   string `json:"mobile,optional"`
 	Email    string `json:"email,optional"`
 	Status   string `json:"status,optional"`
@@ -112,7 +112,7 @@ type DictDataPageReq struct {
 
 type DictDataReq struct {
 	Id     string `json:"id,optional"`
-	DictId int64  `json:"dictId,optional"`
+	DictId string `json:"dictId,optional"`
 	Name   string `json:"name,optional"`
 	Key    string `json:"key,optional"`
 	Value  string `json:"value,optional"`
@@ -194,7 +194,7 @@ type MenuReq struct {
 	Id         string `json:"id,optional"`
 	MenuType   string `json:"menuType,optional"`
 	Name       string `json:"name,optional"`
-	ParentId   int64  `json:"parentId,optional"`
+	ParentId   string `json:"parentId,optional"`
 	Component  string `json:"component,optional"`
 	Path       string `json:"path,optional"`
 	Icon       string `json:"icon,optional"`
@@ -317,9 +317,9 @@ type TenantReq struct {
 	Id        string `json:"id,optional"`
 	Name      string `json:"name,optional"`
 	Code      string `json:"code,optional"`
-	AdminId   int64  `json:"adminId,optional"`
-	ParentId  int64  `json:"parentId,optional"`
-	PackageId int64  `json:"packageId,optional"`
+	AdminId   string `json:"adminId,optional"`
+	ParentId  string `json:"parentId,optional"`
+	PackageId string `json:"packageId,optional"`
 	ExpiredAt string `json:"expiredAt,optional"`
 	Status    string `json:"status,optional"`
 	Remark    string `json:"remark,optional"`

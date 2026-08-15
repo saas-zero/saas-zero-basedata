@@ -26,7 +26,7 @@ func NewCreateDictDataLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Cr
 
 func (l *CreateDictDataLogic) CreateDictData(req *types.DictDataReq) (*types.BaseResp, error) {
 	rpcReq := &apps.DictDataReq{
-		DictId: proto.Int64(req.DictId),
+		DictId: proto.Int64(parseId(req.DictId)),
 		Name:   proto.String(req.Name),
 		Key:    proto.String(req.Key),
 		Value:  proto.String(req.Value),

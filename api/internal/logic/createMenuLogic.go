@@ -39,8 +39,8 @@ func (l *CreateMenuLogic) CreateMenu(req *types.MenuReq) (*types.BaseResp, error
 		Sort:     proto.Int32(req.Sort),
 		Hidden:   proto.Bool(req.Hidden),
 	}
-	if req.ParentId > 0 {
-		rpcReq.ParentId = proto.Int64(req.ParentId)
+	if pid := parseId(req.ParentId); pid > 0 {
+		rpcReq.ParentId = proto.Int64(pid)
 	}
 	if req.Component != "" {
 		rpcReq.Component = proto.String(req.Component)

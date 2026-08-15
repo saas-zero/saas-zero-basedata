@@ -33,14 +33,14 @@ func (l *UpdateTenantLogic) UpdateTenant(req *types.TenantReq) (*types.BaseResp,
 	if req.Code != "" {
 		rpcReq.Code = proto.String(req.Code)
 	}
-	if req.AdminId > 0 {
-		rpcReq.AdminId = proto.Int64(req.AdminId)
+	if aid := parseId(req.AdminId); aid > 0 {
+		rpcReq.AdminId = proto.Int64(aid)
 	}
-	if req.ParentId > 0 {
-		rpcReq.ParentId = proto.Int64(req.ParentId)
+	if pid := parseId(req.ParentId); pid > 0 {
+		rpcReq.ParentId = proto.Int64(pid)
 	}
-	if req.PackageId > 0 {
-		rpcReq.PackageId = proto.Int64(req.PackageId)
+	if pkgId := parseId(req.PackageId); pkgId > 0 {
+		rpcReq.PackageId = proto.Int64(pkgId)
 	}
 	if req.ExpiredAt != "" {
 		if v, err := strconv.ParseInt(req.ExpiredAt, 10, 64); err == nil {

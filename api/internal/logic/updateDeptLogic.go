@@ -32,11 +32,11 @@ func (l *UpdateDeptLogic) UpdateDept(req *types.DeptReq) (*types.BaseResp, error
 	if req.Status != "" {
 		rpcReq.Status = proto.String(req.Status)
 	}
-	if req.ParentId > 0 {
-		rpcReq.ParentId = proto.Int64(req.ParentId)
+	if pid := parseId(req.ParentId); pid > 0 {
+		rpcReq.ParentId = proto.Int64(pid)
 	}
-	if req.LeaderId > 0 {
-		rpcReq.LeaderId = proto.Int64(req.LeaderId)
+	if lid := parseId(req.LeaderId); lid > 0 {
+		rpcReq.LeaderId = proto.Int64(lid)
 	}
 	if req.Mobile != "" {
 		rpcReq.Mobile = proto.String(req.Mobile)
