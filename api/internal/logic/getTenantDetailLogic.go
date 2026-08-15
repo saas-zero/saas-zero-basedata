@@ -28,5 +28,5 @@ func (l *GetTenantDetailLogic) GetTenantDetail(req *types.IdReq) (*types.BaseRes
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toTenantInfo(resp.GetData())}, nil
 }

@@ -28,5 +28,5 @@ func (l *GetDeptTreeLogic) GetDeptTree() (*types.BaseResp, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toDeptInfoList(resp.GetData())}, nil
 }

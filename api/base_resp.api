@@ -17,9 +17,9 @@ type PageResp {
 }
 
 type IdReq {
-	Id int64 `path:"id"`
+	Id string `path:"id"`
 }
 
 type IdsReq {
-	Ids []int64 `json:"ids"`
+	Ids []string `json:"ids"`
 }

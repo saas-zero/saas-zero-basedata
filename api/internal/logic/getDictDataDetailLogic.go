@@ -28,5 +28,5 @@ func (l *GetDictDataDetailLogic) GetDictDataDetail(req *types.IdReq) (*types.Bas
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toDictDataInfo(resp.GetData())}, nil
 }

@@ -17,7 +17,7 @@ type SysPackage struct {
 func (SysPackage) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty().MaxLen(128).Comment("套餐名称 | Package Name"),
-		field.String("code").Unique().NotEmpty().MaxLen(64).Comment("套餐编码 | Package Code"),
+		field.String("code").NotEmpty().MaxLen(64).Comment("套餐编码 | Package Code"),
 	}
 }
 
@@ -53,5 +53,7 @@ func (SysPackage) Indexes() []ent.Index {
 	return []ent.Index{
 		index.Fields("status"),
 		index.Fields("sort"),
+		// 软删除：唯一约束只对未删除行生效
+		index.Fields("code").Unique().Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 	}
 }

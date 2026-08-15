@@ -28,5 +28,5 @@ func (l *GetRoleDetailLogic) GetRoleDetail(req *types.IdReq) (*types.BaseResp, e
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toRoleInfo(resp.GetData())}, nil
 }

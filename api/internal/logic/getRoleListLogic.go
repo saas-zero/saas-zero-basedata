@@ -44,6 +44,6 @@ func (l *GetRoleListLogic) GetRoleList(req *types.RolePageReq) (*types.BaseResp,
 	return &types.BaseResp{
 		Code: int(resp.Code),
 		Msg:  resp.Msg,
-		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+		Data: &types.PageResp{List: toRoleInfoList(resp.List), Total: resp.Total},
 	}, nil
 }

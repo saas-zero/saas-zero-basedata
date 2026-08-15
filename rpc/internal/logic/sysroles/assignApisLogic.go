@@ -34,6 +34,12 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	dom := id.ToString(tenantId)
 
+	// API assignment is an edit of the role even though the association is
+	// stored in Casbin. Touch the role so its audit fields stay authoritative.
+	if err := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId()).Exec(l.ctx); err != nil {
+		return nil, err
+	}
+
 	l.svcCtx.Enforcer.RemoveFilteredPolicy(0, roleCode, dom)
 
 	for _, apiId := range in.GetApiIds() {

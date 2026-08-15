@@ -339,7 +339,7 @@ type UserInfo struct {
 	Remark      string   `json:"remark"`
 	LoginIp     string   `json:"loginIp"`
 	LoginAt     string   `json:"loginAt"`
-	RoleIds     []int64  `json:"roleIds"`
+	RoleIds     []string `json:"roleIds"`
 	RoleCodes   []string `json:"roleCodes"`
 	RoleNames   []string `json:"roleNames"`
 	TenantId    int64    `json:"tenantId"`
@@ -367,22 +367,22 @@ type UserReq struct {
 	Nickname string   `json:"nickname,optional"`
 	Mobile   string   `json:"mobile,optional"`
 	Email    string   `json:"email,optional"`
-	DeptId   int64    `json:"deptId,optional"`
+	DeptId   string   `json:"deptId,optional"`
 	Status   string   `json:"status,optional"`
 	Remark   string   `json:"remark,optional"`
 	RoleIds  []string `json:"roleIds,optional"`
 }
 
-// SysUser is the user list/detail HTTP response. roleIds/Id are returned as
-// strings to avoid JS int64 precision loss (see AGENTS.md "ID 精度处理").
+// SysUser is the user list/detail HTTP response.
+// id is int64 (JSON number), idStr is string for frontend precision.
 type SysUser struct {
-	Id          string   `json:"id"`
+	Id          int64    `json:"id"`
 	IdStr       string   `json:"idStr"`
 	Username    string   `json:"username"`
 	Nickname    string   `json:"nickname"`
 	Mobile      string   `json:"mobile"`
 	Email       string   `json:"email"`
-	DeptId      string   `json:"deptId"`
+	DeptId      int64    `json:"deptId"`
 	DeptIdStr   string   `json:"deptIdStr"`
 	DeptName    string   `json:"deptName"`
 	Status      string   `json:"status"`
@@ -392,7 +392,7 @@ type SysUser struct {
 	RoleIds     []string `json:"roleIds"`
 	RoleCodes   []string `json:"roleCodes"`
 	RoleNames   []string `json:"roleNames"`
-	TenantId    string   `json:"tenantId"`
+	TenantId    int64    `json:"tenantId"`
 	TenantIdStr string   `json:"tenantIdStr"`
 	CreatedAt   string   `json:"createdAt"`
 	CreatedBy   string   `json:"createdBy"`

@@ -28,5 +28,5 @@ func (l *GetApiDetailLogic) GetApiDetail(req *types.IdReq) (*types.BaseResp, err
 	if err != nil {
 		return nil, err
 	}
-	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: resp.GetData()}, nil
+	return &types.BaseResp{Code: int(resp.Code), Msg: resp.Msg, Data: toAPIInfo(resp.GetData())}, nil
 }

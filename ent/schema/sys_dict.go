@@ -49,7 +49,7 @@ func (SysDict) Annotations() []schema.Annotation {
 
 func (SysDict) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("tenant_id", "key").Unique(),
+		index.Fields("tenant_id", "key").Unique().Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("tenant_id", "status"),
 		index.Fields("tenant_id", "name"),
 	}

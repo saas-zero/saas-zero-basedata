@@ -8,41 +8,80 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/enttest"
 	"github.com/saas-zero/saas-zero-basedata/ent/migrate"
+	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-// testCtx returns a context with test user/tenant info injected
-func testCtx() context.Context {
-	ctx := context.Background()
-	ctx = mixins.SetCurrentUserId(ctx, 1)
-	ctx = mixins.SetCurrentUserName(ctx, "test-admin")
-	ctx = mixins.SetCurrentTenantId(ctx, 1001)
-	return ctx
+// testCtx returns a context with test user/tenant info injected.
+// testCtx returns a context with test user/tenant info injected.
+// The tenant id comes from the freshly seeded client because BaseMixin
+// overrides any manual ID with a snowflake ID.
+func testCtx(tenantID int64) context.Context {
+	return mixins.SetCurrentTenantId(
+		mixins.SetCurrentUserName(mixins.SetCurrentUserId(context.Background(), 1), "test-admin"),
+		tenantID,
+	)
 }
 
-// newTestClient creates an in-memory SQLite ent client for testing
-func newTestClient(t *testing.T) *ent.Client {
+// seedTestData creates the package + tenant rows required by the FK
+// constraints of sys_users/sys_depts/sys_roles, and returns the tenant id.
+func seedTestData(t *testing.T, client *ent.Client) int64 {
+	t.Helper()
+	ctx := mixins.SetCurrentTenantId(
+		mixins.SetCurrentUserName(mixins.SetCurrentUserId(context.Background(), 1), "system"),
+		0,
+	)
+	pkg, err := client.SysPackage.Create().
+		SetName("测试套餐").
+		SetCode("test").
+		SetSort(1).
+		SetStatus(syspackage.StatusActive).
+		Save(ctx)
+	if err != nil {
+		t.Fatalf("failed to create test package: %v", err)
+	}
+	// The package_id FK column defaults to 0, which has no matching package
+	// row, so an explicit reference is required when foreign keys are enabled.
+	tenant, err := client.SysTenant.Create().
+		SetName("测试租户").
+		SetCode("test").
+		SetAdminID(1).
+		SetPackageID(pkg.ID).
+		SetStatus(systenant.StatusActive).
+		Save(ctx)
+	if err != nil {
+		t.Fatalf("failed to create test tenant: %v", err)
+	}
+	return tenant.ID
+}
+
+// newTestClient creates an in-memory SQLite ent client for testing,
+// seeded with a package + tenant so FK constraints are satisfied.
+func newTestClient(t *testing.T) (*ent.Client, int64) {
 	t.Helper()
 	client := enttest.Open(t, dialect.SQLite,
 		"file:ent?mode=memory&cache=shared&_fk=1",
 		enttest.WithMigrateOptions(migrate.WithForeignKeys(true)),
 	)
-	return client
+	tenantID := seedTestData(t, client)
+	return client, tenantID
 }
 
 func TestCreateUser_Success(t *testing.T) {
-	client := newTestClient(t)
+	client, tenantID := newTestClient(t)
 	defer client.Close()
 
-	ctx := testCtx()
+	ctx := testCtx(tenantID)
 
 	svcCtx := &svc.ServiceContext{DB: client}
 	logger := logx.WithContext(ctx)
@@ -106,8 +145,8 @@ func TestCreateUser_Success(t *testing.T) {
 	}
 
 	// Verify audit fields were set by mixin hooks
-	if user.TenantID != 1001 {
-		t.Fatalf("expected tenantId 1001, got %d", user.TenantID)
+	if user.TenantID != tenantID {
+		t.Fatalf("expected tenantId %d, got %d", tenantID, user.TenantID)
 	}
 	if user.CreatedBy != "test-admin" {
 		t.Fatalf("expected createdBy test-admin, got %s", user.CreatedBy)
@@ -115,10 +154,10 @@ func TestCreateUser_Success(t *testing.T) {
 }
 
 func TestCreateUser_WithDepartment(t *testing.T) {
-	client := newTestClient(t)
+	client, tenantID := newTestClient(t)
 	defer client.Close()
 
-	ctx := testCtx()
+	ctx := testCtx(tenantID)
 
 	// First create a department
 	dept, err := client.SysDept.Create().
@@ -160,10 +199,10 @@ func TestCreateUser_WithDepartment(t *testing.T) {
 }
 
 func TestCreateUser_WithRoles(t *testing.T) {
-	client := newTestClient(t)
+	client, tenantID := newTestClient(t)
 	defer client.Close()
 
-	ctx := testCtx()
+	ctx := testCtx(tenantID)
 
 	// First create roles
 	role, err := client.SysRole.Create().
@@ -212,10 +251,10 @@ func TestCreateUser_WithRoles(t *testing.T) {
 }
 
 func TestCreateUser_DuplicateUsername(t *testing.T) {
-	client := newTestClient(t)
+	client, tenantID := newTestClient(t)
 	defer client.Close()
 
-	ctx := testCtx()
+	ctx := testCtx(tenantID)
 
 	svcCtx := &svc.ServiceContext{DB: client}
 	logic := &CreateUserLogic{
@@ -236,18 +275,75 @@ func TestCreateUser_DuplicateUsername(t *testing.T) {
 		t.Fatalf("first create should succeed: %v", err)
 	}
 
-	// Second create with same username should fail
+	// Second create with same username should fail with a friendly business error
 	_, err = logic.CreateUser(in)
 	if err == nil {
 		t.Fatal("expected error for duplicate username, got nil")
 	}
+	if e, ok := err.(*errno.Errno); !ok || e.Code != errno.UsernameExists.Code {
+		t.Fatalf("expected username-exists business error (code %d), got %v", errno.UsernameExists.Code, err)
+	}
+}
+
+func TestCreateUser_SameUsernameDifferentTenant(t *testing.T) {
+	client, tenantID := newTestClient(t)
+	defer client.Close()
+
+	// Create user in tenant A
+	ctxA := testCtx(tenantID)
+	svcCtx := &svc.ServiceContext{DB: client}
+	logic := &CreateUserLogic{
+		ctx:    ctxA,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctxA),
+	}
+	in := &apps.UserReq{
+		Username: proto.String("cross-tenant"),
+		Password: proto.String("pass123"),
+		Nickname: proto.String("租户A用户"),
+		Status:   proto.String("active"),
+	}
+	if _, err := logic.CreateUser(in); err != nil {
+		t.Fatalf("first create should succeed: %v", err)
+	}
+
+	// Seed a second tenant so the tenant_id FK is satisfied
+	sysCtx := mixins.SetCurrentTenantId(
+		mixins.SetCurrentUserName(mixins.SetCurrentUserId(context.Background(), 1), "system"),
+		0,
+	)
+	pkg, err := client.SysPackage.Query().First(sysCtx)
+	if err != nil {
+		t.Fatalf("failed to load test package: %v", err)
+	}
+	tenantB, err := client.SysTenant.Create().
+		SetName("测试租户B").
+		SetCode("test-b").
+		SetAdminID(1).
+		SetPackageID(pkg.ID).
+		SetStatus(systenant.StatusActive).
+		Save(sysCtx)
+	if err != nil {
+		t.Fatalf("failed to create test tenant B: %v", err)
+	}
+
+	// Same username in another tenant must be allowed (uniqueness is per-tenant)
+	ctxB := testCtx(tenantB.ID)
+	logicB := &CreateUserLogic{
+		ctx:    ctxB,
+		svcCtx: svcCtx,
+		Logger: logx.WithContext(ctxB),
+	}
+	if _, err := logicB.CreateUser(in); err != nil {
+		t.Fatalf("same username in another tenant should succeed: %v", err)
+	}
 }
 
 func TestCreateUser_EmptyUsername(t *testing.T) {
-	client := newTestClient(t)
+	client, tenantID := newTestClient(t)
 	defer client.Close()
 
-	ctx := testCtx()
+	ctx := testCtx(tenantID)
 	svcCtx := &svc.ServiceContext{DB: client}
 	logic := &CreateUserLogic{
 		ctx:    ctx,

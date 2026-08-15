@@ -41,6 +41,6 @@ func (l *GetTenantListLogic) GetTenantList(req *types.TenantPageReq) (*types.Bas
 	return &types.BaseResp{
 		Code: int(resp.Code),
 		Msg:  resp.Msg,
-		Data: &types.PageResp{List: resp.List, Total: resp.Total},
+		Data: &types.PageResp{List: toTenantInfoList(resp.List), Total: resp.Total},
 	}, nil
 }

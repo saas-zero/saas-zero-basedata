@@ -50,7 +50,7 @@ func (SysApi) Annotations() []schema.Annotation {
 
 func (SysApi) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("api_path", "api_method").Unique().StorageKey("idx_api_path_method_unique"),
+		index.Fields("api_path", "api_method").Unique().StorageKey("idx_api_path_method_unique").Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("api_type"),
 		index.Fields("status"),
 	}

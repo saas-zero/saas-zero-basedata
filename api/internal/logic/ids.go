@@ -20,40 +20,34 @@ func parseIds(ss []string) []int64 {
 	return idutil.ParseStrings(ss)
 }
 
-// formatIds converts int64 IDs to strings for JSON responses, avoiding the
-// JS int64 precision loss that would occur if we returned raw int64.
-func formatIds(ids []int64) []string {
-	return idutil.ToStrings(ids)
-}
-
-// toSysUser maps the gRPC User (int64 roleIds) to the HTTP response type with
-// string roleIds, so the frontend receives lossless IDs.
+// toSysUser maps the gRPC User to the HTTP response type.
+// id (int64) is the numeric ID, idStr (string) is for frontend precision.
 func toSysUser(u *apps.User) *types.SysUser {
 	if u == nil {
 		return nil
 	}
 	return &types.SysUser{
-		Id:          u.GetIdStr(),
+		Id:          u.GetId(),
 		IdStr:       u.GetIdStr(),
 		Username:    u.GetUsername(),
 		Nickname:    u.GetNickname(),
 		Mobile:      u.GetMobile(),
 		Email:       u.GetEmail(),
-		DeptId:      u.GetDeptIdStr(),
+		DeptId:      u.GetDeptId(),
 		DeptIdStr:   u.GetDeptIdStr(),
 		DeptName:    u.GetDeptName(),
 		Status:      u.GetStatus(),
 		Remark:      u.GetRemark(),
 		LoginIp:     u.GetLoginIp(),
-		LastLoginAt: idutil.ToString(u.GetLoginAt()),
-		RoleIds:     formatIds(u.GetRoleIds()),
+		LastLoginAt: auditTime(u.GetLoginAt()),
+		RoleIds:     idutil.ToStrings(u.GetRoleIds()),
 		RoleCodes:   u.GetRoleCodes(),
 		RoleNames:   u.GetRoleNames(),
-		TenantId:    u.GetTenantIdStr(),
+		TenantId:    u.GetTenantId(),
 		TenantIdStr: u.GetTenantIdStr(),
-		CreatedAt:   idutil.ToString(u.GetCreatedAt()),
+		CreatedAt:   auditTime(u.GetCreatedAt()),
 		CreatedBy:   u.GetCreatedBy(),
-		UpdatedAt:   idutil.ToString(u.GetUpdatedAt()),
+		UpdatedAt:   auditTime(u.GetUpdatedAt()),
 		UpdatedBy:   u.GetUpdatedBy(),
 	}
 }

@@ -33,8 +33,8 @@ func (l *CreateUserLogic) CreateUser(req *types.UserReq) (*types.BaseResp, error
 		Email:    proto.String(req.Email),
 		Status:   proto.String(req.Status),
 	}
-	if req.DeptId > 0 {
-		rpcReq.DeptId = proto.Int64(req.DeptId)
+	if deptId := parseId(req.DeptId); deptId > 0 {
+		rpcReq.DeptId = proto.Int64(deptId)
 	}
 	if req.Remark != "" {
 		rpcReq.Remark = proto.String(req.Remark)

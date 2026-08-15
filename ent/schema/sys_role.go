@@ -51,7 +51,7 @@ func (SysRole) Annotations() []schema.Annotation {
 
 func (SysRole) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("tenant_id", "code").Unique(),
+		index.Fields("tenant_id", "code").Unique().Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("tenant_id", "status"),
 		index.Fields("sort"),
 	}

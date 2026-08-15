@@ -60,7 +60,7 @@ func (SysUser) Annotations() []schema.Annotation {
 
 func (SysUser) Indexes() []ent.Index {
 	return []ent.Index{
-		index.Fields("tenant_id", "username").Unique(),
+		index.Fields("tenant_id", "username").Unique().Annotations(entsql.IndexWhere("deleted_at IS NULL")),
 		index.Fields("tenant_id", "mobile"),
 		index.Fields("tenant_id", "email"),
 		index.Fields("dept_id"),

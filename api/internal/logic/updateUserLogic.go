@@ -35,8 +35,8 @@ func (l *UpdateUserLogic) UpdateUser(req *types.UserReq) (*types.BaseResp, error
 	if req.Email != "" {
 		rpcReq.Email = proto.String(req.Email)
 	}
-	if req.DeptId > 0 {
-		rpcReq.DeptId = proto.Int64(req.DeptId)
+	if deptId := parseId(req.DeptId); deptId > 0 {
+		rpcReq.DeptId = proto.Int64(deptId)
 	}
 	if req.Status != "" {
 		rpcReq.Status = proto.String(req.Status)

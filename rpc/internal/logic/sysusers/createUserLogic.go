@@ -42,6 +42,17 @@ func (l *CreateUserLogic) CreateUser(in *apps.UserReq) (*apps.UserResp, error) {
 		return nil, err
 	}
 
+	// 同租户下用户名唯一：预检查给出友好错误，数据库 (tenant_id, username) 部分唯一索引兜底
+	exists, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
+		Where(sysuser.UsernameEQ(in.GetUsername())).
+		Exist(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if exists {
+		return nil, errno.UsernameExists
+	}
+
 	create := l.svcCtx.DB.SysUser.Create().
 		SetUsername(in.GetUsername()).
 		SetPassword(string(hash)).
