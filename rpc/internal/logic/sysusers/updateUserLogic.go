@@ -80,6 +80,8 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 			ClearRoles().
 			AddRoleIDs(in.GetRoleIds()...).
 			Exec(ctx)
+		// 角色变更：递增 token_version 使旧 token 失效（重新登录后权限生效）
+		l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", result.ID))
 	}
 
 	u, err := l.svcCtx.DB.SysUser.Query().

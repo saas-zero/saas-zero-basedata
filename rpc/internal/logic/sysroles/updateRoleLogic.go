@@ -3,11 +3,14 @@ package sysroleslogic
 import (
 	"context"
 
+	"fmt"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,6 +34,14 @@ func (l *UpdateRoleLogic) UpdateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 	ctx := mixins.SetCurrentUserId(l.ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
+	// 记录变更前信息：旧 code（用于同步 Casbin）、旧状态（用于禁用踢出）
+	oldRole, err := l.svcCtx.DB.SysRole.Get(ctx, in.GetId())
+	if err != nil {
+		return nil, err
+	}
+	oldCode := oldRole.Code
+	oldStatus := oldRole.Status
+
 	update := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId())
 	if in.Name != nil {
 		update.SetName(in.GetName())
@@ -51,6 +62,32 @@ func (l *UpdateRoleLogic) UpdateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 	result, err := update.Save(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	// 修改角色 code：同步 Casbin 策略 sub（删旧 code 策略，重建为新 code）
+	if in.Code != nil && in.GetCode() != oldCode {
+		dom := id.ToString(mixins.GetCurrentTenantId(ctx))
+		if l.svcCtx.Enforcer != nil {
+			oldPolicies, _ := l.svcCtx.Enforcer.GetFilteredPolicy(0, oldCode, dom)
+			l.svcCtx.Enforcer.RemoveFilteredPolicy(0, oldCode, dom)
+			for _, p := range oldPolicies {
+				if len(p) >= 5 {
+					l.svcCtx.Enforcer.AddPolicy(in.GetCode(), dom, p[2], p[3], p[4])
+				}
+			}
+		}
+	}
+
+	// 禁用角色（active → inactive）：踢掉拥有该角色的所有用户
+	if in.Status != nil && sysrole.Status(in.GetStatus()) == sysrole.StatusInactive && oldStatus == sysrole.StatusActive {
+		users, err := l.svcCtx.DB.SysUser.Query().
+			Where(sysuser.HasRolesWith(sysrole.IDEQ(result.ID))).
+			All(ctx)
+		if err == nil {
+			for _, u := range users {
+				l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+			}
+		}
 	}
 
 	if len(in.GetMenuIds()) > 0 {
