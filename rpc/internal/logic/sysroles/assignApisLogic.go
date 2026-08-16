@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -34,6 +35,16 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	dom := id.ToString(tenantId)
 
+	// 前端只传 id + apiIds，不传 code，需从角色表查询兜底，
+	// 否则会生成 v0 为空的脏策略。
+	if roleCode == "" {
+		role, err := l.svcCtx.DB.SysRole.Get(l.ctx, in.GetId())
+		if err != nil {
+			return nil, err
+		}
+		roleCode = role.Code
+	}
+
 	// API assignment is an edit of the role even though the association is
 	// stored in Casbin. Touch the role so its audit fields stay authoritative.
 	if err := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId()).Exec(l.ctx); err != nil {
@@ -45,6 +56,10 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 	for _, apiId := range in.GetApiIds() {
 		api, err := l.svcCtx.DB.SysApi.Get(l.ctx, apiId)
 		if err != nil {
+			continue
+		}
+		// 只对具体接口（api 类型）生成策略；目录（group）仅用于分组展示，不参与权限匹配
+		if api.APIType != sysapi.APITypeAPI {
 			continue
 		}
 		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), id.ToString(apiId))

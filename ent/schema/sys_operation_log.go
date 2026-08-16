@@ -1,6 +1,8 @@
 package schema
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
@@ -27,6 +29,7 @@ func (SysOperationLog) Fields() []ent.Field {
 		field.Int64("operator_id").Default(0).Comment("操作人ID | Operator ID"),
 		field.String("operator_name").Default("").MaxLen(64).Comment("操作人名称 | Operator Name"),
 		field.Int64("tenant_id").Default(0).Optional().Comment("租户ID | Tenant ID"),
+		field.Time("created_at").Default(time.Now).Immutable().Comment("操作时间 | Operate Time"),
 	}
 }
 

@@ -40,13 +40,13 @@ type (
 		RoleIds  []string `json:"roleIds,optional"`
 	}
 	UserPageReq {
-		Page     int    `json:"page,optional"`
-		Size     int    `json:"size,optional"`
-		Username string `json:"username,optional"`
-		Nickname string `json:"nickname,optional"`
-		Mobile   string `json:"mobile,optional"`
-		Status   string `json:"status,optional"`
-		DeptId   int64  `json:"deptId,optional"`
+		Page     int    `json:"page,optional" form:"page,optional"`
+		Size     int    `json:"size,optional" form:"pageSize,optional"`
+		Username string `json:"username,optional" form:"username,optional"`
+		Nickname string `json:"nickname,optional" form:"nickname,optional"`
+		Mobile   string `json:"mobile,optional" form:"mobile,optional"`
+		Status   string `json:"status,optional" form:"status,optional"`
+		DeptId   int64  `json:"deptId,optional" form:"deptId,optional"`
 	}
 	RoleInfo {
 		Id          int64   `json:"id"`
@@ -58,8 +58,8 @@ type (
 		Remark      string  `json:"remark"`
 		TenantId    int64   `json:"tenantId"`
 		TenantIdStr string  `json:"tenantIdStr"`
-		MenuIds     []int64 `json:"menuIds"`
-		ApiIds      []int64 `json:"apiIds"`
+		MenuIds     []string `json:"menuIds"`
+		ApiIds      []string `json:"apiIds"`
 		CreatedAt   string  `json:"createdAt"`
 		CreatedBy   string  `json:"createdBy"`
 		UpdatedAt   string  `json:"updatedAt"`
@@ -76,11 +76,11 @@ type (
 		ApiIds  []string `json:"apiIds,optional"`
 	}
 	RolePageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Code   string `json:"code,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Code   string `json:"code,optional" form:"code,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	DeptInfo {
 		Id          int64       `json:"id"`
@@ -114,10 +114,10 @@ type (
 		Sort     int32  `json:"sort,optional"`
 	}
 	DeptPageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	MenuInfo {
 		Id          int64       `json:"id"`
@@ -157,10 +157,10 @@ type (
 		Remark     string `json:"remark,optional"`
 	}
 	MenuPageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	DictInfo {
 		Id          int64           `json:"id"`
@@ -178,18 +178,18 @@ type (
 		UpdatedBy   string          `json:"updatedBy"`
 	}
 	DictReq {
-		Id     string `json:"id,optional"`
-		Name   string `json:"name,optional"`
-		Key    string `json:"key,optional"`
-		Status string `json:"status,optional"`
-		Remark string `json:"remark,optional"`
+		Id     string `json:"id,optional" form:"id,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Key    string `json:"key,optional" form:"key,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
+		Remark string `json:"remark,optional" form:"remark,optional"`
 	}
 	DictPageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Key    string `json:"key,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Key    string `json:"key,optional" form:"key,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	DictDataInfo {
 		Id          int64  `json:"id"`
@@ -218,12 +218,12 @@ type (
 		Remark string `json:"remark,optional"`
 	}
 	DictDataPageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		DictId int64  `json:"dictId,optional"`
-		Key    string `json:"key,optional"`
-		Value  string `json:"value,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		DictId int64  `json:"dictId,optional" form:"dictId,optional"`
+		Key    string `json:"key,optional" form:"key,optional"`
+		Value  string `json:"value,optional" form:"value,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	TenantInfo {
 		Id           int64  `json:"id"`
@@ -257,11 +257,11 @@ type (
 		Remark    string `json:"remark,optional"`
 	}
 	TenantPageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Code   string `json:"code,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Code   string `json:"code,optional" form:"code,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	PackageInfo {
 		Id        int64  `json:"id"`
@@ -285,11 +285,11 @@ type (
 		Remark string `json:"remark,optional"`
 	}
 	PackagePageReq {
-		Page   int    `json:"page,optional"`
-		Size   int    `json:"size,optional"`
-		Name   string `json:"name,optional"`
-		Code   string `json:"code,optional"`
-		Status string `json:"status,optional"`
+		Page   int    `json:"page,optional" form:"page,optional"`
+		Size   int    `json:"size,optional" form:"pageSize,optional"`
+		Name   string `json:"name,optional" form:"name,optional"`
+		Code   string `json:"code,optional" form:"code,optional"`
+		Status string `json:"status,optional" form:"status,optional"`
 	}
 	ApiInfo {
 		Id        int64  `json:"id"`
@@ -315,12 +315,12 @@ type (
 		Remark    string `json:"remark,optional"`
 	}
 	ApiPageReq {
-		Page    int    `json:"page,optional"`
-		Size    int    `json:"size,optional"`
-		ApiName string `json:"apiName,optional"`
-		ApiPath string `json:"apiPath,optional"`
-		ApiType string `json:"apiType,optional"`
-		Status  string `json:"status,optional"`
+		Page    int    `json:"page,optional" form:"page,optional"`
+		Size    int    `json:"size,optional" form:"pageSize,optional"`
+		ApiName string `json:"apiName,optional" form:"apiName,optional"`
+		ApiPath string `json:"apiPath,optional" form:"apiPath,optional"`
+		ApiType string `json:"apiType,optional" form:"apiType,optional"`
+		Status  string `json:"status,optional" form:"status,optional"`
 	}
 )
 

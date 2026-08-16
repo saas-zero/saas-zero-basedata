@@ -8579,6 +8579,7 @@ type SysOperationLogMutation struct {
 	operator_name  *string
 	tenant_id      *int64
 	addtenant_id   *int64
+	created_at     *time.Time
 	clearedFields  map[string]struct{}
 	done           bool
 	oldValue       func(context.Context) (*SysOperationLog, error)
@@ -9234,6 +9235,42 @@ func (m *SysOperationLogMutation) ResetTenantID() {
 	delete(m.clearedFields, sysoperationlog.FieldTenantID)
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (m *SysOperationLogMutation) SetCreatedAt(t time.Time) {
+	m.created_at = &t
+}
+
+// CreatedAt returns the value of the "created_at" field in the mutation.
+func (m *SysOperationLogMutation) CreatedAt() (r time.Time, exists bool) {
+	v := m.created_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldCreatedAt returns the old "created_at" field's value of the SysOperationLog entity.
+// If the SysOperationLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysOperationLogMutation) OldCreatedAt(ctx context.Context) (v time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldCreatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldCreatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldCreatedAt: %w", err)
+	}
+	return oldValue.CreatedAt, nil
+}
+
+// ResetCreatedAt resets all changes to the "created_at" field.
+func (m *SysOperationLogMutation) ResetCreatedAt() {
+	m.created_at = nil
+}
+
 // Where appends a list predicates to the SysOperationLogMutation builder.
 func (m *SysOperationLogMutation) Where(ps ...predicate.SysOperationLog) {
 	m.predicates = append(m.predicates, ps...)
@@ -9268,7 +9305,7 @@ func (m *SysOperationLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysOperationLogMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.module != nil {
 		fields = append(fields, sysoperationlog.FieldModule)
 	}
@@ -9305,6 +9342,9 @@ func (m *SysOperationLogMutation) Fields() []string {
 	if m.tenant_id != nil {
 		fields = append(fields, sysoperationlog.FieldTenantID)
 	}
+	if m.created_at != nil {
+		fields = append(fields, sysoperationlog.FieldCreatedAt)
+	}
 	return fields
 }
 
@@ -9337,6 +9377,8 @@ func (m *SysOperationLogMutation) Field(name string) (ent.Value, bool) {
 		return m.OperatorName()
 	case sysoperationlog.FieldTenantID:
 		return m.TenantID()
+	case sysoperationlog.FieldCreatedAt:
+		return m.CreatedAt()
 	}
 	return nil, false
 }
@@ -9370,6 +9412,8 @@ func (m *SysOperationLogMutation) OldField(ctx context.Context, name string) (en
 		return m.OldOperatorName(ctx)
 	case sysoperationlog.FieldTenantID:
 		return m.OldTenantID(ctx)
+	case sysoperationlog.FieldCreatedAt:
+		return m.OldCreatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown SysOperationLog field %s", name)
 }
@@ -9462,6 +9506,13 @@ func (m *SysOperationLogMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTenantID(v)
+		return nil
+	case sysoperationlog.FieldCreatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetCreatedAt(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SysOperationLog field %s", name)
@@ -9613,6 +9664,9 @@ func (m *SysOperationLogMutation) ResetField(name string) error {
 		return nil
 	case sysoperationlog.FieldTenantID:
 		m.ResetTenantID()
+		return nil
+	case sysoperationlog.FieldCreatedAt:
+		m.ResetCreatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown SysOperationLog field %s", name)

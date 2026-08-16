@@ -60,6 +60,7 @@ func (l *GetUserListLogic) GetUserList(in *apps.UserPageReq) (*apps.UserListResp
 		Limit(size).
 		Order(ent.Asc(sysuser.FieldCreatedAt)).
 		WithRoles().
+		WithSysDept().
 		All(l.ctx)
 	if err != nil {
 		return nil, err

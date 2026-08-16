@@ -32,6 +32,7 @@ func (l *GetUserByUsernameLogic) GetUserByUsername(in *apps.UserReq) (*apps.User
 	u, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.UsernameEQ(in.GetUsername())).
 		WithRoles().
+		WithSysDept().
 		Only(l.ctx)
 	if err != nil {
 		return nil, err

@@ -12,8 +12,10 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/api/internal/middleware"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
+	"github.com/zeromicro/go-zero/rest/httpx"
 )
 
 var configFile = flag.String("f", "etc/systemapis.yaml", "the config file")
@@ -23,6 +25,9 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+
+	// 统一错误响应：code 全部取自 common/errno（见 errno.ErrHandler）
+	httpx.SetErrorHandler(errno.ErrHandler)
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()

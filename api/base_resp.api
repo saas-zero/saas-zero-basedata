@@ -17,7 +17,7 @@ type PageResp {
 }
 
 type IdReq {
-	Id string `path:"id"`
+	Id string `path:"id,optional" form:"id,optional"`
 }
 
 type IdsReq {

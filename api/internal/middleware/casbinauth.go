@@ -40,7 +40,7 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 			// Read role codes from JWT claims (set by jwtauth middleware)
 			roleCodes := getRoleCodesFromCtx(r.Context())
 			if len(roleCodes) == 0 {
-				http.Error(w, errno.NoRoles.JSON(), http.StatusForbidden)
+				writeJSON(w, http.StatusForbidden, errno.NoRoles)
 				return
 			}
 			path := r.URL.Path
@@ -61,7 +61,7 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 				}
 			}
 			if !allowed {
-				http.Error(w, errno.ForbiddenOperation.JSON(), http.StatusForbidden)
+				writeJSON(w, http.StatusForbidden, errno.ForbiddenOperation)
 				return
 			}
 			next(w, r)

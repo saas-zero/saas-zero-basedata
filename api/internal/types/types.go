@@ -19,12 +19,12 @@ type ApiInfo struct {
 }
 
 type ApiPageReq struct {
-	Page    int    `json:"page,optional"`
-	Size    int    `json:"size,optional"`
-	ApiName string `json:"apiName,optional"`
-	ApiPath string `json:"apiPath,optional"`
-	ApiType string `json:"apiType,optional"`
-	Status  string `json:"status,optional"`
+	Page    int    `json:"page,optional" form:"page,optional"`
+	Size    int    `json:"size,optional" form:"pageSize,optional"`
+	ApiName string `json:"apiName,optional" form:"apiName,optional"`
+	ApiPath string `json:"apiPath,optional" form:"apiPath,optional"`
+	ApiType string `json:"apiType,optional" form:"apiType,optional"`
+	Status  string `json:"status,optional" form:"status,optional"`
 }
 
 type ApiReq struct {
@@ -66,10 +66,10 @@ type DeptInfo struct {
 }
 
 type DeptPageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type DeptReq struct {
@@ -102,12 +102,12 @@ type DictDataInfo struct {
 }
 
 type DictDataPageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	DictId int64  `json:"dictId,optional"`
-	Key    string `json:"key,optional"`
-	Value  string `json:"value,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	DictId int64  `json:"dictId,optional" form:"dictId,optional"`
+	Key    string `json:"key,optional" form:"key,optional"`
+	Value  string `json:"value,optional" form:"value,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type DictDataReq struct {
@@ -137,23 +137,23 @@ type DictInfo struct {
 }
 
 type DictPageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Key    string `json:"key,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Key    string `json:"key,optional" form:"key,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type DictReq struct {
-	Id     string `json:"id,optional"`
-	Name   string `json:"name,optional"`
-	Key    string `json:"key,optional"`
-	Status string `json:"status,optional"`
-	Remark string `json:"remark,optional"`
+	Id     string `json:"id,optional" form:"id,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Key    string `json:"key,optional" form:"key,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
+	Remark string `json:"remark,optional" form:"remark,optional"`
 }
 
 type IdReq struct {
-	Id string `path:"id"`
+	Id string `path:"id,optional" form:"id,optional"`
 }
 
 type IdsReq struct {
@@ -184,10 +184,10 @@ type MenuInfo struct {
 }
 
 type MenuPageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type MenuReq struct {
@@ -221,11 +221,11 @@ type PackageInfo struct {
 }
 
 type PackagePageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Code   string `json:"code,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Code   string `json:"code,optional" form:"code,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type PackageReq struct {
@@ -238,8 +238,8 @@ type PackageReq struct {
 }
 
 type PageReq struct {
-	Page int `json:"page,optional"`
-	Size int `json:"size,optional"`
+	Page int `json:"page,optional" form:"page,optional"`
+	Size int `json:"size,optional" form:"pageSize,optional"`
 }
 
 type PageResp struct {
@@ -248,29 +248,29 @@ type PageResp struct {
 }
 
 type RoleInfo struct {
-	Id          int64   `json:"id"`
-	IdStr       string  `json:"idStr"`
-	Name        string  `json:"name"`
-	Code        string  `json:"code"`
-	Status      string  `json:"status"`
-	Sort        int32   `json:"sort"`
-	Remark      string  `json:"remark"`
-	TenantId    int64   `json:"tenantId"`
-	TenantIdStr string  `json:"tenantIdStr"`
-	MenuIds     []int64 `json:"menuIds"`
-	ApiIds      []int64 `json:"apiIds"`
-	CreatedAt   string  `json:"createdAt"`
-	CreatedBy   string  `json:"createdBy"`
-	UpdatedAt   string  `json:"updatedAt"`
-	UpdatedBy   string  `json:"updatedBy"`
+	Id          int64    `json:"id"`
+	IdStr       string   `json:"idStr"`
+	Name        string   `json:"name"`
+	Code        string   `json:"code"`
+	Status      string   `json:"status"`
+	Sort        int32    `json:"sort"`
+	Remark      string   `json:"remark"`
+	TenantId    int64    `json:"tenantId"`
+	TenantIdStr string   `json:"tenantIdStr"`
+	MenuIds     []string `json:"menuIds"`
+	ApiIds      []string `json:"apiIds"`
+	CreatedAt   string   `json:"createdAt"`
+	CreatedBy   string   `json:"createdBy"`
+	UpdatedAt   string   `json:"updatedAt"`
+	UpdatedBy   string   `json:"updatedBy"`
 }
 
 type RolePageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Code   string `json:"code,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Code   string `json:"code,optional" form:"code,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type RoleReq struct {
@@ -306,11 +306,11 @@ type TenantInfo struct {
 }
 
 type TenantPageReq struct {
-	Page   int    `json:"page,optional"`
-	Size   int    `json:"size,optional"`
-	Name   string `json:"name,optional"`
-	Code   string `json:"code,optional"`
-	Status string `json:"status,optional"`
+	Page   int    `json:"page,optional" form:"page,optional"`
+	Size   int    `json:"size,optional" form:"pageSize,optional"`
+	Name   string `json:"name,optional" form:"name,optional"`
+	Code   string `json:"code,optional" form:"code,optional"`
+	Status string `json:"status,optional" form:"status,optional"`
 }
 
 type TenantReq struct {
@@ -351,13 +351,13 @@ type UserInfo struct {
 }
 
 type UserPageReq struct {
-	Page     int    `json:"page,optional"`
-	Size     int    `json:"size,optional"`
-	Username string `json:"username,optional"`
-	Nickname string `json:"nickname,optional"`
-	Mobile   string `json:"mobile,optional"`
-	Status   string `json:"status,optional"`
-	DeptId   int64  `json:"deptId,optional"`
+	Page     int    `json:"page,optional" form:"page,optional"`
+	Size     int    `json:"size,optional" form:"pageSize,optional"`
+	Username string `json:"username,optional" form:"username,optional"`
+	Nickname string `json:"nickname,optional" form:"nickname,optional"`
+	Mobile   string `json:"mobile,optional" form:"mobile,optional"`
+	Status   string `json:"status,optional" form:"status,optional"`
+	DeptId   int64  `json:"deptId,optional" form:"deptId,optional"`
 }
 
 type UserReq struct {

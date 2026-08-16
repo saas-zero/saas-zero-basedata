@@ -39,6 +39,9 @@ var (
 				Name:    "idx_api_path_method_unique",
 				Unique:  true,
 				Columns: []*schema.Column{SysApisColumns[14], SysApisColumns[15]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "sysapi_api_type",
@@ -150,6 +153,9 @@ var (
 				Name:    "sysdict_tenant_id_key",
 				Unique:  true,
 				Columns: []*schema.Column{SysDictsColumns[1], SysDictsColumns[14]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "sysdict_tenant_id_status",
@@ -217,6 +223,9 @@ var (
 				Name:    "sysdictdata_tenant_id_dict_id_key",
 				Unique:  true,
 				Columns: []*schema.Column{SysDictDatasColumns[1], SysDictDatasColumns[16], SysDictDatasColumns[14]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "sysdictdata_tenant_id_dict_id_status",
@@ -339,6 +348,7 @@ var (
 		{Name: "operator_id", Type: field.TypeInt64, Comment: "操作人ID | Operator ID", Default: 0},
 		{Name: "operator_name", Type: field.TypeString, Size: 64, Comment: "操作人名称 | Operator Name", Default: ""},
 		{Name: "tenant_id", Type: field.TypeInt64, Nullable: true, Comment: "租户ID | Tenant ID", Default: 0},
+		{Name: "created_at", Type: field.TypeTime, Comment: "操作时间 | Operate Time"},
 	}
 	// SysOperationLogsTable holds the schema information for the "sys_operation_logs" table.
 	SysOperationLogsTable = &schema.Table{
@@ -385,7 +395,7 @@ var (
 		{Name: "sort", Type: field.TypeUint32, Comment: "Sort Number | 排序编号", Default: 1},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "套餐名称 | Package Name"},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 64, Comment: "套餐编码 | Package Code"},
+		{Name: "code", Type: field.TypeString, Size: 64, Comment: "套餐编码 | Package Code"},
 	}
 	// SysPackagesTable holds the schema information for the "sys_packages" table.
 	SysPackagesTable = &schema.Table{
@@ -403,6 +413,14 @@ var (
 				Name:    "syspackage_sort",
 				Unique:  false,
 				Columns: []*schema.Column{SysPackagesColumns[11]},
+			},
+			{
+				Name:    "syspackage_code",
+				Unique:  true,
+				Columns: []*schema.Column{SysPackagesColumns[14]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 		},
 	}
@@ -441,6 +459,9 @@ var (
 				Name:    "sysrole_tenant_id_code",
 				Unique:  true,
 				Columns: []*schema.Column{SysRolesColumns[1], SysRolesColumns[15]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "sysrole_tenant_id_status",
@@ -468,8 +489,8 @@ var (
 		{Name: "deleted_by", Type: field.TypeString, Nullable: true, Size: 64, Comment: "deleted Name | 删除人名称"},
 		{Name: "status", Type: field.TypeEnum, Comment: "状态：active-有效，inactive-无效，suspended-暂停", Enums: []string{"active", "inactive", "suspended"}, Default: "active"},
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
-		{Name: "name", Type: field.TypeString, Unique: true, Size: 128, Comment: "名称 | Name"},
-		{Name: "code", Type: field.TypeString, Unique: true, Size: 128, Comment: "编码 | Code"},
+		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
+		{Name: "code", Type: field.TypeString, Size: 128, Comment: "编码 | Code"},
 		{Name: "admin_id", Type: field.TypeInt64, Comment: "管理员ID | Admin ID"},
 		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
 		{Name: "expired_at", Type: field.TypeTime, Nullable: true, Comment: "到期时间 | Expired At"},
@@ -499,6 +520,22 @@ var (
 				Name:    "systenant_parent_id_status",
 				Unique:  false,
 				Columns: []*schema.Column{SysTenantsColumns[15], SysTenantsColumns[10]},
+			},
+			{
+				Name:    "systenant_name",
+				Unique:  true,
+				Columns: []*schema.Column{SysTenantsColumns[12]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
+			},
+			{
+				Name:    "systenant_code",
+				Unique:  true,
+				Columns: []*schema.Column{SysTenantsColumns[13]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 		},
 	}
@@ -559,6 +596,9 @@ var (
 				Name:    "sysuser_tenant_id_username",
 				Unique:  true,
 				Columns: []*schema.Column{SysUsersColumns[23], SysUsersColumns[12]},
+				Annotation: &entsql.IndexAnnotation{
+					Where: "deleted_at IS NULL",
+				},
 			},
 			{
 				Name:    "sysuser_tenant_id_mobile",

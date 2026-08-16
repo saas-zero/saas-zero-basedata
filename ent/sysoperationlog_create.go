@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -187,6 +188,20 @@ func (_c *SysOperationLogCreate) SetNillableTenantID(v *int64) *SysOperationLogC
 	return _c
 }
 
+// SetCreatedAt sets the "created_at" field.
+func (_c *SysOperationLogCreate) SetCreatedAt(v time.Time) *SysOperationLogCreate {
+	_c.mutation.SetCreatedAt(v)
+	return _c
+}
+
+// SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
+func (_c *SysOperationLogCreate) SetNillableCreatedAt(v *time.Time) *SysOperationLogCreate {
+	if v != nil {
+		_c.SetCreatedAt(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysOperationLogCreate) SetID(v int64) *SysOperationLogCreate {
 	_c.mutation.SetID(v)
@@ -266,6 +281,13 @@ func (_c *SysOperationLogCreate) defaults() error {
 		v := sysoperationlog.DefaultTenantID
 		_c.mutation.SetTenantID(v)
 	}
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		if sysoperationlog.DefaultCreatedAt == nil {
+			return fmt.Errorf("ent: uninitialized sysoperationlog.DefaultCreatedAt (forgotten import ent/runtime?)")
+		}
+		v := sysoperationlog.DefaultCreatedAt()
+		_c.mutation.SetCreatedAt(v)
+	}
 	return nil
 }
 
@@ -329,6 +351,9 @@ func (_c *SysOperationLogCreate) check() error {
 		if err := sysoperationlog.OperatorNameValidator(v); err != nil {
 			return &ValidationError{Name: "operator_name", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.operator_name": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.CreatedAt(); !ok {
+		return &ValidationError{Name: "created_at", err: errors.New(`ent: missing required field "SysOperationLog.created_at"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysoperationlog.IDValidator(v); err != nil {
@@ -414,6 +439,10 @@ func (_c *SysOperationLogCreate) createSpec() (*SysOperationLog, *sqlgraph.Creat
 	if value, ok := _c.mutation.TenantID(); ok {
 		_spec.SetField(sysoperationlog.FieldTenantID, field.TypeInt64, value)
 		_node.TenantID = value
+	}
+	if value, ok := _c.mutation.CreatedAt(); ok {
+		_spec.SetField(sysoperationlog.FieldCreatedAt, field.TypeTime, value)
+		_node.CreatedAt = value
 	}
 	return _node, _spec
 }

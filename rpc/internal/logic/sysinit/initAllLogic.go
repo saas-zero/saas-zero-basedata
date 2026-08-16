@@ -2,6 +2,8 @@ package sysinitlogic
 
 import (
 	"context"
+	"strings"
+
 	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
@@ -34,11 +36,6 @@ func NewInitAllLogic(ctx context.Context, svcCtx *svc.ServiceContext) *InitAllLo
 	}
 }
 
-type seedApi struct {
-	name string
-	path string
-}
-
 func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
@@ -47,19 +44,6 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
 	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
-
-	seedApis := []seedApi{
-		{name: "用户管理", path: "/system/user/*"},
-		{name: "角色管理", path: "/system/role/*"},
-		{name: "菜单管理", path: "/system/menu/*"},
-		{name: "部门管理", path: "/system/dept/*"},
-		{name: "字典管理", path: "/system/dict/*"},
-		{name: "字典数据管理", path: "/system/dictData/*"},
-		{name: "租户管理", path: "/system/tenant/*"},
-		{name: "套餐管理", path: "/system/package/*"},
-		{name: "API管理", path: "/system/api/*"},
-		{name: "日志管理", path: "/system/log/*"},
-	}
 
 	seedMenus := []struct {
 		menuType  string
@@ -92,17 +76,23 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	}
 	defer tx.Rollback()
 
-	// 1. Create or fetch APIs (keyed by unique path)
-	apiPaths := make([]string, 0, len(seedApis))
-	apiIds := make([]int64, 0, len(seedApis))
-	for _, a := range seedApis {
-		api, err := tx.SysApi.Query().Where(sysapi.APIPathEQ(a.path)).First(ctx)
+	// 1. 清除旧的通配 API（seed 时代遗留，如 /system/user/*），避免与精确接口冲突
+	if _, err := tx.SysApi.Delete().Where(sysapi.APIPathContains("*")).Exec(ctx); err != nil {
+		return nil, err
+	}
+
+	// 2. 创建目录 + 具体接口（幂等：已存在的跳过），并收集 /system/* 接口用于 admin 策略
+	apiIds := make([]int64, 0, 80)
+	adminPolicies := make([]struct{ path, method, apiId string }, 0, 60)
+	for _, g := range seedApiGroups {
+		// 目录（group）
+		group, err := tx.SysApi.Query().Where(sysapi.APIPathEQ(g.path), sysapi.APIMethodIsNil()).First(ctx)
 		if ent.IsNotFound(err) {
-			api, err = tx.SysApi.Create().
+			group, err = tx.SysApi.Create().
 				SetStatus(sysapi.StatusActive).
-				SetAPIName(a.name).
+				SetAPIName(g.name).
 				SetAPIType(sysapi.APITypeGroup).
-				SetAPIPath(a.path).
+				SetAPIPath(g.path).
 				Save(ctx)
 			if err != nil {
 				return nil, err
@@ -110,8 +100,33 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		} else if err != nil {
 			return nil, err
 		}
-		apiPaths = append(apiPaths, a.path)
-		apiIds = append(apiIds, api.ID)
+		apiIds = append(apiIds, group.ID)
+
+		// 具体接口（api）
+		for _, item := range g.apis {
+			api, err := tx.SysApi.Query().Where(sysapi.APIPathEQ(item.path), sysapi.APIMethodEQ(sysapi.APIMethod(item.method))).First(ctx)
+			if ent.IsNotFound(err) {
+				api, err = tx.SysApi.Create().
+					SetStatus(sysapi.StatusActive).
+					SetAPIName(item.name).
+					SetAPIType(sysapi.APITypeAPI).
+					SetAPIPath(item.path).
+					SetAPIMethod(sysapi.APIMethod(item.method)).
+					Save(ctx)
+				if err != nil {
+					return nil, err
+				}
+			} else if err != nil {
+				return nil, err
+			}
+			apiIds = append(apiIds, api.ID)
+			// /system/* 走 basedata API 的 Casbin 校验，需为 admin 生成策略；/oauth、/init 不需要
+			if strings.HasPrefix(item.path, "/system/") {
+				adminPolicies = append(adminPolicies, struct{ path, method, apiId string }{
+					path: item.path, method: item.method, apiId: id.ToString(api.ID),
+				})
+			}
+		}
 	}
 
 	// 2. Create or fetch Menus (keyed by unique name)
@@ -181,7 +196,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	// Update context with actual tenant ID
 	ctx = mixins.SetCurrentTenantId(ctx, tenant.ID)
 
-	// 5. Create or fetch Role (code "admin")
+	// 5. Create or fetch Role (code "admin")，并确保其拥有全部菜单权限
 	role, err := tx.SysRole.Query().Where(sysrole.CodeEQ("admin")).First(ctx)
 	if ent.IsNotFound(err) {
 		role, err = tx.SysRole.Create().
@@ -195,6 +210,10 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 			return nil, err
 		}
 	} else if err != nil {
+		return nil, err
+	}
+	// 幂等：重复初始化时也确保 admin 拥有全部菜单
+	if err := tx.SysRole.UpdateOneID(role.ID).ClearMenus().AddMenuIDs(menuIds...).Exec(ctx); err != nil {
 		return nil, err
 	}
 
@@ -239,13 +258,13 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 8. Casbin policies: clear old ones for this role+tenant, then re-add
+	// 8. Casbin policies: clear old ones for admin, then re-add for all /system/* APIs
 	dom := id.ToString(tenant.ID)
 	if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(0, "admin", dom); err != nil {
 		logx.Errorf("initAll: failed to clear casbin policies: %v", err)
 	}
-	for i, apiId := range apiIds {
-		if _, err := l.svcCtx.Enforcer.AddPolicy("admin", dom, apiPaths[i], ".*", id.ToString(apiId)); err != nil {
+	for _, p := range adminPolicies {
+		if _, err := l.svcCtx.Enforcer.AddPolicy("admin", dom, p.path, strings.ToUpper(p.method), p.apiId); err != nil {
 			logx.Errorf("initAll: failed to add casbin policy: %v", err)
 		}
 	}

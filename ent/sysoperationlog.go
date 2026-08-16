@@ -5,6 +5,7 @@ package ent
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -40,7 +41,9 @@ type SysOperationLog struct {
 	// 操作人名称 | Operator Name
 	OperatorName string `json:"operator_name,omitempty"`
 	// 租户ID | Tenant ID
-	TenantID     int64 `json:"tenant_id,omitempty"`
+	TenantID int64 `json:"tenant_id,omitempty"`
+	// 操作时间 | Operate Time
+	CreatedAt    time.Time `json:"created_at,omitempty"`
 	selectValues sql.SelectValues
 }
 
@@ -53,6 +56,8 @@ func (*SysOperationLog) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullInt64)
 		case sysoperationlog.FieldModule, sysoperationlog.FieldOperation, sysoperationlog.FieldMethod, sysoperationlog.FieldPath, sysoperationlog.FieldParams, sysoperationlog.FieldResult, sysoperationlog.FieldIP, sysoperationlog.FieldUserAgent, sysoperationlog.FieldOperatorName:
 			values[i] = new(sql.NullString)
+		case sysoperationlog.FieldCreatedAt:
+			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -146,6 +151,12 @@ func (_m *SysOperationLog) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.TenantID = value.Int64
 			}
+		case sysoperationlog.FieldCreatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field created_at", values[i])
+			} else if value.Valid {
+				_m.CreatedAt = value.Time
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -217,6 +228,9 @@ func (_m *SysOperationLog) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("tenant_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.TenantID))
+	builder.WriteString(", ")
+	builder.WriteString("created_at=")
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteByte(')')
 	return builder.String()
 }

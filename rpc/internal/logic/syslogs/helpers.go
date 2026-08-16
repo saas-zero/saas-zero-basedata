@@ -38,5 +38,6 @@ func operationLogToResp(o *ent.SysOperationLog) *apps.OperationLog {
 		OperatorIp:    proto.String(o.IP),
 		TenantId:      proto.Int64(o.TenantID),
 		TenantIdStr:   proto.String(id.ToString(o.TenantID)),
+		CreatedAt:     proto.Int64(o.CreatedAt.UnixMilli()),
 	}
 }

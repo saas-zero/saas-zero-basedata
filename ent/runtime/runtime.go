@@ -786,6 +786,10 @@ func init() {
 	sysoperationlogDescTenantID := sysoperationlogFields[11].Descriptor()
 	// sysoperationlog.DefaultTenantID holds the default value on creation for the tenant_id field.
 	sysoperationlog.DefaultTenantID = sysoperationlogDescTenantID.Default.(int64)
+	// sysoperationlogDescCreatedAt is the schema descriptor for created_at field.
+	sysoperationlogDescCreatedAt := sysoperationlogFields[12].Descriptor()
+	// sysoperationlog.DefaultCreatedAt holds the default value on creation for the created_at field.
+	sysoperationlog.DefaultCreatedAt = sysoperationlogDescCreatedAt.Default.(func() time.Time)
 	// sysoperationlogDescID is the schema descriptor for id field.
 	sysoperationlogDescID := sysoperationlogMixinFields0[0].Descriptor()
 	// sysoperationlog.IDValidator is a validator for the "id" field. It is called by the builders before save.

@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"entgo.io/ent/dialect"
+	"entgo.io/ent/dialect/sql/schema"
 	casbinapi "github.com/casbin/casbin/v2"
 	_ "github.com/lib/pq"
 	"github.com/saas-zero/saas-zero-basedata/ent"
@@ -28,7 +29,9 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
 	client = client.Debug()
-	if err := client.Schema.Create(context.Background()); err != nil {
+	// WithDropIndex: 删除 schema 中已不存在的索引（如旧的字段级唯一索引），
+	// 确保条件唯一索引迁移后旧索引不会残留导致唯一约束仍生效。
+	if err := client.Schema.Create(context.Background(), schema.WithDropIndex(true)); err != nil {
 		log.Printf("warning: failed creating schema resources: %v (service will retry on next restart)", err)
 	}
 	casbinDb, err := sql.Open("postgres", c.Postgres.DataSource)

@@ -3,6 +3,8 @@
 package sysoperationlog
 
 import (
+	"time"
+
 	"entgo.io/ent/dialect/sql"
 	"github.com/saas-zero/saas-zero-basedata/ent/predicate"
 )
@@ -110,6 +112,11 @@ func OperatorName(v string) predicate.SysOperationLog {
 // TenantID applies equality check predicate on the "tenant_id" field. It's identical to TenantIDEQ.
 func TenantID(v int64) predicate.SysOperationLog {
 	return predicate.SysOperationLog(sql.FieldEQ(FieldTenantID, v))
+}
+
+// CreatedAt applies equality check predicate on the "created_at" field. It's identical to CreatedAtEQ.
+func CreatedAt(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldCreatedAt, v))
 }
 
 // ModuleEQ applies the EQ predicate on the "module" field.
@@ -855,6 +862,46 @@ func TenantIDIsNil() predicate.SysOperationLog {
 // TenantIDNotNil applies the NotNil predicate on the "tenant_id" field.
 func TenantIDNotNil() predicate.SysOperationLog {
 	return predicate.SysOperationLog(sql.FieldNotNull(FieldTenantID))
+}
+
+// CreatedAtEQ applies the EQ predicate on the "created_at" field.
+func CreatedAtEQ(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtNEQ applies the NEQ predicate on the "created_at" field.
+func CreatedAtNEQ(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNEQ(FieldCreatedAt, v))
+}
+
+// CreatedAtIn applies the In predicate on the "created_at" field.
+func CreatedAtIn(vs ...time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtNotIn applies the NotIn predicate on the "created_at" field.
+func CreatedAtNotIn(vs ...time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNotIn(FieldCreatedAt, vs...))
+}
+
+// CreatedAtGT applies the GT predicate on the "created_at" field.
+func CreatedAtGT(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGT(FieldCreatedAt, v))
+}
+
+// CreatedAtGTE applies the GTE predicate on the "created_at" field.
+func CreatedAtGTE(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGTE(FieldCreatedAt, v))
+}
+
+// CreatedAtLT applies the LT predicate on the "created_at" field.
+func CreatedAtLT(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLT(FieldCreatedAt, v))
+}
+
+// CreatedAtLTE applies the LTE predicate on the "created_at" field.
+func CreatedAtLTE(v time.Time) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLTE(FieldCreatedAt, v))
 }
 
 // And groups predicates with the AND operator between them.

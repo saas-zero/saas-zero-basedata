@@ -31,6 +31,7 @@ func (l *GetUserByIdLogic) GetUserById(in *apps.IdReq) (*apps.UserResp, error) {
 	u, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.IDEQ(in.GetId())).
 		WithRoles().
+		WithSysDept().
 		Only(l.ctx)
 	if err != nil {
 		return nil, err

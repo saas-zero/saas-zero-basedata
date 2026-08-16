@@ -3,6 +3,7 @@ package logic
 import (
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
+	idutil "github.com/saas-zero/saas-zero-common/pkg/id"
 	"github.com/saas-zero/saas-zero-common/pkg/timex"
 )
 
@@ -27,8 +28,8 @@ func toRoleInfo(r *apps.Role) *types.RoleInfo {
 		Remark:      r.GetRemark(),
 		TenantId:    r.GetTenantId(),
 		TenantIdStr: r.GetTenantIdStr(),
-		MenuIds:     r.GetMenuIds(),
-		ApiIds:      roleAPIIDs(r),
+		MenuIds:     idutil.ToStrings(r.GetMenuIds()),
+		ApiIds:      idutil.ToStrings(roleAPIIDs(r)),
 		CreatedAt:   auditTime(r.GetCreatedAt()),
 		CreatedBy:   r.GetCreatedBy(),
 		UpdatedAt:   auditTime(r.GetUpdatedAt()),

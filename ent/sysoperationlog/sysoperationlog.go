@@ -3,6 +3,8 @@
 package sysoperationlog
 
 import (
+	"time"
+
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 )
@@ -36,6 +38,8 @@ const (
 	FieldOperatorName = "operator_name"
 	// FieldTenantID holds the string denoting the tenant_id field in the database.
 	FieldTenantID = "tenant_id"
+	// FieldCreatedAt holds the string denoting the created_at field in the database.
+	FieldCreatedAt = "created_at"
 	// Table holds the table name of the sysoperationlog in the database.
 	Table = "sys_operation_logs"
 )
@@ -55,6 +59,7 @@ var Columns = []string{
 	FieldOperatorID,
 	FieldOperatorName,
 	FieldTenantID,
+	FieldCreatedAt,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -106,6 +111,8 @@ var (
 	OperatorNameValidator func(string) error
 	// DefaultTenantID holds the default value on creation for the "tenant_id" field.
 	DefaultTenantID int64
+	// DefaultCreatedAt holds the default value on creation for the "created_at" field.
+	DefaultCreatedAt func() time.Time
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -176,4 +183,9 @@ func ByOperatorName(opts ...sql.OrderTermOption) OrderOption {
 // ByTenantID orders the results by the tenant_id field.
 func ByTenantID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTenantID, opts...).ToFunc()
+}
+
+// ByCreatedAt orders the results by the created_at field.
+func ByCreatedAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldCreatedAt, opts...).ToFunc()
 }

@@ -23,6 +23,15 @@ func GetRoleCodes(ctx context.Context) []string {
 	return nil
 }
 
+// writeJSON 以标准 JSON 形式输出错误响应。
+// 不使用 http.Error（其 Content-Type 为 text/plain，axios 不会解析为对象，
+// 导致前端无法识别 code 字段而无法自动登出）。
+func writeJSON(w http.ResponseWriter, status int, e *errno.Errno) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(status)
+	w.Write([]byte(e.JSON()))
+}
+
 func JwtAuth(secret string, rds *redis.Client) func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
@@ -32,34 +41,34 @@ func JwtAuth(secret string, rds *redis.Client) func(http.HandlerFunc) http.Handl
 			}
 			auth := r.Header.Get("Authorization")
 			if auth == "" {
-				http.Error(w, errno.MissingAuthHeader.JSON(), http.StatusUnauthorized)
+				writeJSON(w, http.StatusUnauthorized, errno.MissingAuthHeader)
 				return
 			}
 			parts := strings.SplitN(auth, " ", 2)
 			if len(parts) != 2 || !strings.EqualFold(parts[0], "bearer") {
-				http.Error(w, errno.InvalidAuthHeader.JSON(), http.StatusUnauthorized)
+				writeJSON(w, http.StatusUnauthorized, errno.InvalidAuthHeader)
 				return
 			}
 			claims, err := jwt.Parse(parts[1], secret)
 			if err != nil {
-				http.Error(w, errno.InvalidToken.JSON(), http.StatusUnauthorized)
+				writeJSON(w, http.StatusUnauthorized, errno.InvalidToken)
 				return
 			}
 			// Verify token exists in Redis (allows remote invalidation)
 			if claims.ID != "" {
 				exists, err := rds.Exists(fmt.Sprintf("token:%s", claims.ID))
 				if err != nil || !exists {
-					http.Error(w, errno.TokenInvalidated.JSON(), http.StatusUnauthorized)
+					writeJSON(w, http.StatusUnauthorized, errno.TokenInvalidated)
 					return
 				}
 			}
-			// Verify token version matches Redis (invalidates on role/permission changes)
-			if claims.TokenVersion > 0 {
-				tv, err := rds.Get(fmt.Sprintf("token_version:%d", claims.UserId))
-				if err != nil || tv == "" || tv != fmt.Sprintf("%d", claims.TokenVersion) {
-					http.Error(w, errno.TokenVersionMismatch.JSON(), http.StatusUnauthorized)
-					return
-				}
+			// Verify token version matches Redis (invalidates on role/permission/password changes)
+			// 始终校验版本：即使 TokenVersion=0（多会话共存的首个版本）也参与比较，
+			// 否则权限/密码变更后 version=0 的旧 token 会绕过踢出逻辑。
+			tv, err := rds.Get(fmt.Sprintf("token_version:%d", claims.UserId))
+			if err != nil || tv == "" || tv != fmt.Sprintf("%d", claims.TokenVersion) {
+				writeJSON(w, http.StatusUnauthorized, errno.TokenVersionMismatch)
+				return
 			}
 			ctx := r.Context()
 			// Inject JWT claims into request context for downstream use.

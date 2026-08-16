@@ -40,6 +40,10 @@ func userToResp(u *ent.SysUser) *apps.User {
 		resp.DeptId = proto.Int64(u.DeptID)
 		resp.DeptIdStr = proto.String(id.ToString(u.DeptID))
 	}
+	// 部门名称（需查询时 WithSysDept 加载，否则为空）
+	if u.Edges.SysDept != nil {
+		resp.DeptName = proto.String(u.Edges.SysDept.Name)
+	}
 	if !u.LoginAt.IsZero() {
 		resp.LoginAt = proto.Int64(u.LoginAt.UnixMilli())
 	}
