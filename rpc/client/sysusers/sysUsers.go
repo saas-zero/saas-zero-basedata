@@ -14,13 +14,15 @@ import (
 )
 
 type (
-	EmptyResp    = apps.EmptyResp
-	IdReq        = apps.IdReq
-	IdsReq       = apps.IdsReq
-	UserListResp = apps.UserListResp
-	UserPageReq  = apps.UserPageReq
-	UserReq      = apps.UserReq
-	UserResp     = apps.UserResp
+	EmptyResp      = apps.EmptyResp
+	IdReq          = apps.IdReq
+	IdsReq         = apps.IdsReq
+	LoginRecordReq = apps.LoginRecordReq
+	RoleCodesResp  = apps.RoleCodesResp
+	UserListResp   = apps.UserListResp
+	UserPageReq    = apps.UserPageReq
+	UserReq        = apps.UserReq
+	UserResp       = apps.UserResp
 
 	SysUsers interface {
 		CreateUser(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
@@ -31,6 +33,8 @@ type (
 		GetUserByUsername(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*UserResp, error)
 		ResetPassword(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
 		AssignRoles(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error)
+		GetUserRoleCodes(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*RoleCodesResp, error)
+		RecordLoginResult(ctx context.Context, in *LoginRecordReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	}
 
 	defaultSysUsers struct {
@@ -82,4 +86,14 @@ func (m *defaultSysUsers) ResetPassword(ctx context.Context, in *UserReq, opts .
 func (m *defaultSysUsers) AssignRoles(ctx context.Context, in *UserReq, opts ...grpc.CallOption) (*EmptyResp, error) {
 	client := apps.NewSysUsersClient(m.cli.Conn())
 	return client.AssignRoles(ctx, in, opts...)
+}
+
+func (m *defaultSysUsers) GetUserRoleCodes(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*RoleCodesResp, error) {
+	client := apps.NewSysUsersClient(m.cli.Conn())
+	return client.GetUserRoleCodes(ctx, in, opts...)
+}
+
+func (m *defaultSysUsers) RecordLoginResult(ctx context.Context, in *LoginRecordReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+	client := apps.NewSysUsersClient(m.cli.Conn())
+	return client.RecordLoginResult(ctx, in, opts...)
 }

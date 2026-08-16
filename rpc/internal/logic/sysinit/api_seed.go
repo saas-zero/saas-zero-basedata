@@ -102,6 +102,7 @@ var seedApiGroups = []seedApiGroup{
 			{name: "租户列表", path: "/system/tenant/list", method: "get"},
 			{name: "租户详情", path: "/system/tenant/detail", method: "get"},
 			{name: "变更租户状态", path: "/system/tenant/changeStatus", method: "post"},
+			{name: "租户用户列表", path: "/system/tenant/users", method: "get"},
 		},
 	},
 	{
@@ -113,6 +114,8 @@ var seedApiGroups = []seedApiGroup{
 			{name: "删除套餐", path: "/system/package/delete", method: "post"},
 			{name: "套餐列表", path: "/system/package/list", method: "get"},
 			{name: "套餐详情", path: "/system/package/detail", method: "get"},
+			{name: "分配套餐菜单", path: "/system/package/assignMenus", method: "post"},
+			{name: "分配套餐API", path: "/system/package/assignApis", method: "post"},
 		},
 	},
 	{

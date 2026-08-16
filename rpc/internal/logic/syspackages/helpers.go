@@ -26,5 +26,19 @@ func packageToResp(p *ent.SysPackage) *apps.Package {
 	if p.UpdatedBy != "" {
 		resp.UpdatedBy = proto.String(p.UpdatedBy)
 	}
+	if len(p.Edges.Menus) > 0 {
+		menuIds := make([]int64, len(p.Edges.Menus))
+		for i, m := range p.Edges.Menus {
+			menuIds[i] = m.ID
+		}
+		resp.MenuIds = menuIds
+	}
+	if len(p.Edges.Apis) > 0 {
+		apiIds := make([]int64, len(p.Edges.Apis))
+		for i, a := range p.Edges.Apis {
+			apiIds[i] = a.ID
+		}
+		resp.ApiIds = apiIds
+	}
 	return resp
 }

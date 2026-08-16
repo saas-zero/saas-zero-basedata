@@ -186,6 +186,16 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/system/package/assignMenus",
+				Handler: AssignPackageMenusHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/system/package/assignApis",
+				Handler: AssignPackageApisHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/system/role/assignApis",
 				Handler: AssignApisHandler(serverCtx),
 			},
@@ -223,6 +233,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/system/tenant/changeStatus",
 				Handler: ChangeTenantStatusHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/system/tenant/users",
+				Handler: GetTenantUsersHandler(serverCtx),
 			},
 			{
 				Method:  http.MethodPost,

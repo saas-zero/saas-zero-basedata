@@ -47,3 +47,13 @@ func (s *SysPackagesServer) GetPackageById(ctx context.Context, in *apps.IdReq) 
 	l := syspackageslogic.NewGetPackageByIdLogic(ctx, s.svcCtx)
 	return l.GetPackageById(in)
 }
+
+func (s *SysPackagesServer) AssignPackageMenus(ctx context.Context, in *apps.PackageReq) (*apps.EmptyResp, error) {
+	l := syspackageslogic.NewAssignPackageMenusLogic(ctx, s.svcCtx)
+	return l.AssignPackageMenus(in)
+}
+
+func (s *SysPackagesServer) AssignPackageApis(ctx context.Context, in *apps.PackageReq) (*apps.EmptyResp, error) {
+	l := syspackageslogic.NewAssignPackageApisLogic(ctx, s.svcCtx)
+	return l.AssignPackageApis(in)
+}

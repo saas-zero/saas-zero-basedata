@@ -28,6 +28,8 @@ type (
 		DeletePackage(ctx context.Context, in *IdsReq, opts ...grpc.CallOption) (*EmptyResp, error)
 		GetPackageList(ctx context.Context, in *PackagePageReq, opts ...grpc.CallOption) (*PackageListResp, error)
 		GetPackageById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*PackageResp, error)
+		AssignPackageMenus(ctx context.Context, in *PackageReq, opts ...grpc.CallOption) (*EmptyResp, error)
+		AssignPackageApis(ctx context.Context, in *PackageReq, opts ...grpc.CallOption) (*EmptyResp, error)
 	}
 
 	defaultSysPackages struct {
@@ -64,4 +66,14 @@ func (m *defaultSysPackages) GetPackageList(ctx context.Context, in *PackagePage
 func (m *defaultSysPackages) GetPackageById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*PackageResp, error) {
 	client := apps.NewSysPackagesClient(m.cli.Conn())
 	return client.GetPackageById(ctx, in, opts...)
+}
+
+func (m *defaultSysPackages) AssignPackageMenus(ctx context.Context, in *PackageReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+	client := apps.NewSysPackagesClient(m.cli.Conn())
+	return client.AssignPackageMenus(ctx, in, opts...)
+}
+
+func (m *defaultSysPackages) AssignPackageApis(ctx context.Context, in *PackageReq, opts ...grpc.CallOption) (*EmptyResp, error) {
+	client := apps.NewSysPackagesClient(m.cli.Conn())
+	return client.AssignPackageApis(ctx, in, opts...)
 }

@@ -14,13 +14,16 @@ import (
 )
 
 type (
+	EmptyResp            = apps.EmptyResp
 	LogPageReq           = apps.LogPageReq
 	LoginLogListResp     = apps.LoginLogListResp
+	OperationLog         = apps.OperationLog
 	OperationLogListResp = apps.OperationLogListResp
 
 	SysLogs interface {
 		GetLoginLogList(ctx context.Context, in *LogPageReq, opts ...grpc.CallOption) (*LoginLogListResp, error)
 		GetOperationLogList(ctx context.Context, in *LogPageReq, opts ...grpc.CallOption) (*OperationLogListResp, error)
+		CreateOperationLog(ctx context.Context, in *OperationLog, opts ...grpc.CallOption) (*EmptyResp, error)
 	}
 
 	defaultSysLogs struct {
@@ -42,4 +45,9 @@ func (m *defaultSysLogs) GetLoginLogList(ctx context.Context, in *LogPageReq, op
 func (m *defaultSysLogs) GetOperationLogList(ctx context.Context, in *LogPageReq, opts ...grpc.CallOption) (*OperationLogListResp, error) {
 	client := apps.NewSysLogsClient(m.cli.Conn())
 	return client.GetOperationLogList(ctx, in, opts...)
+}
+
+func (m *defaultSysLogs) CreateOperationLog(ctx context.Context, in *OperationLog, opts ...grpc.CallOption) (*EmptyResp, error) {
+	client := apps.NewSysLogsClient(m.cli.Conn())
+	return client.CreateOperationLog(ctx, in, opts...)
 }

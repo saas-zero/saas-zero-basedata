@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"strconv"
+	"time"
 
 	"github.com/saas-zero/saas-zero-basedata/api/internal/svc"
 	"github.com/saas-zero/saas-zero-basedata/api/internal/types"
@@ -27,9 +28,11 @@ func NewCreateTenantLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Crea
 
 func (l *CreateTenantLogic) CreateTenant(req *types.TenantReq) (*types.BaseResp, error) {
 	rpcReq := &apps.TenantReq{
-		Name:   proto.String(req.Name),
-		Code:   proto.String(req.Code),
-		Status: proto.String(req.Status),
+		Name:     proto.String(req.Name),
+		Code:     proto.String(req.Code),
+		Status:   proto.String(req.Status),
+		Username: proto.String(req.Username),
+		Password: proto.String(req.Password),
 	}
 	if aid := parseId(req.AdminId); aid > 0 {
 		rpcReq.AdminId = proto.Int64(aid)
@@ -41,8 +44,11 @@ func (l *CreateTenantLogic) CreateTenant(req *types.TenantReq) (*types.BaseResp,
 		rpcReq.PackageId = proto.Int64(pkgId)
 	}
 	if req.ExpiredAt != "" {
+		// 兼容毫秒时间戳与 yyyy-MM-dd 日期
 		if v, err := strconv.ParseInt(req.ExpiredAt, 10, 64); err == nil {
 			rpcReq.ExpiredAt = proto.Int64(v)
+		} else if t, err := time.Parse("2006-01-02", req.ExpiredAt); err == nil {
+			rpcReq.ExpiredAt = proto.Int64(t.UnixMilli())
 		}
 	}
 	if req.Remark != "" {

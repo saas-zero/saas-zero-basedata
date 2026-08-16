@@ -21,6 +21,7 @@ type (
 	TenantPageReq  = apps.TenantPageReq
 	TenantReq      = apps.TenantReq
 	TenantResp     = apps.TenantResp
+	UserListResp   = apps.UserListResp
 
 	SysTenants interface {
 		CreateTenant(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*TenantResp, error)
@@ -28,7 +29,9 @@ type (
 		DeleteTenant(ctx context.Context, in *IdsReq, opts ...grpc.CallOption) (*EmptyResp, error)
 		GetTenantList(ctx context.Context, in *TenantPageReq, opts ...grpc.CallOption) (*TenantListResp, error)
 		GetTenantById(ctx context.Context, in *IdReq, opts ...grpc.CallOption) (*TenantResp, error)
+		GetTenantByCode(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*TenantResp, error)
 		ChangeTenantStatus(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*EmptyResp, error)
+		GetTenantUsers(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*UserListResp, error)
 	}
 
 	defaultSysTenants struct {
@@ -67,7 +70,17 @@ func (m *defaultSysTenants) GetTenantById(ctx context.Context, in *IdReq, opts .
 	return client.GetTenantById(ctx, in, opts...)
 }
 
+func (m *defaultSysTenants) GetTenantByCode(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*TenantResp, error) {
+	client := apps.NewSysTenantsClient(m.cli.Conn())
+	return client.GetTenantByCode(ctx, in, opts...)
+}
+
 func (m *defaultSysTenants) ChangeTenantStatus(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*EmptyResp, error) {
 	client := apps.NewSysTenantsClient(m.cli.Conn())
 	return client.ChangeTenantStatus(ctx, in, opts...)
+}
+
+func (m *defaultSysTenants) GetTenantUsers(ctx context.Context, in *TenantReq, opts ...grpc.CallOption) (*UserListResp, error) {
+	client := apps.NewSysTenantsClient(m.cli.Conn())
+	return client.GetTenantUsers(ctx, in, opts...)
 }

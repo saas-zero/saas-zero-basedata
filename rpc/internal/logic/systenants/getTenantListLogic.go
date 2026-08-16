@@ -5,11 +5,13 @@ import (
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/saas-zero/saas-zero-common/pkg/pagination"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/protobuf/proto"
 )
 
 type GetTenantListLogic struct {
@@ -55,9 +57,30 @@ func (l *GetTenantListLogic) GetTenantList(in *apps.TenantPageReq) (*apps.Tenant
 		return nil, err
 	}
 
+	// 批量加载管理员用户名（admin_id → username）
+	adminNames := make(map[int64]string, len(tenants))
+	adminIDs := make([]int64, 0, len(tenants))
+	for _, t := range tenants {
+		if t.AdminID > 0 {
+			adminIDs = append(adminIDs, t.AdminID)
+		}
+	}
+	if len(adminIDs) > 0 {
+		admins, err := l.svcCtx.DB.SysUser.Query().Where(sysuser.IDIn(adminIDs...)).All(l.ctx)
+		if err == nil {
+			for _, u := range admins {
+				adminNames[u.ID] = u.Username
+			}
+		}
+	}
+
 	list := make([]*apps.Tenant, len(tenants))
 	for i, t := range tenants {
-		list[i] = tenantToResp(t)
+		resp := tenantToResp(t)
+		if n, ok := adminNames[t.AdminID]; ok {
+			resp.AdminName = proto.String(n)
+		}
+		list[i] = resp
 	}
 	return &apps.TenantListResp{
 		Code:  int32(errno.Success.Code),

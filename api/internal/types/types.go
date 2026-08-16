@@ -28,13 +28,13 @@ type ApiPageReq struct {
 }
 
 type ApiReq struct {
-	Id        string `json:"id,optional"`
+	Id        string `json:"id,optional" form:"id,optional"`
 	ApiName   string `json:"apiName,optional"`
 	ApiType   string `json:"apiType,optional"`
 	ApiPath   string `json:"apiPath,optional"`
 	ApiMethod string `json:"apiMethod,optional"`
-	Status    string `json:"status,optional"`
-	Remark    string `json:"remark,optional"`
+	Status    string `json:"status,optional" form:"status,optional"`
+	Remark    string `json:"remark,optional" form:"remark,optional"`
 }
 
 type BaseResp struct {
@@ -207,17 +207,19 @@ type MenuReq struct {
 }
 
 type PackageInfo struct {
-	Id        int64  `json:"id"`
-	IdStr     string `json:"idStr"`
-	Name      string `json:"name"`
-	Code      string `json:"code"`
-	Status    string `json:"status"`
-	Sort      int32  `json:"sort"`
-	Remark    string `json:"remark"`
-	CreatedAt string `json:"createdAt"`
-	CreatedBy string `json:"createdBy"`
-	UpdatedAt string `json:"updatedAt"`
-	UpdatedBy string `json:"updatedBy"`
+	Id        int64    `json:"id"`
+	IdStr     string   `json:"idStr"`
+	Name      string   `json:"name"`
+	Code      string   `json:"code"`
+	Status    string   `json:"status"`
+	Sort      int32    `json:"sort"`
+	Remark    string   `json:"remark"`
+	MenuIds   []string `json:"menuIds"`
+	ApiIds    []string `json:"apiIds"`
+	CreatedAt string   `json:"createdAt"`
+	CreatedBy string   `json:"createdBy"`
+	UpdatedAt string   `json:"updatedAt"`
+	UpdatedBy string   `json:"updatedBy"`
 }
 
 type PackagePageReq struct {
@@ -229,12 +231,14 @@ type PackagePageReq struct {
 }
 
 type PackageReq struct {
-	Id     string `json:"id,optional"`
-	Name   string `json:"name,optional"`
-	Code   string `json:"code,optional"`
-	Status string `json:"status,optional"`
-	Sort   int32  `json:"sort,optional"`
-	Remark string `json:"remark,optional"`
+	Id      string   `json:"id,optional"`
+	Name    string   `json:"name,optional"`
+	Code    string   `json:"code,optional"`
+	Status  string   `json:"status,optional"`
+	Sort    int32    `json:"sort,optional"`
+	Remark  string   `json:"remark,optional"`
+	MenuIds []string `json:"menuIds,optional"`
+	ApiIds  []string `json:"apiIds,optional"`
 }
 
 type PageReq struct {
@@ -291,6 +295,7 @@ type TenantInfo struct {
 	Code         string `json:"code"`
 	AdminId      int64  `json:"adminId"`
 	AdminIdStr   string `json:"adminIdStr"`
+	AdminName    string `json:"adminName"`
 	ParentId     int64  `json:"parentId"`
 	ParentIdStr  string `json:"parentIdStr"`
 	PackageId    int64  `json:"packageId"`
@@ -314,15 +319,17 @@ type TenantPageReq struct {
 }
 
 type TenantReq struct {
-	Id        string `json:"id,optional"`
-	Name      string `json:"name,optional"`
-	Code      string `json:"code,optional"`
-	AdminId   string `json:"adminId,optional"`
-	ParentId  string `json:"parentId,optional"`
-	PackageId string `json:"packageId,optional"`
-	ExpiredAt string `json:"expiredAt,optional"`
-	Status    string `json:"status,optional"`
-	Remark    string `json:"remark,optional"`
+	Id        string `json:"id,optional" form:"id,optional"`
+	Name      string `json:"name,optional" form:"name,optional"`
+	Code      string `json:"code,optional" form:"code,optional"`
+	AdminId   string `json:"adminId,optional" form:"adminId,optional"`
+	ParentId  string `json:"parentId,optional" form:"parentId,optional"`
+	PackageId string `json:"packageId,optional" form:"packageId,optional"`
+	ExpiredAt string `json:"expiredAt,optional" form:"expiredAt,optional"`
+	Status    string `json:"status,optional" form:"status,optional"`
+	Remark    string `json:"remark,optional" form:"remark,optional"`
+	Username  string `json:"username,optional" form:"username,optional"`
+	Password  string `json:"password,optional" form:"password,optional"`
 }
 
 type UserInfo struct {

@@ -390,6 +390,7 @@ message Tenant {
   optional string createdBy = 16;
   optional int64 updatedAt = 17;
   optional string updatedBy = 18;
+  optional string adminName = 19;
 }
 
 message TenantReq {
@@ -402,6 +403,8 @@ message TenantReq {
   optional int64 expiredAt = 7;
   optional string status = 8;
   optional string remark = 9;
+  optional string username = 10;
+  optional string password = 11;
 }
 
 message TenantPageReq {
@@ -437,6 +440,8 @@ message Package {
   optional string createdBy = 9;
   optional int64 updatedAt = 10;
   optional string updatedBy = 11;
+  repeated int64 menuIds = 12;
+  repeated int64 apiIds = 13;
 }
 
 message PackageReq {
@@ -446,6 +451,8 @@ message PackageReq {
   optional string status = 4;
   optional int32 sort = 5;
   optional string remark = 6;
+  repeated int64 menuIds = 7;
+  repeated int64 apiIds = 8;
 }
 
 message PackagePageReq {
@@ -653,6 +660,7 @@ service SysTenants {
   rpc GetTenantById(IdReq) returns (TenantResp);
   rpc GetTenantByCode(TenantReq) returns (TenantResp);
   rpc ChangeTenantStatus(TenantReq) returns (EmptyResp);
+  rpc GetTenantUsers(TenantReq) returns (UserListResp);
 }
 
 service SysPackages {
@@ -661,6 +669,8 @@ service SysPackages {
   rpc DeletePackage(IdsReq) returns (EmptyResp);
   rpc GetPackageList(PackagePageReq) returns (PackageListResp);
   rpc GetPackageById(IdReq) returns (PackageResp);
+  rpc AssignPackageMenus(PackageReq) returns (EmptyResp);
+  rpc AssignPackageApis(PackageReq) returns (EmptyResp);
 }
 
 service SysApis {

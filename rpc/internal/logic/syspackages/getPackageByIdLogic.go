@@ -27,6 +27,8 @@ func NewGetPackageByIdLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Ge
 func (l *GetPackageByIdLogic) GetPackageById(in *apps.IdReq) (*apps.PackageResp, error) {
 	p, err := l.svcCtx.DB.SysPackage.ActiveQuery().
 		Where(syspackage.IDEQ(in.GetId())).
+		WithMenus().
+		WithApis().
 		Only(l.ctx)
 	if err != nil {
 		return nil, err

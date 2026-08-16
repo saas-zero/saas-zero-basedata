@@ -57,3 +57,8 @@ func (s *SysTenantsServer) ChangeTenantStatus(ctx context.Context, in *apps.Tena
 	l := systenantslogic.NewChangeTenantStatusLogic(ctx, s.svcCtx)
 	return l.ChangeTenantStatus(in)
 }
+
+func (s *SysTenantsServer) GetTenantUsers(ctx context.Context, in *apps.TenantReq) (*apps.UserListResp, error) {
+	l := systenantslogic.NewGetTenantUsersLogic(ctx, s.svcCtx)
+	return l.GetTenantUsers(in)
+}

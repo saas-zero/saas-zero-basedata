@@ -68,6 +68,46 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		{menuType: "directory", name: "日志管理", parentIdx: -1, path: "/log", icon: "FileText", sort: 6},
 		{menuType: "menu", name: "登录日志", parentIdx: 11, component: "log/login-log/index", path: "/log/login-log", icon: "Login", sort: 1},
 		{menuType: "menu", name: "操作日志", parentIdx: 11, component: "log/operation-log/index", path: "/log/operation-log", icon: "SwapRight", sort: 2},
+		{menuType: "button", name: "用户管理", parentIdx: 2, path: "system:user:manage", sort: 1},
+		{menuType: "button", name: "新增用户", parentIdx: 2, path: "system:user:create", sort: 2},
+		{menuType: "button", name: "修改用户", parentIdx: 2, path: "system:user:update", sort: 3},
+		{menuType: "button", name: "删除用户", parentIdx: 2, path: "system:user:delete", sort: 4},
+		{menuType: "button", name: "重置密码", parentIdx: 2, path: "system:user:resetPassword", sort: 5},
+		{menuType: "button", name: "分配角色", parentIdx: 2, path: "system:user:assignRoles", sort: 6},
+		{menuType: "button", name: "角色管理", parentIdx: 3, path: "system:role:manage", sort: 1},
+		{menuType: "button", name: "新增角色", parentIdx: 3, path: "system:role:create", sort: 2},
+		{menuType: "button", name: "修改角色", parentIdx: 3, path: "system:role:update", sort: 3},
+		{menuType: "button", name: "删除角色", parentIdx: 3, path: "system:role:delete", sort: 4},
+		{menuType: "button", name: "分配菜单", parentIdx: 3, path: "system:role:assignMenus", sort: 5},
+		{menuType: "button", name: "分配API", parentIdx: 3, path: "system:role:assignApis", sort: 6},
+		{menuType: "button", name: "菜单管理", parentIdx: 4, path: "system:menu:manage", sort: 1},
+		{menuType: "button", name: "新增菜单", parentIdx: 4, path: "system:menu:create", sort: 2},
+		{menuType: "button", name: "修改菜单", parentIdx: 4, path: "system:menu:update", sort: 3},
+		{menuType: "button", name: "删除菜单", parentIdx: 4, path: "system:menu:delete", sort: 4},
+		{menuType: "button", name: "部门管理", parentIdx: 5, path: "system:dept:manage", sort: 1},
+		{menuType: "button", name: "新增部门", parentIdx: 5, path: "system:dept:create", sort: 2},
+		{menuType: "button", name: "修改部门", parentIdx: 5, path: "system:dept:update", sort: 3},
+		{menuType: "button", name: "删除部门", parentIdx: 5, path: "system:dept:delete", sort: 4},
+		{menuType: "button", name: "字典管理", parentIdx: 6, path: "system:dict:manage", sort: 1},
+		{menuType: "button", name: "新增字典", parentIdx: 6, path: "system:dict:create", sort: 2},
+		{menuType: "button", name: "修改字典", parentIdx: 6, path: "system:dict:update", sort: 3},
+		{menuType: "button", name: "删除字典", parentIdx: 6, path: "system:dict:delete", sort: 4},
+		{menuType: "button", name: "租户管理", parentIdx: 8, path: "system:tenant:manage", sort: 1},
+		{menuType: "button", name: "新增租户", parentIdx: 8, path: "system:tenant:create", sort: 2},
+		{menuType: "button", name: "修改租户", parentIdx: 8, path: "system:tenant:update", sort: 3},
+		{menuType: "button", name: "删除租户", parentIdx: 8, path: "system:tenant:delete", sort: 4},
+		{menuType: "button", name: "变更状态", parentIdx: 8, path: "system:tenant:changeStatus", sort: 5},
+		{menuType: "button", name: "套餐管理", parentIdx: 9, path: "system:package:manage", sort: 1},
+		{menuType: "button", name: "新增套餐", parentIdx: 9, path: "system:package:create", sort: 2},
+		{menuType: "button", name: "修改套餐", parentIdx: 9, path: "system:package:update", sort: 3},
+		{menuType: "button", name: "删除套餐", parentIdx: 9, path: "system:package:delete", sort: 4},
+		{menuType: "button", name: "分配菜单", parentIdx: 9, path: "system:package:assignMenus", sort: 5},
+		{menuType: "button", name: "分配API", parentIdx: 9, path: "system:package:assignApis", sort: 6},
+		{menuType: "button", name: "API管理", parentIdx: 10, path: "system:api:manage", sort: 1},
+		{menuType: "button", name: "新增API", parentIdx: 10, path: "system:api:create", sort: 2},
+		{menuType: "button", name: "修改API", parentIdx: 10, path: "system:api:update", sort: 3},
+		{menuType: "button", name: "删除API", parentIdx: 10, path: "system:api:delete", sort: 4},
+		{menuType: "button", name: "日志查看", parentIdx: 12, path: "system:log:view", sort: 1},
 	}
 
 	tx, err := l.svcCtx.DB.Tx(ctx)
@@ -129,11 +169,21 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		}
 	}
 
-	// 2. Create or fetch Menus (keyed by unique name)
+	// 2. Create or fetch Menus (keyed by name + parent_id；button 可能重名，如多个"分配菜单")
 	menuIdxToId := make(map[int]int64)
 	menuIds := make([]int64, 0, len(seedMenus))
 	for i, m := range seedMenus {
-		menu, err := tx.SysMenu.Query().Where(sysmenu.NameEQ(m.name)).First(ctx)
+		var parentID int64
+		if m.parentIdx >= 0 {
+			parentID = menuIdxToId[m.parentIdx]
+		}
+		q := tx.SysMenu.Query().Where(sysmenu.NameEQ(m.name))
+		if parentID > 0 {
+			q = q.Where(sysmenu.ParentIDEQ(parentID))
+		} else {
+			q = q.Where(sysmenu.ParentIDEQ(0))
+		}
+		menu, err := q.First(ctx)
 		if ent.IsNotFound(err) {
 			create := tx.SysMenu.Create().
 				SetStatus(sysmenu.StatusActive).
@@ -145,8 +195,8 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 			if m.component != "" {
 				create.SetComponent(m.component)
 			}
-			if m.parentIdx >= 0 {
-				create.SetParentID(menuIdxToId[m.parentIdx])
+			if parentID > 0 {
+				create.SetParentID(parentID)
 			}
 			menu, err = create.Save(ctx)
 			if err != nil {
