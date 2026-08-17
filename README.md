@@ -57,14 +57,18 @@ HTTP 对外接口，通过 gRPC 调用 RPC 服务。内置两层中间件：
 
 | 中间件 | 位置 | 功能 |
 |---|---|---|
-| `JwtAuth` | `api/internal/middleware/jwtauth.go` | JWT 解析 + Redis token 验证 + TokenVersion 校验 |
-| `CasbinAuth` | `api/internal/middleware/casbinauth.go` | 调用 `GetUserRoleCodes` gRPC → Casbin Enforce |
+| `JwtAuth` | `api/internal/middleware/jwtauth.go` | JWT 解析 + Redis token 验证 + TokenVersion 校验（始终校验） |
+| `CasbinAuth` | `api/internal/middleware/casbinauth.go` | 从 JWT claims 读 roleCodes → Casbin Enforce（不额外调 gRPC） |
 
 初始化路由（`/init/*`）跳过认证，自动注入 `userId=1, userName=system, tenantId=1`。
 
 ### 策略自动重载
 
-API 服务启动后每 60 秒调用 `enf.LoadPolicy()` 从 `casbin_rule` 表重载策略。
+API 服务启动后每 30 秒调用 `enf.LoadPolicy()` 从 `casbin_rule` 表重载策略；角色分配 API 后立即 `LoadPolicy()`。
+
+### 操作日志中间件
+
+`OperationLog` 中间件（JwtAuth 之后注册）异步记录所有**非 GET、非 /init/** 的写操作（新增/修改/删除），包含操作人/IP/耗时；登录操作走独立的登录日志表。
 
 ## 数据库表
 
@@ -81,9 +85,21 @@ API 服务启动后每 60 秒调用 `enf.LoadPolicy()` 从 `casbin_rule` 表重�
 | `sys_dicts` | Base+Tenant(Optional)+Created+Updated+Deleted+Status+Remark | 字典（继承） |
 | `sys_dict_datas` | Base+Tenant(Optional)+Created+Updated+Deleted+Status+Remark | 字典数据（继承） |
 | `sys_packages` | Base+Created+Updated+Deleted+Status+Sort+Remark | 套餐 |
-| `sys_login_logs` | Base | 登录日志 |
-| `sys_operation_logs` | Base | 操作日志 |
+| `sys_login_logs` | Base | 登录日志（login_time） |
+| `sys_operation_logs` | Base | 操作日志（created_at 操作时间） |
 | `casbin_rule` | Casbin 管理（非 ent） | Casbin 策略 |
+
+> 软删除表的唯一约束均为条件唯一索引（`WHERE deleted_at IS NULL`），迁移启用 `schema.WithDropIndex(true)`。
+
+## 租户开通
+
+管理后台「新建租户」（`CreateTenant`）自动完成：创建租户（关联套餐）→ 创建默认角色（code=admin，继承套餐菜单）→ 创建管理员用户（表单账号密码，分配默认角色）→ 回填 admin_id → Casbin 同步新租户 dom 的 API 策略（套餐 API）。
+
+「编辑租户」可切换管理员（`GET /system/tenant/users` 从该租户用户中选择），不处理角色配置；到期时间支持 `yyyy-MM-dd`。
+
+## 套餐分配
+
+套餐管理支持「分配菜单 / 分配API」（`/system/package/assignMenus`、`/system/package/assignApis`），维护 `sys_package_menus`/`sys_package_apis` 模板数据；**套餐的 API 不直接写 Casbin**（Casbin 主体是角色，由新建租户的默认角色转写）。
 
 ## 生成 Ent CRUD 代码
 
