@@ -284,6 +284,20 @@ func (_u *SysDeptUpdate) ClearParentID() *SysDeptUpdate {
 	return _u
 }
 
+// SetParentName sets the "parent_name" field.
+func (_u *SysDeptUpdate) SetParentName(v string) *SysDeptUpdate {
+	_u.mutation.SetParentName(v)
+	return _u
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_u *SysDeptUpdate) SetNillableParentName(v *string) *SysDeptUpdate {
+	if v != nil {
+		_u.SetParentName(*v)
+	}
+	return _u
+}
+
 // SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
 func (_u *SysDeptUpdate) SetSysTenantID(id int64) *SysDeptUpdate {
 	_u.mutation.SetSysTenantID(id)
@@ -427,6 +441,11 @@ func (_u *SysDeptUpdate) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ParentName(); ok {
+		if err := sysdept.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_name": %w`, err)}
+		}
+	}
 	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SysDept.sys_tenant"`)
 	}
@@ -504,6 +523,9 @@ func (_u *SysDeptUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ParentIDCleared() {
 		_spec.ClearField(sysdept.FieldParentID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.ParentName(); ok {
+		_spec.SetField(sysdept.FieldParentName, field.TypeString, value)
 	}
 	if _u.mutation.SysTenantCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -882,6 +904,20 @@ func (_u *SysDeptUpdateOne) ClearParentID() *SysDeptUpdateOne {
 	return _u
 }
 
+// SetParentName sets the "parent_name" field.
+func (_u *SysDeptUpdateOne) SetParentName(v string) *SysDeptUpdateOne {
+	_u.mutation.SetParentName(v)
+	return _u
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_u *SysDeptUpdateOne) SetNillableParentName(v *string) *SysDeptUpdateOne {
+	if v != nil {
+		_u.SetParentName(*v)
+	}
+	return _u
+}
+
 // SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by ID.
 func (_u *SysDeptUpdateOne) SetSysTenantID(id int64) *SysDeptUpdateOne {
 	_u.mutation.SetSysTenantID(id)
@@ -1038,6 +1074,11 @@ func (_u *SysDeptUpdateOne) check() error {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ParentName(); ok {
+		if err := sysdept.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_name": %w`, err)}
+		}
+	}
 	if _u.mutation.SysTenantCleared() && len(_u.mutation.SysTenantIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "SysDept.sys_tenant"`)
 	}
@@ -1132,6 +1173,9 @@ func (_u *SysDeptUpdateOne) sqlSave(ctx context.Context) (_node *SysDept, err er
 	}
 	if _u.mutation.ParentIDCleared() {
 		_spec.ClearField(sysdept.FieldParentID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.ParentName(); ok {
+		_spec.SetField(sysdept.FieldParentName, field.TypeString, value)
 	}
 	if _u.mutation.SysTenantCleared() {
 		edge := &sqlgraph.EdgeSpec{

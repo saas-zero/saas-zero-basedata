@@ -62,7 +62,7 @@ func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*ap
 		}
 	}
 
-	// 写登录日志（sys_login_logs 有 TenantMixin，tenant_id 显式设置）
+	// 写登录日志（sys_login_logs 无 TenantMixin，自建 tenant_id 业务字段，需显式设置）
 	status := sysloginlog.StatusSuccess
 	if !in.GetSuccess() {
 		status = sysloginlog.StatusFail

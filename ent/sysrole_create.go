@@ -176,6 +176,20 @@ func (_c *SysRoleCreate) SetCode(v string) *SysRoleCreate {
 	return _c
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_c *SysRoleCreate) SetIsSystem(v bool) *SysRoleCreate {
+	_c.mutation.SetIsSystem(v)
+	return _c
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_c *SysRoleCreate) SetNillableIsSystem(v *bool) *SysRoleCreate {
+	if v != nil {
+		_c.SetIsSystem(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysRoleCreate) SetID(v int64) *SysRoleCreate {
 	_c.mutation.SetID(v)
@@ -271,6 +285,10 @@ func (_c *SysRoleCreate) defaults() error {
 		v := sysrole.DefaultSort
 		_c.mutation.SetSort(v)
 	}
+	if _, ok := _c.mutation.IsSystem(); !ok {
+		v := sysrole.DefaultIsSystem
+		_c.mutation.SetIsSystem(v)
+	}
 	return nil
 }
 
@@ -363,6 +381,9 @@ func (_c *SysRoleCreate) check() error {
 		if err := sysrole.CodeValidator(v); err != nil {
 			return &ValidationError{Name: "code", err: fmt.Errorf(`ent: validator failed for field "SysRole.code": %w`, err)}
 		}
+	}
+	if _, ok := _c.mutation.IsSystem(); !ok {
+		return &ValidationError{Name: "is_system", err: errors.New(`ent: missing required field "SysRole.is_system"`)}
 	}
 	if v, ok := _c.mutation.ID(); ok {
 		if err := sysrole.IDValidator(v); err != nil {
@@ -460,6 +481,10 @@ func (_c *SysRoleCreate) createSpec() (*SysRole, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Code(); ok {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
 		_node.Code = value
+	}
+	if value, ok := _c.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
+		_node.IsSystem = value
 	}
 	if nodes := _c.mutation.MenusIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

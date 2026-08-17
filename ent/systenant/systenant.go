@@ -46,6 +46,8 @@ const (
 	FieldAdminID = "admin_id"
 	// FieldParentID holds the string denoting the parent_id field in the database.
 	FieldParentID = "parent_id"
+	// FieldParentName holds the string denoting the parent_name field in the database.
+	FieldParentName = "parent_name"
 	// FieldPackageID holds the string denoting the package_id field in the database.
 	FieldPackageID = "package_id"
 	// FieldExpiredAt holds the string denoting the expired_at field in the database.
@@ -99,6 +101,7 @@ var Columns = []string{
 	FieldCode,
 	FieldAdminID,
 	FieldParentID,
+	FieldParentName,
 	FieldPackageID,
 	FieldExpiredAt,
 }
@@ -144,6 +147,10 @@ var (
 	AdminIDValidator func(int64) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
+	// DefaultParentName holds the default value on creation for the "parent_name" field.
+	DefaultParentName string
+	// ParentNameValidator is a validator for the "parent_name" field. It is called by the builders before save.
+	ParentNameValidator func(string) error
 	// DefaultPackageID holds the default value on creation for the "package_id" field.
 	DefaultPackageID int64
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -258,6 +265,11 @@ func ByAdminID(opts ...sql.OrderTermOption) OrderOption {
 // ByParentID orders the results by the parent_id field.
 func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
+}
+
+// ByParentName orders the results by the parent_name field.
+func ByParentName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentName, opts...).ToFunc()
 }
 
 // ByPackageID orders the results by the package_id field.

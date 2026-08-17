@@ -48,6 +48,8 @@ type SysRole struct {
 	Name string `json:"name,omitempty"`
 	// 编码 | Code
 	Code string `json:"code,omitempty"`
+	// 系统内置角色 | System Role（系统角色不可删除/修改）
+	IsSystem bool `json:"is_system,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysRoleQuery when eager-loading is set.
 	Edges        SysRoleEdges `json:"edges"`
@@ -88,6 +90,8 @@ func (*SysRole) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case sysrole.FieldIsSystem:
+			values[i] = new(sql.NullBool)
 		case sysrole.FieldID, sysrole.FieldTenantID, sysrole.FieldCreatedID, sysrole.FieldUpdatedID, sysrole.FieldDeletedID, sysrole.FieldSort:
 			values[i] = new(sql.NullInt64)
 		case sysrole.FieldCreatedBy, sysrole.FieldUpdatedBy, sysrole.FieldDeletedBy, sysrole.FieldStatus, sysrole.FieldRemark, sysrole.FieldName, sysrole.FieldCode:
@@ -205,6 +209,12 @@ func (_m *SysRole) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.Code = value.String
 			}
+		case sysrole.FieldIsSystem:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field is_system", values[i])
+			} else if value.Valid {
+				_m.IsSystem = value.Bool
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -295,6 +305,9 @@ func (_m *SysRole) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("code=")
 	builder.WriteString(_m.Code)
+	builder.WriteString(", ")
+	builder.WriteString("is_system=")
+	builder.WriteString(fmt.Sprintf("%v", _m.IsSystem))
 	builder.WriteByte(')')
 	return builder.String()
 }

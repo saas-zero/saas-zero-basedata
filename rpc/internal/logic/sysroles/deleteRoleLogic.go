@@ -2,13 +2,16 @@ package sysroleslogic
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/id"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -34,7 +37,26 @@ func (l *DeleteRoleLogic) DeleteRole(in *apps.IdsReq) (*apps.EmptyResp, error) {
 
 	tenantId := mixins.GetCurrentTenantId(ctx)
 
-	_, err := l.svcCtx.DB.SysRole.Update().
+	// 记录待删角色的 code（用于 Casbin 清理）与 id（用于 Token 失效）
+	roles, err := l.svcCtx.DB.SysRole.Query().
+		Where(
+			sysrole.IDIn(in.GetIds()...),
+			sysrole.TenantIDEQ(tenantId),
+			sysrole.DeletedAtIsNil(),
+		).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// 系统内置角色（is_system=true）不可删除
+	for _, r := range roles {
+		if r.IsSystem {
+			return nil, errno.New(errno.InvalidParam.Code, fmt.Sprintf("系统内置角色「%s」不可删除", r.Name))
+		}
+	}
+
+	_, err = l.svcCtx.DB.SysRole.Update().
 		Where(
 			sysrole.IDIn(in.GetIds()...),
 			sysrole.TenantIDEQ(tenantId),
@@ -44,5 +66,26 @@ func (l *DeleteRoleLogic) DeleteRole(in *apps.IdsReq) (*apps.EmptyResp, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// 清理 Casbin 策略（本租户 dom 下该角色 code 的所有 API 权限）
+	for _, r := range roles {
+		if l.svcCtx.Enforcer != nil {
+			l.svcCtx.Enforcer.RemoveFilteredPolicy(0, r.Code, id.ToString(tenantId))
+		}
+	}
+
+	// 该角色下所有用户 Token 失效，踢掉旧会话
+	for _, r := range roles {
+		users, err := l.svcCtx.DB.SysUser.Query().
+			Where(sysuser.HasRolesWith(sysrole.IDEQ(r.ID))).
+			All(ctx)
+		if err != nil {
+			continue
+		}
+		for _, u := range users {
+			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+		}
+	}
+
 	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

@@ -249,6 +249,12 @@ func init() {
 	sysdeptDescParentID := sysdeptFields[4].Descriptor()
 	// sysdept.DefaultParentID holds the default value on creation for the parent_id field.
 	sysdept.DefaultParentID = sysdeptDescParentID.Default.(int64)
+	// sysdeptDescParentName is the schema descriptor for parent_name field.
+	sysdeptDescParentName := sysdeptFields[5].Descriptor()
+	// sysdept.DefaultParentName holds the default value on creation for the parent_name field.
+	sysdept.DefaultParentName = sysdeptDescParentName.Default.(string)
+	// sysdept.ParentNameValidator is a validator for the "parent_name" field. It is called by the builders before save.
+	sysdept.ParentNameValidator = sysdeptDescParentName.Validators[0].(func(string) error)
 	// sysdeptDescID is the schema descriptor for id field.
 	sysdeptDescID := sysdeptMixinFields0[0].Descriptor()
 	// sysdept.IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -1060,6 +1066,10 @@ func init() {
 			return nil
 		}
 	}()
+	// sysroleDescIsSystem is the schema descriptor for is_system field.
+	sysroleDescIsSystem := sysroleFields[2].Descriptor()
+	// sysrole.DefaultIsSystem holds the default value on creation for the is_system field.
+	sysrole.DefaultIsSystem = sysroleDescIsSystem.Default.(bool)
 	// sysroleDescID is the schema descriptor for id field.
 	sysroleDescID := sysroleMixinFields0[0].Descriptor()
 	// sysrole.IDValidator is a validator for the "id" field. It is called by the builders before save.
@@ -1191,8 +1201,14 @@ func init() {
 	systenantDescParentID := systenantFields[3].Descriptor()
 	// systenant.DefaultParentID holds the default value on creation for the parent_id field.
 	systenant.DefaultParentID = systenantDescParentID.Default.(int64)
+	// systenantDescParentName is the schema descriptor for parent_name field.
+	systenantDescParentName := systenantFields[4].Descriptor()
+	// systenant.DefaultParentName holds the default value on creation for the parent_name field.
+	systenant.DefaultParentName = systenantDescParentName.Default.(string)
+	// systenant.ParentNameValidator is a validator for the "parent_name" field. It is called by the builders before save.
+	systenant.ParentNameValidator = systenantDescParentName.Validators[0].(func(string) error)
 	// systenantDescPackageID is the schema descriptor for package_id field.
-	systenantDescPackageID := systenantFields[4].Descriptor()
+	systenantDescPackageID := systenantFields[5].Descriptor()
 	// systenant.DefaultPackageID holds the default value on creation for the package_id field.
 	systenant.DefaultPackageID = systenantDescPackageID.Default.(int64)
 	// systenantDescID is the schema descriptor for id field.

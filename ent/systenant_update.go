@@ -257,6 +257,20 @@ func (_u *SysTenantUpdate) ClearParentID() *SysTenantUpdate {
 	return _u
 }
 
+// SetParentName sets the "parent_name" field.
+func (_u *SysTenantUpdate) SetParentName(v string) *SysTenantUpdate {
+	_u.mutation.SetParentName(v)
+	return _u
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_u *SysTenantUpdate) SetNillableParentName(v *string) *SysTenantUpdate {
+	if v != nil {
+		_u.SetParentName(*v)
+	}
+	return _u
+}
+
 // SetPackageID sets the "package_id" field.
 func (_u *SysTenantUpdate) SetPackageID(v int64) *SysTenantUpdate {
 	_u.mutation.SetPackageID(v)
@@ -468,6 +482,11 @@ func (_u *SysTenantUpdate) check() error {
 			return &ValidationError{Name: "admin_id", err: fmt.Errorf(`ent: validator failed for field "SysTenant.admin_id": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ParentName(); ok {
+		if err := systenant.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysTenant.parent_name": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -545,6 +564,9 @@ func (_u *SysTenantUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.ParentIDCleared() {
 		_spec.ClearField(systenant.FieldParentID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.ParentName(); ok {
+		_spec.SetField(systenant.FieldParentName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.ExpiredAt(); ok {
 		_spec.SetField(systenant.FieldExpiredAt, field.TypeTime, value)
@@ -917,6 +939,20 @@ func (_u *SysTenantUpdateOne) ClearParentID() *SysTenantUpdateOne {
 	return _u
 }
 
+// SetParentName sets the "parent_name" field.
+func (_u *SysTenantUpdateOne) SetParentName(v string) *SysTenantUpdateOne {
+	_u.mutation.SetParentName(v)
+	return _u
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_u *SysTenantUpdateOne) SetNillableParentName(v *string) *SysTenantUpdateOne {
+	if v != nil {
+		_u.SetParentName(*v)
+	}
+	return _u
+}
+
 // SetPackageID sets the "package_id" field.
 func (_u *SysTenantUpdateOne) SetPackageID(v int64) *SysTenantUpdateOne {
 	_u.mutation.SetPackageID(v)
@@ -1141,6 +1177,11 @@ func (_u *SysTenantUpdateOne) check() error {
 			return &ValidationError{Name: "admin_id", err: fmt.Errorf(`ent: validator failed for field "SysTenant.admin_id": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.ParentName(); ok {
+		if err := systenant.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysTenant.parent_name": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -1235,6 +1276,9 @@ func (_u *SysTenantUpdateOne) sqlSave(ctx context.Context) (_node *SysTenant, er
 	}
 	if _u.mutation.ParentIDCleared() {
 		_spec.ClearField(systenant.FieldParentID, field.TypeInt64)
+	}
+	if value, ok := _u.mutation.ParentName(); ok {
+		_spec.SetField(systenant.FieldParentName, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.ExpiredAt(); ok {
 		_spec.SetField(systenant.FieldExpiredAt, field.TypeTime, value)

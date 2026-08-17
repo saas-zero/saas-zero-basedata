@@ -118,6 +118,7 @@ message Role {
   optional string createdBy = 13;
   optional int64 updatedAt = 14;
   optional string updatedBy = 15;
+  optional bool isSystem = 16;
 }
 
 message RoleReq {
@@ -172,6 +173,7 @@ message Dept {
   optional string createdBy = 17;
   optional int64 updatedAt = 18;
   optional string updatedBy = 19;
+  optional string parentName = 20;
 }
 
 message DeptReq {
@@ -391,6 +393,7 @@ message Tenant {
   optional int64 updatedAt = 17;
   optional string updatedBy = 18;
   optional string adminName = 19;
+  optional string parentName = 20;
 }
 
 message TenantReq {
@@ -679,6 +682,9 @@ service SysApis {
   rpc DeleteApi(IdsReq) returns (EmptyResp);
   rpc GetApiList(ApiPageReq) returns (ApiListResp);
   rpc GetApiById(IdReq) returns (ApiResp);
+  // GetMyApis 返回当前用户角色并集内拥有的 API（含其 group 父节点），
+  // 供角色"分配 API"树与后端授权校验使用；default 租户管理员返回全量。
+  rpc GetMyApis(EmptyReq) returns (ApiListResp);
 }
 
 service SysLogs {

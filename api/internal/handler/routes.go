@@ -35,6 +35,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: GetApiListHandler(serverCtx),
 			},
 			{
+				Method:  http.MethodGet,
+				Path:    "/system/api/mine",
+				Handler: GetMyApisHandler(serverCtx),
+			},
+			{
 				Method:  http.MethodPost,
 				Path:    "/system/api/update",
 				Handler: UpdateApiHandler(serverCtx),

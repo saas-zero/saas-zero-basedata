@@ -1455,6 +1455,7 @@ type SysDeptMutation struct {
 	email             *string
 	parent_id         *int64
 	addparent_id      *int64
+	parent_name       *string
 	clearedFields     map[string]struct{}
 	sys_tenant        *int64
 	clearedsys_tenant bool
@@ -2351,6 +2352,42 @@ func (m *SysDeptMutation) ResetParentID() {
 	delete(m.clearedFields, sysdept.FieldParentID)
 }
 
+// SetParentName sets the "parent_name" field.
+func (m *SysDeptMutation) SetParentName(s string) {
+	m.parent_name = &s
+}
+
+// ParentName returns the value of the "parent_name" field in the mutation.
+func (m *SysDeptMutation) ParentName() (r string, exists bool) {
+	v := m.parent_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParentName returns the old "parent_name" field's value of the SysDept entity.
+// If the SysDept object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysDeptMutation) OldParentName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldParentName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldParentName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldParentName: %w", err)
+	}
+	return oldValue.ParentName, nil
+}
+
+// ResetParentName resets all changes to the "parent_name" field.
+func (m *SysDeptMutation) ResetParentName() {
+	m.parent_name = nil
+}
+
 // SetSysTenantID sets the "sys_tenant" edge to the SysTenant entity by id.
 func (m *SysDeptMutation) SetSysTenantID(id int64) {
 	m.sys_tenant = &id
@@ -2506,7 +2543,7 @@ func (m *SysDeptMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysDeptMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.sys_tenant != nil {
 		fields = append(fields, sysdept.FieldTenantID)
 	}
@@ -2558,6 +2595,9 @@ func (m *SysDeptMutation) Fields() []string {
 	if m.parent_id != nil {
 		fields = append(fields, sysdept.FieldParentID)
 	}
+	if m.parent_name != nil {
+		fields = append(fields, sysdept.FieldParentName)
+	}
 	return fields
 }
 
@@ -2600,6 +2640,8 @@ func (m *SysDeptMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case sysdept.FieldParentID:
 		return m.ParentID()
+	case sysdept.FieldParentName:
+		return m.ParentName()
 	}
 	return nil, false
 }
@@ -2643,6 +2685,8 @@ func (m *SysDeptMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldEmail(ctx)
 	case sysdept.FieldParentID:
 		return m.OldParentID(ctx)
+	case sysdept.FieldParentName:
+		return m.OldParentName(ctx)
 	}
 	return nil, fmt.Errorf("unknown SysDept field %s", name)
 }
@@ -2770,6 +2814,13 @@ func (m *SysDeptMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetParentID(v)
+		return nil
+	case sysdept.FieldParentName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetParentName(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SysDept field %s", name)
@@ -2966,6 +3017,9 @@ func (m *SysDeptMutation) ResetField(name string) error {
 		return nil
 	case sysdept.FieldParentID:
 		m.ResetParentID()
+		return nil
+	case sysdept.FieldParentName:
+		m.ResetParentName()
 		return nil
 	}
 	return fmt.Errorf("unknown SysDept field %s", name)
@@ -11254,6 +11308,7 @@ type SysRoleMutation struct {
 	remark        *string
 	name          *string
 	code          *string
+	is_system     *bool
 	clearedFields map[string]struct{}
 	menus         map[int64]struct{}
 	removedmenus  map[int64]struct{}
@@ -12063,6 +12118,42 @@ func (m *SysRoleMutation) ResetCode() {
 	m.code = nil
 }
 
+// SetIsSystem sets the "is_system" field.
+func (m *SysRoleMutation) SetIsSystem(b bool) {
+	m.is_system = &b
+}
+
+// IsSystem returns the value of the "is_system" field in the mutation.
+func (m *SysRoleMutation) IsSystem() (r bool, exists bool) {
+	v := m.is_system
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIsSystem returns the old "is_system" field's value of the SysRole entity.
+// If the SysRole object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysRoleMutation) OldIsSystem(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIsSystem is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIsSystem requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIsSystem: %w", err)
+	}
+	return oldValue.IsSystem, nil
+}
+
+// ResetIsSystem resets all changes to the "is_system" field.
+func (m *SysRoleMutation) ResetIsSystem() {
+	m.is_system = nil
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by ids.
 func (m *SysRoleMutation) AddMenuIDs(ids ...int64) {
 	if m.menus == nil {
@@ -12205,7 +12296,7 @@ func (m *SysRoleMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysRoleMutation) Fields() []string {
-	fields := make([]string, 0, 15)
+	fields := make([]string, 0, 16)
 	if m.tenant_id != nil {
 		fields = append(fields, sysrole.FieldTenantID)
 	}
@@ -12251,6 +12342,9 @@ func (m *SysRoleMutation) Fields() []string {
 	if m.code != nil {
 		fields = append(fields, sysrole.FieldCode)
 	}
+	if m.is_system != nil {
+		fields = append(fields, sysrole.FieldIsSystem)
+	}
 	return fields
 }
 
@@ -12289,6 +12383,8 @@ func (m *SysRoleMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case sysrole.FieldCode:
 		return m.Code()
+	case sysrole.FieldIsSystem:
+		return m.IsSystem()
 	}
 	return nil, false
 }
@@ -12328,6 +12424,8 @@ func (m *SysRoleMutation) OldField(ctx context.Context, name string) (ent.Value,
 		return m.OldName(ctx)
 	case sysrole.FieldCode:
 		return m.OldCode(ctx)
+	case sysrole.FieldIsSystem:
+		return m.OldIsSystem(ctx)
 	}
 	return nil, fmt.Errorf("unknown SysRole field %s", name)
 }
@@ -12441,6 +12539,13 @@ func (m *SysRoleMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCode(v)
+		return nil
+	case sysrole.FieldIsSystem:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetIsSystem(v)
 		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
@@ -12626,6 +12731,9 @@ func (m *SysRoleMutation) ResetField(name string) error {
 	case sysrole.FieldCode:
 		m.ResetCode()
 		return nil
+	case sysrole.FieldIsSystem:
+		m.ResetIsSystem()
+		return nil
 	}
 	return fmt.Errorf("unknown SysRole field %s", name)
 }
@@ -12766,6 +12874,7 @@ type SysTenantMutation struct {
 	addadmin_id        *int64
 	parent_id          *int64
 	addparent_id       *int64
+	parent_name        *string
 	expired_at         *time.Time
 	clearedFields      map[string]struct{}
 	sys_users          map[int64]struct{}
@@ -13592,6 +13701,42 @@ func (m *SysTenantMutation) ResetParentID() {
 	delete(m.clearedFields, systenant.FieldParentID)
 }
 
+// SetParentName sets the "parent_name" field.
+func (m *SysTenantMutation) SetParentName(s string) {
+	m.parent_name = &s
+}
+
+// ParentName returns the value of the "parent_name" field in the mutation.
+func (m *SysTenantMutation) ParentName() (r string, exists bool) {
+	v := m.parent_name
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldParentName returns the old "parent_name" field's value of the SysTenant entity.
+// If the SysTenant object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysTenantMutation) OldParentName(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldParentName is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldParentName requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldParentName: %w", err)
+	}
+	return oldValue.ParentName, nil
+}
+
+// ResetParentName resets all changes to the "parent_name" field.
+func (m *SysTenantMutation) ResetParentName() {
+	m.parent_name = nil
+}
+
 // SetPackageID sets the "package_id" field.
 func (m *SysTenantMutation) SetPackageID(i int64) {
 	m.sys_package = &i
@@ -13872,7 +14017,7 @@ func (m *SysTenantMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysTenantMutation) Fields() []string {
-	fields := make([]string, 0, 17)
+	fields := make([]string, 0, 18)
 	if m.created_at != nil {
 		fields = append(fields, systenant.FieldCreatedAt)
 	}
@@ -13918,6 +14063,9 @@ func (m *SysTenantMutation) Fields() []string {
 	if m.parent_id != nil {
 		fields = append(fields, systenant.FieldParentID)
 	}
+	if m.parent_name != nil {
+		fields = append(fields, systenant.FieldParentName)
+	}
 	if m.sys_package != nil {
 		fields = append(fields, systenant.FieldPackageID)
 	}
@@ -13962,6 +14110,8 @@ func (m *SysTenantMutation) Field(name string) (ent.Value, bool) {
 		return m.AdminID()
 	case systenant.FieldParentID:
 		return m.ParentID()
+	case systenant.FieldParentName:
+		return m.ParentName()
 	case systenant.FieldPackageID:
 		return m.PackageID()
 	case systenant.FieldExpiredAt:
@@ -14005,6 +14155,8 @@ func (m *SysTenantMutation) OldField(ctx context.Context, name string) (ent.Valu
 		return m.OldAdminID(ctx)
 	case systenant.FieldParentID:
 		return m.OldParentID(ctx)
+	case systenant.FieldParentName:
+		return m.OldParentName(ctx)
 	case systenant.FieldPackageID:
 		return m.OldPackageID(ctx)
 	case systenant.FieldExpiredAt:
@@ -14122,6 +14274,13 @@ func (m *SysTenantMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetParentID(v)
+		return nil
+	case systenant.FieldParentName:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetParentName(v)
 		return nil
 	case systenant.FieldPackageID:
 		v, ok := value.(int64)
@@ -14338,6 +14497,9 @@ func (m *SysTenantMutation) ResetField(name string) error {
 		return nil
 	case systenant.FieldParentID:
 		m.ResetParentID()
+		return nil
+	case systenant.FieldParentName:
+		m.ResetParentName()
 		return nil
 	case systenant.FieldPackageID:
 		m.ResetPackageID()

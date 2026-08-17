@@ -42,6 +42,11 @@ func (l *UpdateRoleLogic) UpdateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 	oldCode := oldRole.Code
 	oldStatus := oldRole.Status
 
+	// 系统内置角色（is_system=true）不可修改
+	if oldRole.IsSystem {
+		return nil, errno.New(errno.InvalidParam.Code, fmt.Sprintf("系统内置角色「%s」不可修改", oldRole.Name))
+	}
+
 	update := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId())
 	if in.Name != nil {
 		update.SetName(in.GetName())

@@ -21,6 +21,7 @@ func (SysDept) Fields() []ent.Field {
 		field.String("mobile").Default("").MaxLen(20).Comment("部门电话 | Department Phone"),
 		field.String("email").Default("").MaxLen(64).Comment("部门邮箱 | Department Email"),
 		field.Int64("parent_id").Default(0).Optional().Comment("父级ID | Parent ID"),
+		field.String("parent_name").Default("").MaxLen(128).Comment("父级名称 | Parent Name"),
 	}
 }
 

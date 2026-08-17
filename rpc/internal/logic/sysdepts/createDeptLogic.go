@@ -44,7 +44,11 @@ func (l *CreateDeptLogic) CreateDept(in *apps.DeptReq) (*apps.DeptResp, error) {
 		SetEmail(in.GetEmail())
 
 	if in.GetParentId() > 0 {
-		create.SetParentID(in.GetParentId())
+		parent, err := l.svcCtx.DB.SysDept.Get(ctx, in.GetParentId())
+		if err != nil {
+			return nil, err
+		}
+		create.SetParentID(in.GetParentId()).SetParentName(parent.Name)
 	}
 	if in.GetLeaderId() > 0 {
 		create.SetLeaderID(in.GetLeaderId())

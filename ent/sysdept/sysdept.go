@@ -50,6 +50,8 @@ const (
 	FieldEmail = "email"
 	// FieldParentID holds the string denoting the parent_id field in the database.
 	FieldParentID = "parent_id"
+	// FieldParentName holds the string denoting the parent_name field in the database.
+	FieldParentName = "parent_name"
 	// EdgeSysTenant holds the string denoting the sys_tenant edge name in mutations.
 	EdgeSysTenant = "sys_tenant"
 	// EdgeLeader holds the string denoting the leader edge name in mutations.
@@ -101,6 +103,7 @@ var Columns = []string{
 	FieldMobile,
 	FieldEmail,
 	FieldParentID,
+	FieldParentName,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -152,6 +155,10 @@ var (
 	EmailValidator func(string) error
 	// DefaultParentID holds the default value on creation for the "parent_id" field.
 	DefaultParentID int64
+	// DefaultParentName holds the default value on creation for the "parent_name" field.
+	DefaultParentName string
+	// ParentNameValidator is a validator for the "parent_name" field. It is called by the builders before save.
+	ParentNameValidator func(string) error
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -274,6 +281,11 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByParentID orders the results by the parent_id field.
 func ByParentID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldParentID, opts...).ToFunc()
+}
+
+// ByParentName orders the results by the parent_name field.
+func ByParentName(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldParentName, opts...).ToFunc()
 }
 
 // BySysTenantField orders the results by sys_tenant field.

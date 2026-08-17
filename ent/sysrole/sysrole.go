@@ -46,6 +46,8 @@ const (
 	FieldName = "name"
 	// FieldCode holds the string denoting the code field in the database.
 	FieldCode = "code"
+	// FieldIsSystem holds the string denoting the is_system field in the database.
+	FieldIsSystem = "is_system"
 	// EdgeMenus holds the string denoting the menus edge name in mutations.
 	EdgeMenus = "menus"
 	// EdgeUsers holds the string denoting the users edge name in mutations.
@@ -82,6 +84,7 @@ var Columns = []string{
 	FieldRemark,
 	FieldName,
 	FieldCode,
+	FieldIsSystem,
 }
 
 var (
@@ -136,6 +139,8 @@ var (
 	NameValidator func(string) error
 	// CodeValidator is a validator for the "code" field. It is called by the builders before save.
 	CodeValidator func(string) error
+	// DefaultIsSystem holds the default value on creation for the "is_system" field.
+	DefaultIsSystem bool
 	// IDValidator is a validator for the "id" field. It is called by the builders before save.
 	IDValidator func(int64) error
 )
@@ -248,6 +253,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByCode orders the results by the code field.
 func ByCode(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCode, opts...).ToFunc()
+}
+
+// ByIsSystem orders the results by the is_system field.
+func ByIsSystem(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIsSystem, opts...).ToFunc()
 }
 
 // ByMenusCount orders the results by menus count.

@@ -126,6 +126,7 @@ var seedApiGroups = []seedApiGroup{
 			{name: "更新API", path: "/system/api/update", method: "post"},
 			{name: "删除API", path: "/system/api/delete", method: "post"},
 			{name: "API列表", path: "/system/api/list", method: "get"},
+			{name: "我的API", path: "/system/api/mine", method: "get"},
 			{name: "API详情", path: "/system/api/detail", method: "get"},
 		},
 	},

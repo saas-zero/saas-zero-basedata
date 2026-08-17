@@ -125,6 +125,11 @@ func Code(v string) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldCode, v))
 }
 
+// IsSystem applies equality check predicate on the "is_system" field. It's identical to IsSystemEQ.
+func IsSystem(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldIsSystem, v))
+}
+
 // TenantIDEQ applies the EQ predicate on the "tenant_id" field.
 func TenantIDEQ(v int64) predicate.SysRole {
 	return predicate.SysRole(sql.FieldEQ(FieldTenantID, v))
@@ -893,6 +898,16 @@ func CodeEqualFold(v string) predicate.SysRole {
 // CodeContainsFold applies the ContainsFold predicate on the "code" field.
 func CodeContainsFold(v string) predicate.SysRole {
 	return predicate.SysRole(sql.FieldContainsFold(FieldCode, v))
+}
+
+// IsSystemEQ applies the EQ predicate on the "is_system" field.
+func IsSystemEQ(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldEQ(FieldIsSystem, v))
+}
+
+// IsSystemNEQ applies the NEQ predicate on the "is_system" field.
+func IsSystemNEQ(v bool) predicate.SysRole {
+	return predicate.SysRole(sql.FieldNEQ(FieldIsSystem, v))
 }
 
 // HasMenus applies the HasEdge predicate on the "menus" edge.

@@ -212,6 +212,20 @@ func (_c *SysDeptCreate) SetNillableParentID(v *int64) *SysDeptCreate {
 	return _c
 }
 
+// SetParentName sets the "parent_name" field.
+func (_c *SysDeptCreate) SetParentName(v string) *SysDeptCreate {
+	_c.mutation.SetParentName(v)
+	return _c
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_c *SysDeptCreate) SetNillableParentName(v *string) *SysDeptCreate {
+	if v != nil {
+		_c.SetParentName(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *SysDeptCreate) SetID(v int64) *SysDeptCreate {
 	_c.mutation.SetID(v)
@@ -320,6 +334,10 @@ func (_c *SysDeptCreate) defaults() error {
 		v := sysdept.DefaultParentID
 		_c.mutation.SetParentID(v)
 	}
+	if _, ok := _c.mutation.ParentName(); !ok {
+		v := sysdept.DefaultParentName
+		_c.mutation.SetParentName(v)
+	}
 	return nil
 }
 
@@ -414,6 +432,14 @@ func (_c *SysDeptCreate) check() error {
 	if v, ok := _c.mutation.Email(); ok {
 		if err := sysdept.EmailValidator(v); err != nil {
 			return &ValidationError{Name: "email", err: fmt.Errorf(`ent: validator failed for field "SysDept.email": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.ParentName(); !ok {
+		return &ValidationError{Name: "parent_name", err: errors.New(`ent: missing required field "SysDept.parent_name"`)}
+	}
+	if v, ok := _c.mutation.ParentName(); ok {
+		if err := sysdept.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysDept.parent_name": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
@@ -515,6 +541,10 @@ func (_c *SysDeptCreate) createSpec() (*SysDept, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ParentID(); ok {
 		_spec.SetField(sysdept.FieldParentID, field.TypeInt64, value)
 		_node.ParentID = value
+	}
+	if value, ok := _c.mutation.ParentName(); ok {
+		_spec.SetField(sysdept.FieldParentName, field.TypeString, value)
+		_node.ParentName = value
 	}
 	if nodes := _c.mutation.SysTenantIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

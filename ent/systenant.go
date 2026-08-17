@@ -49,6 +49,8 @@ type SysTenant struct {
 	AdminID int64 `json:"admin_id,omitempty"`
 	// 父级ID | Parent ID
 	ParentID int64 `json:"parent_id,omitempty"`
+	// 父级名称 | Parent Name
+	ParentName string `json:"parent_name,omitempty"`
 	// 套餐ID | Package ID
 	PackageID int64 `json:"package_id,omitempty"`
 	// 到期时间 | Expired At
@@ -108,7 +110,7 @@ func (*SysTenant) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case systenant.FieldID, systenant.FieldCreatedID, systenant.FieldUpdatedID, systenant.FieldDeletedID, systenant.FieldAdminID, systenant.FieldParentID, systenant.FieldPackageID:
 			values[i] = new(sql.NullInt64)
-		case systenant.FieldCreatedBy, systenant.FieldUpdatedBy, systenant.FieldDeletedBy, systenant.FieldStatus, systenant.FieldRemark, systenant.FieldName, systenant.FieldCode:
+		case systenant.FieldCreatedBy, systenant.FieldUpdatedBy, systenant.FieldDeletedBy, systenant.FieldStatus, systenant.FieldRemark, systenant.FieldName, systenant.FieldCode, systenant.FieldParentName:
 			values[i] = new(sql.NullString)
 		case systenant.FieldCreatedAt, systenant.FieldUpdatedAt, systenant.FieldDeletedAt, systenant.FieldExpiredAt:
 			values[i] = new(sql.NullTime)
@@ -223,6 +225,12 @@ func (_m *SysTenant) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ParentID = value.Int64
 			}
+		case systenant.FieldParentName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field parent_name", values[i])
+			} else if value.Valid {
+				_m.ParentName = value.String
+			}
 		case systenant.FieldPackageID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field package_id", values[i])
@@ -330,6 +338,9 @@ func (_m *SysTenant) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
+	builder.WriteString(", ")
+	builder.WriteString("parent_name=")
+	builder.WriteString(_m.ParentName)
 	builder.WriteString(", ")
 	builder.WriteString("package_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.PackageID))

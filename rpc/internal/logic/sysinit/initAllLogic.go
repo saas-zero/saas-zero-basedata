@@ -226,6 +226,14 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	} else if err != nil {
 		return nil, err
 	}
+	// 幂等：重复初始化时也确保标准套餐拥有全部菜单（含按钮）与 API，
+	// 否则按套餐新建的租户会缺少按钮菜单，导致其权限码为空、前端按钮不显示。
+	if err := tx.SysPackage.UpdateOneID(pkg.ID).
+		ClearMenus().AddMenuIDs(menuIds...).
+		ClearApis().AddAPIIDs(apiIds...).
+		Exec(ctx); err != nil {
+		return nil, err
+	}
 
 	// 4. Create or fetch Tenant (code "default")
 	tenant, err := tx.SysTenant.Query().Where(systenant.CodeEQ("default")).First(ctx)

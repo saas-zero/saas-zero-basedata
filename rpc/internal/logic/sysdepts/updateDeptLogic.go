@@ -37,7 +37,14 @@ func (l *UpdateDeptLogic) UpdateDept(in *apps.DeptReq) (*apps.DeptResp, error) {
 	}
 	if in.ParentId != nil {
 		if in.GetParentId() > 0 {
-			update.SetParentID(in.GetParentId())
+			parent, err := l.svcCtx.DB.SysDept.Get(ctx, in.GetParentId())
+			if err != nil {
+				return nil, err
+			}
+			update.SetParentID(in.GetParentId()).SetParentName(parent.Name)
+		} else {
+			// 移除父级：清空 parent_id 与冗余 parent_name
+			update.ClearParentID().SetParentName("")
 		}
 	}
 	if in.LeaderId != nil {

@@ -38,6 +38,8 @@ func (l *ResetPasswordLogic) ResetPassword(in *apps.UserReq) (*apps.EmptyResp, e
 
 	err = l.svcCtx.DB.SysUser.UpdateOneID(in.GetId()).
 		SetPassword(string(hash)).
+		SetLoginErrorCount(0).
+		ClearLockoutUntil().
 		Exec(ctx)
 	if err != nil {
 		return nil, err

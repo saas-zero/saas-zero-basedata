@@ -35,6 +35,12 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 				next(w, r)
 				return
 			}
+			// /system/api/mine 只返回"当前登录用户自己拥有的 API"（自带租户/user 隔离），
+			// 且它是"分配 API"弹窗的数据源，不应受角色 Casbin 策略限制（新角色还没策略时也能打开）。
+			if r.URL.Path == "/system/api/mine" {
+				next(w, r)
+				return
+			}
 			tenantId := mixins.GetCurrentTenantId(r.Context())
 
 			// Read role codes from JWT claims (set by jwtauth middleware)
@@ -50,10 +56,11 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.Handl
 			for _, roleCode := range roleCodes {
 				ok, err := enf.Enforce(roleCode, dom, path, method)
 				if err != nil {
+					// fail-closed：Casbin 引擎异常时拒绝访问，避免绕过权限校验
 					logx.Errorf("Casbin enforce error: role=%s, dom=%s, path=%s, method=%s, err=%v",
 						roleCode, dom, path, method, err)
-					allowed = true
-					break
+					writeJSON(w, http.StatusInternalServerError, errno.AuthServiceUnavailable)
+					return
 				}
 				if ok {
 					allowed = true

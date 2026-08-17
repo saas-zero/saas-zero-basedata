@@ -177,6 +177,20 @@ func (_c *SysTenantCreate) SetNillableParentID(v *int64) *SysTenantCreate {
 	return _c
 }
 
+// SetParentName sets the "parent_name" field.
+func (_c *SysTenantCreate) SetParentName(v string) *SysTenantCreate {
+	_c.mutation.SetParentName(v)
+	return _c
+}
+
+// SetNillableParentName sets the "parent_name" field if the given value is not nil.
+func (_c *SysTenantCreate) SetNillableParentName(v *string) *SysTenantCreate {
+	if v != nil {
+		_c.SetParentName(*v)
+	}
+	return _c
+}
+
 // SetPackageID sets the "package_id" field.
 func (_c *SysTenantCreate) SetPackageID(v int64) *SysTenantCreate {
 	_c.mutation.SetPackageID(v)
@@ -319,6 +333,10 @@ func (_c *SysTenantCreate) defaults() error {
 		v := systenant.DefaultParentID
 		_c.mutation.SetParentID(v)
 	}
+	if _, ok := _c.mutation.ParentName(); !ok {
+		v := systenant.DefaultParentName
+		_c.mutation.SetParentName(v)
+	}
 	if _, ok := _c.mutation.PackageID(); !ok {
 		v := systenant.DefaultPackageID
 		_c.mutation.SetPackageID(v)
@@ -406,6 +424,14 @@ func (_c *SysTenantCreate) check() error {
 	if v, ok := _c.mutation.AdminID(); ok {
 		if err := systenant.AdminIDValidator(v); err != nil {
 			return &ValidationError{Name: "admin_id", err: fmt.Errorf(`ent: validator failed for field "SysTenant.admin_id": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.ParentName(); !ok {
+		return &ValidationError{Name: "parent_name", err: errors.New(`ent: missing required field "SysTenant.parent_name"`)}
+	}
+	if v, ok := _c.mutation.ParentName(); ok {
+		if err := systenant.ParentNameValidator(v); err != nil {
+			return &ValidationError{Name: "parent_name", err: fmt.Errorf(`ent: validator failed for field "SysTenant.parent_name": %w`, err)}
 		}
 	}
 	if v, ok := _c.mutation.ID(); ok {
@@ -504,6 +530,10 @@ func (_c *SysTenantCreate) createSpec() (*SysTenant, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.ParentID(); ok {
 		_spec.SetField(systenant.FieldParentID, field.TypeInt64, value)
 		_node.ParentID = value
+	}
+	if value, ok := _c.mutation.ParentName(); ok {
+		_spec.SetField(systenant.FieldParentName, field.TypeString, value)
+		_node.ParentName = value
 	}
 	if value, ok := _c.mutation.ExpiredAt(); ok {
 		_spec.SetField(systenant.FieldExpiredAt, field.TypeTime, value)

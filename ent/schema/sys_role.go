@@ -18,6 +18,7 @@ func (SysRole) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name").NotEmpty().MaxLen(128).Comment("名称 | Name"),
 		field.String("code").NotEmpty().MaxLen(128).Comment("编码 | Code"),
+		field.Bool("is_system").Default(false).Comment("系统内置角色 | System Role（系统角色不可删除/修改）"),
 	}
 }
 

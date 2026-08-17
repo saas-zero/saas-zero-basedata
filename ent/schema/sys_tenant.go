@@ -20,6 +20,7 @@ func (SysTenant) Fields() []ent.Field {
 		field.String("code").NotEmpty().MaxLen(128).Comment("编码 | Code"),
 		field.Int64("admin_id").Positive().Comment("管理员ID | Admin ID"),
 		field.Int64("parent_id").Optional().Default(0).Comment("父级ID | Parent ID"),
+		field.String("parent_name").Default("").MaxLen(128).Comment("父级名称 | Parent Name"),
 		field.Int64("package_id").Optional().Default(0).Comment("套餐ID | Package ID"),
 		field.Time("expired_at").Optional().Comment("到期时间 | Expired At"),
 	}

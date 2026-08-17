@@ -36,13 +36,21 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 	dom := id.ToString(tenantId)
 
 	// 前端只传 id + apiIds，不传 code，需从角色表查询兜底，
-	// 否则会生成 v0 为空的脏策略。
+	// 否则会生成 v0 为空的脏策略。同时校验系统内置角色不可改权限。
+	role, err := l.svcCtx.DB.SysRole.Get(l.ctx, in.GetId())
+	if err != nil {
+		return nil, err
+	}
+	if role.IsSystem {
+		return nil, errno.New(errno.InvalidParam.Code, fmt.Sprintf("系统内置角色「%s」不可修改", role.Name))
+	}
 	if roleCode == "" {
-		role, err := l.svcCtx.DB.SysRole.Get(l.ctx, in.GetId())
-		if err != nil {
-			return nil, err
-		}
 		roleCode = role.Code
+	}
+
+	// 继承式授权：只能把当前用户自己拥有的 API 授给别人
+	if err := checkAssignableApis(l.svcCtx, l.ctx, in.GetApiIds()); err != nil {
+		return nil, err
 	}
 
 	// API assignment is an edit of the role even though the association is

@@ -9,6 +9,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	idutil "github.com/saas-zero/saas-zero-common/pkg/id"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -39,5 +40,16 @@ func (l *DeleteTenantLogic) DeleteTenant(in *apps.IdsReq) (*apps.EmptyResp, erro
 	if err != nil {
 		return nil, err
 	}
+
+	// 清理该租户 dom 下的 Casbin 策略（孤儿数据），避免残留与累积。
+	// 雪花 ID 不复用，重建租户不会串策略；这里是纯数据卫生处理。
+	if l.svcCtx.Enforcer != nil {
+		for _, id := range in.GetIds() {
+			if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(1, idutil.ToString(id)); err != nil {
+				logx.Errorf("deleteTenant: remove casbin policy for tenant %d failed: %v", id, err)
+			}
+		}
+	}
+
 	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }

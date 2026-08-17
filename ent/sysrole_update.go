@@ -250,6 +250,20 @@ func (_u *SysRoleUpdate) SetNillableCode(v *string) *SysRoleUpdate {
 	return _u
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_u *SysRoleUpdate) SetIsSystem(v bool) *SysRoleUpdate {
+	_u.mutation.SetIsSystem(v)
+	return _u
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_u *SysRoleUpdate) SetNillableIsSystem(v *bool) *SysRoleUpdate {
+	if v != nil {
+		_u.SetIsSystem(*v)
+	}
+	return _u
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
 func (_u *SysRoleUpdate) AddMenuIDs(ids ...int64) *SysRoleUpdate {
 	_u.mutation.AddMenuIDs(ids...)
@@ -475,6 +489,9 @@ func (_u *SysRoleUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
 	}
 	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -806,6 +823,20 @@ func (_u *SysRoleUpdateOne) SetNillableCode(v *string) *SysRoleUpdateOne {
 	return _u
 }
 
+// SetIsSystem sets the "is_system" field.
+func (_u *SysRoleUpdateOne) SetIsSystem(v bool) *SysRoleUpdateOne {
+	_u.mutation.SetIsSystem(v)
+	return _u
+}
+
+// SetNillableIsSystem sets the "is_system" field if the given value is not nil.
+func (_u *SysRoleUpdateOne) SetNillableIsSystem(v *bool) *SysRoleUpdateOne {
+	if v != nil {
+		_u.SetIsSystem(*v)
+	}
+	return _u
+}
+
 // AddMenuIDs adds the "menus" edge to the SysMenu entity by IDs.
 func (_u *SysRoleUpdateOne) AddMenuIDs(ids ...int64) *SysRoleUpdateOne {
 	_u.mutation.AddMenuIDs(ids...)
@@ -1061,6 +1092,9 @@ func (_u *SysRoleUpdateOne) sqlSave(ctx context.Context) (_node *SysRole, err er
 	}
 	if value, ok := _u.mutation.Code(); ok {
 		_spec.SetField(sysrole.FieldCode, field.TypeString, value)
+	}
+	if value, ok := _u.mutation.IsSystem(); ok {
+		_spec.SetField(sysrole.FieldIsSystem, field.TypeBool, value)
 	}
 	if _u.mutation.MenusCleared() {
 		edge := &sqlgraph.EdgeSpec{

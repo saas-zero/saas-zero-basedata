@@ -47,3 +47,8 @@ func (s *SysApisServer) GetApiById(ctx context.Context, in *apps.IdReq) (*apps.A
 	l := sysapislogic.NewGetApiByIdLogic(ctx, s.svcCtx)
 	return l.GetApiById(in)
 }
+
+func (s *SysApisServer) GetMyApis(ctx context.Context, in *apps.EmptyReq) (*apps.ApiListResp, error) {
+	l := sysapislogic.NewGetMyApisLogic(ctx, s.svcCtx)
+	return l.GetMyApis(in)
+}

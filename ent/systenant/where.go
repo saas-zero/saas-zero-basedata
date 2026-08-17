@@ -125,6 +125,11 @@ func ParentID(v int64) predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldEQ(FieldParentID, v))
 }
 
+// ParentName applies equality check predicate on the "parent_name" field. It's identical to ParentNameEQ.
+func ParentName(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldParentName, v))
+}
+
 // PackageID applies equality check predicate on the "package_id" field. It's identical to PackageIDEQ.
 func PackageID(v int64) predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldEQ(FieldPackageID, v))
@@ -913,6 +918,71 @@ func ParentIDIsNil() predicate.SysTenant {
 // ParentIDNotNil applies the NotNil predicate on the "parent_id" field.
 func ParentIDNotNil() predicate.SysTenant {
 	return predicate.SysTenant(sql.FieldNotNull(FieldParentID))
+}
+
+// ParentNameEQ applies the EQ predicate on the "parent_name" field.
+func ParentNameEQ(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEQ(FieldParentName, v))
+}
+
+// ParentNameNEQ applies the NEQ predicate on the "parent_name" field.
+func ParentNameNEQ(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNEQ(FieldParentName, v))
+}
+
+// ParentNameIn applies the In predicate on the "parent_name" field.
+func ParentNameIn(vs ...string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldIn(FieldParentName, vs...))
+}
+
+// ParentNameNotIn applies the NotIn predicate on the "parent_name" field.
+func ParentNameNotIn(vs ...string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldNotIn(FieldParentName, vs...))
+}
+
+// ParentNameGT applies the GT predicate on the "parent_name" field.
+func ParentNameGT(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldGT(FieldParentName, v))
+}
+
+// ParentNameGTE applies the GTE predicate on the "parent_name" field.
+func ParentNameGTE(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldGTE(FieldParentName, v))
+}
+
+// ParentNameLT applies the LT predicate on the "parent_name" field.
+func ParentNameLT(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldLT(FieldParentName, v))
+}
+
+// ParentNameLTE applies the LTE predicate on the "parent_name" field.
+func ParentNameLTE(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldLTE(FieldParentName, v))
+}
+
+// ParentNameContains applies the Contains predicate on the "parent_name" field.
+func ParentNameContains(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldContains(FieldParentName, v))
+}
+
+// ParentNameHasPrefix applies the HasPrefix predicate on the "parent_name" field.
+func ParentNameHasPrefix(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldHasPrefix(FieldParentName, v))
+}
+
+// ParentNameHasSuffix applies the HasSuffix predicate on the "parent_name" field.
+func ParentNameHasSuffix(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldHasSuffix(FieldParentName, v))
+}
+
+// ParentNameEqualFold applies the EqualFold predicate on the "parent_name" field.
+func ParentNameEqualFold(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldEqualFold(FieldParentName, v))
+}
+
+// ParentNameContainsFold applies the ContainsFold predicate on the "parent_name" field.
+func ParentNameContainsFold(v string) predicate.SysTenant {
+	return predicate.SysTenant(sql.FieldContainsFold(FieldParentName, v))
 }
 
 // PackageIDEQ applies the EQ predicate on the "package_id" field.

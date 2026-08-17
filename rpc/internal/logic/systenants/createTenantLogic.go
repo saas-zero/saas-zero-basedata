@@ -4,6 +4,7 @@ import (
 	"context"
 	"strings"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysmenu"
 	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
@@ -59,13 +60,20 @@ func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 	defer tx.Rollback()
 
 	// 1. 创建租户（admin_id 先占位为操作者，创建管理员用户后回填）
-	tenant, err := tx.SysTenant.Create().
+	create := tx.SysTenant.Create().
 		SetName(in.GetName()).
 		SetCode(in.GetCode()).
 		SetPackageID(in.GetPackageId()).
 		SetStatus(systenant.Status(in.GetStatus())).
-		SetAdminID(userId).
-		Save(ctx)
+		SetAdminID(userId)
+	if in.GetParentId() > 0 {
+		parent, err := tx.SysTenant.Query().Where(systenant.IDEQ(in.GetParentId())).Only(ctx)
+		if err != nil {
+			return nil, err
+		}
+		create.SetParentID(in.GetParentId()).SetParentName(parent.Name)
+	}
+	tenant, err := create.Save(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -91,16 +99,41 @@ func (l *CreateTenantLogic) CreateTenant(in *apps.TenantReq) (*apps.TenantResp, 
 		return nil, err
 	}
 	menuIDs := make([]int64, 0, len(pkg.Edges.Menus))
+	menuSet := make(map[int64]bool, len(pkg.Edges.Menus))
 	for _, m := range pkg.Edges.Menus {
+		menuSet[m.ID] = true
 		menuIDs = append(menuIDs, m.ID)
 	}
 
-	// 3. 创建默认角色（code=admin），继承套餐菜单
+	// 补全按钮节点：历史套餐可能只含目录/页面、缺少按钮节点，
+	// 但租户拥有某页面即应拥有该页面的操作按钮，否则权限码为空、前端按钮不显示。
+	// 这里自动补齐套餐所含页面对应的全部 button 菜单，保证新建租户功能齐全。
+	if len(menuIDs) > 0 {
+		buttonIDs, err := tx.SysMenu.Query().
+			Where(
+				sysmenu.DeletedAtIsNil(),
+				sysmenu.MenuTypeEQ(sysmenu.MenuTypeButton),
+				sysmenu.ParentIDIn(menuIDs...),
+			).
+			IDs(ctx)
+		if err != nil {
+			return nil, err
+		}
+		for _, id := range buttonIDs {
+			if !menuSet[id] {
+				menuSet[id] = true
+				menuIDs = append(menuIDs, id)
+			}
+		}
+	}
+
+	// 3. 创建默认角色（code=admin），继承套餐菜单，标记为系统内置角色（不可删除/修改）
 	role, err := tx.SysRole.Create().
 		SetName("管理员").
 		SetCode("admin").
 		SetSort(1).
 		SetStatus(sysrole.StatusActive).
+		SetIsSystem(true).
 		AddMenuIDs(menuIDs...).
 		Save(ctx)
 	if err != nil {

@@ -33,6 +33,9 @@ func tenantToResp(t *ent.SysTenant) *apps.Tenant {
 		resp.ParentId = proto.Int64(t.ParentID)
 		resp.ParentIdStr = proto.String(id.ToString(t.ParentID))
 	}
+	if t.ParentName != "" {
+		resp.ParentName = proto.String(t.ParentName)
+	}
 	if t.PackageID > 0 {
 		resp.PackageId = proto.Int64(t.PackageID)
 		resp.PackageIdStr = proto.String(id.ToString(t.PackageID))

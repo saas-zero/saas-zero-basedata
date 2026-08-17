@@ -32,6 +32,9 @@ func deptToResp(d *ent.SysDept) *apps.Dept {
 		resp.ParentId = proto.Int64(d.ParentID)
 		resp.ParentIdStr = proto.String(id.ToString(d.ParentID))
 	}
+	if d.ParentName != "" {
+		resp.ParentName = proto.String(d.ParentName)
+	}
 	if d.LeaderID > 0 {
 		resp.LeaderId = proto.Int64(d.LeaderID)
 		resp.LeaderIdStr = proto.String(id.ToString(d.LeaderID))

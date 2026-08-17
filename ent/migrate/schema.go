@@ -73,6 +73,7 @@ var (
 		{Name: "mobile", Type: field.TypeString, Size: 20, Comment: "部门电话 | Department Phone", Default: ""},
 		{Name: "email", Type: field.TypeString, Size: 64, Comment: "部门邮箱 | Department Email", Default: ""},
 		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "parent_name", Type: field.TypeString, Size: 128, Comment: "父级名称 | Parent Name", Default: ""},
 		{Name: "leader_id", Type: field.TypeInt64, Nullable: true, Comment: "负责人ID | Leader ID"},
 		{Name: "tenant_id", Type: field.TypeInt64, Comment: "租户ID | Tenant ID"},
 	}
@@ -85,13 +86,13 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "sys_depts_sys_users_leader",
-				Columns:    []*schema.Column{SysDeptsColumns[16]},
+				Columns:    []*schema.Column{SysDeptsColumns[17]},
 				RefColumns: []*schema.Column{SysUsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
 			{
 				Symbol:     "sys_depts_sys_tenants_sys_depts",
-				Columns:    []*schema.Column{SysDeptsColumns[17]},
+				Columns:    []*schema.Column{SysDeptsColumns[18]},
 				RefColumns: []*schema.Column{SysTenantsColumns[0]},
 				OnDelete:   schema.NoAction,
 			},
@@ -100,22 +101,22 @@ var (
 			{
 				Name:    "sysdept_tenant_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysDeptsColumns[17]},
+				Columns: []*schema.Column{SysDeptsColumns[18]},
 			},
 			{
 				Name:    "sysdept_tenant_id_parent_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[15]},
+				Columns: []*schema.Column{SysDeptsColumns[18], SysDeptsColumns[15]},
 			},
 			{
 				Name:    "sysdept_tenant_id_name",
 				Unique:  false,
-				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[12]},
+				Columns: []*schema.Column{SysDeptsColumns[18], SysDeptsColumns[12]},
 			},
 			{
 				Name:    "sysdept_tenant_id_status",
 				Unique:  false,
-				Columns: []*schema.Column{SysDeptsColumns[17], SysDeptsColumns[10]},
+				Columns: []*schema.Column{SysDeptsColumns[18], SysDeptsColumns[10]},
 			},
 		},
 	}
@@ -442,6 +443,7 @@ var (
 		{Name: "remark", Type: field.TypeString, Nullable: true, Size: 255},
 		{Name: "name", Type: field.TypeString, Size: 128, Comment: "名称 | Name"},
 		{Name: "code", Type: field.TypeString, Size: 128, Comment: "编码 | Code"},
+		{Name: "is_system", Type: field.TypeBool, Comment: "系统内置角色 | System Role（系统角色不可删除/修改）", Default: false},
 	}
 	// SysRolesTable holds the schema information for the "sys_roles" table.
 	SysRolesTable = &schema.Table{
@@ -493,6 +495,7 @@ var (
 		{Name: "code", Type: field.TypeString, Size: 128, Comment: "编码 | Code"},
 		{Name: "admin_id", Type: field.TypeInt64, Comment: "管理员ID | Admin ID"},
 		{Name: "parent_id", Type: field.TypeInt64, Nullable: true, Comment: "父级ID | Parent ID", Default: 0},
+		{Name: "parent_name", Type: field.TypeString, Size: 128, Comment: "父级名称 | Parent Name", Default: ""},
 		{Name: "expired_at", Type: field.TypeTime, Nullable: true, Comment: "到期时间 | Expired At"},
 		{Name: "package_id", Type: field.TypeInt64, Nullable: true, Comment: "套餐ID | Package ID", Default: 0},
 	}
@@ -505,7 +508,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "sys_tenants_sys_packages_tenants",
-				Columns:    []*schema.Column{SysTenantsColumns[17]},
+				Columns:    []*schema.Column{SysTenantsColumns[18]},
 				RefColumns: []*schema.Column{SysPackagesColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

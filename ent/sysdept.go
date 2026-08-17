@@ -54,6 +54,8 @@ type SysDept struct {
 	Email string `json:"email,omitempty"`
 	// 父级ID | Parent ID
 	ParentID int64 `json:"parent_id,omitempty"`
+	// 父级名称 | Parent Name
+	ParentName string `json:"parent_name,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the SysDeptQuery when eager-loading is set.
 	Edges        SysDeptEdges `json:"edges"`
@@ -111,7 +113,7 @@ func (*SysDept) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sysdept.FieldID, sysdept.FieldTenantID, sysdept.FieldCreatedID, sysdept.FieldUpdatedID, sysdept.FieldDeletedID, sysdept.FieldSort, sysdept.FieldLeaderID, sysdept.FieldParentID:
 			values[i] = new(sql.NullInt64)
-		case sysdept.FieldCreatedBy, sysdept.FieldUpdatedBy, sysdept.FieldDeletedBy, sysdept.FieldStatus, sysdept.FieldName, sysdept.FieldMobile, sysdept.FieldEmail:
+		case sysdept.FieldCreatedBy, sysdept.FieldUpdatedBy, sysdept.FieldDeletedBy, sysdept.FieldStatus, sysdept.FieldName, sysdept.FieldMobile, sysdept.FieldEmail, sysdept.FieldParentName:
 			values[i] = new(sql.NullString)
 		case sysdept.FieldCreatedAt, sysdept.FieldUpdatedAt, sysdept.FieldDeletedAt:
 			values[i] = new(sql.NullTime)
@@ -238,6 +240,12 @@ func (_m *SysDept) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				_m.ParentID = value.Int64
 			}
+		case sysdept.FieldParentName:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field parent_name", values[i])
+			} else if value.Valid {
+				_m.ParentName = value.String
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -339,6 +347,9 @@ func (_m *SysDept) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("parent_id=")
 	builder.WriteString(fmt.Sprintf("%v", _m.ParentID))
+	builder.WriteString(", ")
+	builder.WriteString("parent_name=")
+	builder.WriteString(_m.ParentName)
 	builder.WriteByte(')')
 	return builder.String()
 }
