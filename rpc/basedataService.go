@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/saas-zero/saas-zero-common/pkg/envconf"
 	"strconv"
 
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
@@ -21,7 +22,6 @@ import (
 	sysusersServer "github.com/saas-zero/saas-zero-basedata/rpc/internal/server/sysusers"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
-
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
