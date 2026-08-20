@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
@@ -26,14 +28,21 @@ func NewAssignMenusLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 }
 
 func (l *AssignMenusLogic) AssignMenus(in *apps.RoleReq) (*apps.EmptyResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
 	userName := mixins.GetCurrentUserName(l.ctx)
-	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	// 系统内置角色不可改菜单权限
-	role, err := l.svcCtx.DB.SysRole.Get(ctx, in.GetId())
+	// 系统内置角色不可改菜单权限；目标角色必须先按「当前租户 + 未删除」定位，防止跨租户操作
+	role, err := l.svcCtx.DB.SysRole.TenantQuery(tenantId).
+		Where(sysrole.IDEQ(in.GetId())).
+		Only(ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, errno.New(errno.InvalidParam.Code, "角色不存在或不属于当前租户")
+		}
 		return nil, err
 	}
 	if role.IsSystem {
@@ -45,7 +54,7 @@ func (l *AssignMenusLogic) AssignMenus(in *apps.RoleReq) (*apps.EmptyResp, error
 		return nil, err
 	}
 
-	err = l.svcCtx.DB.SysRole.UpdateOneID(in.GetId()).
+	err = l.svcCtx.DB.SysRole.UpdateOne(role).
 		ClearMenus().
 		AddMenuIDs(in.GetMenuIds()...).
 		Exec(ctx)

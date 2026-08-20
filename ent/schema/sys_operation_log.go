@@ -23,6 +23,8 @@ func (SysOperationLog) Fields() []ent.Field {
 		field.String("path").Default("").MaxLen(255).Comment("请求路径 | Request Path"),
 		field.String("params").Optional().Comment("请求参数 | Request Params"),
 		field.String("result").Optional().Comment("返回结果 | Response Result"),
+		field.String("error_msg").Optional().Comment("失败原因 | Error Message"),
+		field.String("status").Default("success").MaxLen(16).Comment("执行状态 success/failure | Execute Status"),
 		field.Int64("duration").Default(0).Comment("耗时(ms) | Duration"),
 		field.String("ip").Default("").MaxLen(45).Comment("操作IP | Operator IP"),
 		field.String("user_agent").Optional().MaxLen(500).Comment("User-Agent | 用户代理"),

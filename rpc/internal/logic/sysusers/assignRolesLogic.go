@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
@@ -26,12 +28,30 @@ func NewAssignRolesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Assig
 }
 
 func (l *AssignRolesLogic) AssignRoles(in *apps.UserReq) (*apps.EmptyResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
 	userName := mixins.GetCurrentUserName(l.ctx)
-	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	err := l.svcCtx.DB.SysUser.UpdateOneID(in.GetId()).
+	// 目标用户必须属于当前租户
+	target, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
+		Where(sysuser.IDEQ(in.GetId())).
+		Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, errno.UserNotFound
+		}
+		return nil, err
+	}
+
+	// 分配的角色必须属于当前租户，禁止跨租户关联
+	if err := checkUserRolesInTenant(l.svcCtx, ctx, tenantId, in.GetRoleIds()); err != nil {
+		return nil, errno.New(errno.InvalidParam.Code, err.Error())
+	}
+
+	err = l.svcCtx.DB.SysUser.UpdateOne(target).
 		ClearRoles().
 		AddRoleIDs(in.GetRoleIds()...).
 		Exec(ctx)

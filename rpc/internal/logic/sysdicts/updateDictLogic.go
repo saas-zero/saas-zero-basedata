@@ -3,8 +3,10 @@ package sysdictslogic
 import (
 	"context"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdict"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/logic/tenantcheck"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
@@ -26,12 +28,31 @@ func NewUpdateDictLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateDictLogic) UpdateDict(in *apps.DictReq) (*apps.DictResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
 	userName := mixins.GetCurrentUserName(l.ctx)
-	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	update := l.svcCtx.DB.SysDict.UpdateOneID(in.GetId())
+	// 目标字典必须可见于当前租户（系统默认 tenant_id=0 或本租户自定义）
+	target, err := l.svcCtx.DB.SysDict.TenantAwareQuery(tenantId).
+		Where(sysdict.IDEQ(in.GetId())).
+		Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, errno.New(errno.InvalidParam.Code, "字典不存在")
+		}
+		return nil, err
+	}
+	// 系统默认字典（tenant_id=0）仅允许系统管理员维护
+	if target.TenantID == 0 {
+		if err := tenantcheck.RequireDefaultTenantAdmin(l.svcCtx, ctx); err != nil {
+			return nil, err
+		}
+	}
+
+	update := l.svcCtx.DB.SysDict.UpdateOne(target)
 	if in.Name != nil {
 		update.SetName(in.GetName())
 	}
@@ -50,7 +71,7 @@ func (l *UpdateDictLogic) UpdateDict(in *apps.DictReq) (*apps.DictResp, error) {
 		return nil, err
 	}
 
-	d, err := l.svcCtx.DB.SysDict.Query().Where(sysdict.IDEQ(result.ID)).WithSysDictDatas().Only(ctx)
+	d, err := l.svcCtx.DB.SysDict.TenantAwareQuery(tenantId).Where(sysdict.IDEQ(result.ID)).WithSysDictDatas().Only(ctx)
 	if err != nil {
 		return nil, err
 	}

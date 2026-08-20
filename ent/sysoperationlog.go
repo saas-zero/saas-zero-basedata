@@ -30,6 +30,10 @@ type SysOperationLog struct {
 	Params string `json:"params,omitempty"`
 	// 返回结果 | Response Result
 	Result string `json:"result,omitempty"`
+	// 失败原因 | Error Message
+	ErrorMsg string `json:"error_msg,omitempty"`
+	// 执行状态 success/failure | Execute Status
+	Status string `json:"status,omitempty"`
 	// 耗时(ms) | Duration
 	Duration int64 `json:"duration,omitempty"`
 	// 操作IP | Operator IP
@@ -54,7 +58,7 @@ func (*SysOperationLog) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case sysoperationlog.FieldID, sysoperationlog.FieldDuration, sysoperationlog.FieldOperatorID, sysoperationlog.FieldTenantID:
 			values[i] = new(sql.NullInt64)
-		case sysoperationlog.FieldModule, sysoperationlog.FieldOperation, sysoperationlog.FieldMethod, sysoperationlog.FieldPath, sysoperationlog.FieldParams, sysoperationlog.FieldResult, sysoperationlog.FieldIP, sysoperationlog.FieldUserAgent, sysoperationlog.FieldOperatorName:
+		case sysoperationlog.FieldModule, sysoperationlog.FieldOperation, sysoperationlog.FieldMethod, sysoperationlog.FieldPath, sysoperationlog.FieldParams, sysoperationlog.FieldResult, sysoperationlog.FieldErrorMsg, sysoperationlog.FieldStatus, sysoperationlog.FieldIP, sysoperationlog.FieldUserAgent, sysoperationlog.FieldOperatorName:
 			values[i] = new(sql.NullString)
 		case sysoperationlog.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -114,6 +118,18 @@ func (_m *SysOperationLog) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field result", values[i])
 			} else if value.Valid {
 				_m.Result = value.String
+			}
+		case sysoperationlog.FieldErrorMsg:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field error_msg", values[i])
+			} else if value.Valid {
+				_m.ErrorMsg = value.String
+			}
+		case sysoperationlog.FieldStatus:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field status", values[i])
+			} else if value.Valid {
+				_m.Status = value.String
 			}
 		case sysoperationlog.FieldDuration:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -210,6 +226,12 @@ func (_m *SysOperationLog) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("result=")
 	builder.WriteString(_m.Result)
+	builder.WriteString(", ")
+	builder.WriteString("error_msg=")
+	builder.WriteString(_m.ErrorMsg)
+	builder.WriteString(", ")
+	builder.WriteString("status=")
+	builder.WriteString(_m.Status)
 	builder.WriteString(", ")
 	builder.WriteString("duration=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Duration))

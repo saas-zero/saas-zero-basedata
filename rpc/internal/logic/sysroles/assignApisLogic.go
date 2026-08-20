@@ -7,6 +7,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysapi"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
@@ -37,8 +38,14 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 
 	// 前端只传 id + apiIds，不传 code，需从角色表查询兜底，
 	// 否则会生成 v0 为空的脏策略。同时校验系统内置角色不可改权限。
-	role, err := l.svcCtx.DB.SysRole.Get(l.ctx, in.GetId())
+	// 目标角色必须属于当前租户，防止跨租户操作。
+	role, err := l.svcCtx.DB.SysRole.TenantQuery(tenantId).
+		Where(sysrole.IDEQ(in.GetId())).
+		Only(l.ctx)
 	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, errno.New(errno.InvalidParam.Code, "角色不存在或不属于当前租户")
+		}
 		return nil, err
 	}
 	if role.IsSystem {
@@ -46,6 +53,8 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 	}
 	if roleCode == "" {
 		roleCode = role.Code
+	} else if roleCode != role.Code {
+		return nil, errno.New(errno.InvalidParam.Code, "角色编码与角色 ID 不匹配")
 	}
 
 	// 继承式授权：只能把当前用户自己拥有的 API 授给别人
@@ -53,27 +62,39 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 		return nil, err
 	}
 
+	if l.svcCtx.Enforcer == nil {
+		return nil, errno.AuthServiceUnavailable
+	}
 	// API assignment is an edit of the role even though the association is
 	// stored in Casbin. Touch the role so its audit fields stay authoritative.
-	if err := l.svcCtx.DB.SysRole.UpdateOneID(in.GetId()).Exec(l.ctx); err != nil {
+	if err := l.svcCtx.DB.SysRole.UpdateOne(role).Exec(l.ctx); err != nil {
 		return nil, err
 	}
 
-	l.svcCtx.Enforcer.RemoveFilteredPolicy(0, roleCode, dom)
+	if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(0, roleCode, dom); err != nil {
+		return nil, err
+	}
 
 	for _, apiId := range in.GetApiIds() {
-		api, err := l.svcCtx.DB.SysApi.Get(l.ctx, apiId)
+		api, err := l.svcCtx.DB.SysApi.ActiveQuery().
+			Where(sysapi.IDEQ(apiId)).
+			Only(l.ctx)
 		if err != nil {
-			continue
+			return nil, err
 		}
 		// 只对具体接口（api 类型）生成策略；目录（group）仅用于分组展示，不参与权限匹配
 		if api.APIType != sysapi.APITypeAPI {
 			continue
 		}
-		l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), id.ToString(apiId))
+		if _, err := l.svcCtx.Enforcer.AddPolicy(roleCode, dom, api.APIPath, strings.ToUpper(string(api.APIMethod)), id.ToString(apiId)); err != nil {
+			return nil, err
+		}
 	}
 
-	users, err := l.svcCtx.DB.SysUser.Query().Where(sysuser.HasRolesWith(sysrole.CodeEQ(roleCode))).All(l.ctx)
+	users, err := l.svcCtx.DB.SysUser.Query().
+		Where(sysuser.TenantIDEQ(tenantId), sysuser.DeletedAtIsNil()).
+		Where(sysuser.HasRolesWith(sysrole.CodeEQ(roleCode), sysrole.DeletedAtIsNil())).
+		All(l.ctx)
 	if err == nil {
 		for _, u := range users {
 			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))

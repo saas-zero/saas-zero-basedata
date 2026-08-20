@@ -1,12 +1,69 @@
 package sysuserslogic
 
 import (
+	"context"
+	"errors"
+
+	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/saas-zero/saas-zero-common/pkg/id"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
+	"github.com/saas-zero/saas-zero-basedata/ent/systenant"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/logic/tenantcheck"
+	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"google.golang.org/protobuf/proto"
 )
+
+// checkResetTarget 校验被重置密码的用户是否允许由当前操作者重置。
+// 规则：
+//   - default 租户 admin（系统超级管理员）只能由 default 租户管理员重置；
+//   - 其他用户仅需属于当前租户（TenantQuery 已保证）即可被同租户管理员重置。
+func checkResetTarget(svcCtx *svc.ServiceContext, ctx context.Context, target *ent.SysUser) error {
+	tenant, err := svcCtx.DB.SysTenant.Query().
+		Where(systenant.IDEQ(target.TenantID), systenant.DeletedAtIsNil()).
+		Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return errno.UserNotFound
+		}
+		return err
+	}
+	if tenant.Code != "default" {
+		return nil
+	}
+	hasAdmin, err := svcCtx.DB.SysUser.Query().
+		Where(sysuser.IDEQ(target.ID), sysuser.DeletedAtIsNil()).
+		QueryRoles().
+		Where(sysrole.CodeEQ("admin"), sysrole.DeletedAtIsNil()).
+		Exist(ctx)
+	if err != nil {
+		return err
+	}
+	if hasAdmin {
+		return tenantcheck.RequireDefaultTenantAdmin(svcCtx, ctx)
+	}
+	return nil
+}
+
+// checkUserRolesInTenant 校验给定角色 ID 均属于当前租户，返回错误时禁止跨租户关联。
+func checkUserRolesInTenant(svcCtx *svc.ServiceContext, ctx context.Context, tenantId int64, roleIds []int64) error {
+	if len(roleIds) == 0 {
+		return nil
+	}
+	count, err := svcCtx.DB.SysRole.TenantQuery(tenantId).
+		Where(sysrole.IDIn(roleIds...)).
+		Count(ctx)
+	if err != nil {
+		return err
+	}
+	if int(count) != len(roleIds) {
+		return errors.New("存在不属于当前租户的角色")
+	}
+	return nil
+}
 
 func userToResp(u *ent.SysUser) *apps.User {
 	resp := &apps.User{

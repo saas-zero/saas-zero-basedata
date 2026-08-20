@@ -36,6 +36,10 @@ func (l *CreateRoleLogic) CreateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
+	if err := checkAssignableMenus(l.svcCtx, ctx, in.GetMenuIds()); err != nil {
+		return nil, err
+	}
+
 	create := l.svcCtx.DB.SysRole.Create().
 		SetName(in.GetName()).
 		SetCode(in.GetCode()).

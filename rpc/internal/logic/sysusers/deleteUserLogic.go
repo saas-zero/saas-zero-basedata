@@ -28,13 +28,35 @@ func NewDeleteUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Delete
 }
 
 func (l *DeleteUserLogic) DeleteUser(in *apps.IdsReq) (*apps.EmptyResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
 	userName := mixins.GetCurrentUserName(l.ctx)
-	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	_, err := l.svcCtx.DB.SysUser.Update().
+	// 防止删除当前登录用户自己；所有目标都必须属于当前租户，避免混合 ID 请求部分成功。
+	for _, id := range in.GetIds() {
+		if id == mixins.GetCurrentUserId(l.ctx) {
+			return nil, errno.New(errno.InvalidParam.Code, "不能删除当前登录用户")
+		}
+	}
+	count, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.IDIn(in.GetIds()...)).
+		Count(ctx)
+	if err != nil {
+		return nil, err
+	}
+	if count != len(in.GetIds()) {
+		return nil, errno.New(errno.InvalidParam.Code, "存在不存在或不属于当前租户的用户")
+	}
+
+	_, err = l.svcCtx.DB.SysUser.Update().
+		Where(
+			sysuser.IDIn(in.GetIds()...),
+			sysuser.TenantIDEQ(tenantId),
+			sysuser.DeletedAtIsNil(),
+		).
 		SetDeletedAt(time.Now()).
 		Save(ctx)
 	if err != nil {

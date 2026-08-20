@@ -33,6 +33,9 @@ func (l *GetOperationLogListLogic) GetOperationLogList(in *apps.LogPageReq) (*ap
 	query := l.svcCtx.DB.SysOperationLog.Query().
 		Where(sysoperationlog.TenantIDEQ(tenantId))
 
+	if in.GetStatus() != "" {
+		query = query.Where(sysoperationlog.Status(in.GetStatus()))
+	}
 	if in.GetModule() != "" {
 		query = query.Where(sysoperationlog.ModuleContains(in.GetModule()))
 	}

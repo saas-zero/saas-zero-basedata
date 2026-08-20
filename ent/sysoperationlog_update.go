@@ -123,6 +123,40 @@ func (_u *SysOperationLogUpdate) ClearResult() *SysOperationLogUpdate {
 	return _u
 }
 
+// SetErrorMsg sets the "error_msg" field.
+func (_u *SysOperationLogUpdate) SetErrorMsg(v string) *SysOperationLogUpdate {
+	_u.mutation.SetErrorMsg(v)
+	return _u
+}
+
+// SetNillableErrorMsg sets the "error_msg" field if the given value is not nil.
+func (_u *SysOperationLogUpdate) SetNillableErrorMsg(v *string) *SysOperationLogUpdate {
+	if v != nil {
+		_u.SetErrorMsg(*v)
+	}
+	return _u
+}
+
+// ClearErrorMsg clears the value of the "error_msg" field.
+func (_u *SysOperationLogUpdate) ClearErrorMsg() *SysOperationLogUpdate {
+	_u.mutation.ClearErrorMsg()
+	return _u
+}
+
+// SetStatus sets the "status" field.
+func (_u *SysOperationLogUpdate) SetStatus(v string) *SysOperationLogUpdate {
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *SysOperationLogUpdate) SetNillableStatus(v *string) *SysOperationLogUpdate {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
+	return _u
+}
+
 // SetDuration sets the "duration" field.
 func (_u *SysOperationLogUpdate) SetDuration(v int64) *SysOperationLogUpdate {
 	_u.mutation.ResetDuration()
@@ -294,6 +328,11 @@ func (_u *SysOperationLogUpdate) check() error {
 			return &ValidationError{Name: "path", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.path": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Status(); ok {
+		if err := sysoperationlog.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.status": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.IP(); ok {
 		if err := sysoperationlog.IPValidator(v); err != nil {
 			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.ip": %w`, err)}
@@ -347,6 +386,15 @@ func (_u *SysOperationLogUpdate) sqlSave(ctx context.Context) (_node int, err er
 	}
 	if _u.mutation.ResultCleared() {
 		_spec.ClearField(sysoperationlog.FieldResult, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorMsg(); ok {
+		_spec.SetField(sysoperationlog.FieldErrorMsg, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMsgCleared() {
+		_spec.ClearField(sysoperationlog.FieldErrorMsg, field.TypeString)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(sysoperationlog.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Duration(); ok {
 		_spec.SetField(sysoperationlog.FieldDuration, field.TypeInt64, value)
@@ -494,6 +542,40 @@ func (_u *SysOperationLogUpdateOne) SetNillableResult(v *string) *SysOperationLo
 // ClearResult clears the value of the "result" field.
 func (_u *SysOperationLogUpdateOne) ClearResult() *SysOperationLogUpdateOne {
 	_u.mutation.ClearResult()
+	return _u
+}
+
+// SetErrorMsg sets the "error_msg" field.
+func (_u *SysOperationLogUpdateOne) SetErrorMsg(v string) *SysOperationLogUpdateOne {
+	_u.mutation.SetErrorMsg(v)
+	return _u
+}
+
+// SetNillableErrorMsg sets the "error_msg" field if the given value is not nil.
+func (_u *SysOperationLogUpdateOne) SetNillableErrorMsg(v *string) *SysOperationLogUpdateOne {
+	if v != nil {
+		_u.SetErrorMsg(*v)
+	}
+	return _u
+}
+
+// ClearErrorMsg clears the value of the "error_msg" field.
+func (_u *SysOperationLogUpdateOne) ClearErrorMsg() *SysOperationLogUpdateOne {
+	_u.mutation.ClearErrorMsg()
+	return _u
+}
+
+// SetStatus sets the "status" field.
+func (_u *SysOperationLogUpdateOne) SetStatus(v string) *SysOperationLogUpdateOne {
+	_u.mutation.SetStatus(v)
+	return _u
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_u *SysOperationLogUpdateOne) SetNillableStatus(v *string) *SysOperationLogUpdateOne {
+	if v != nil {
+		_u.SetStatus(*v)
+	}
 	return _u
 }
 
@@ -681,6 +763,11 @@ func (_u *SysOperationLogUpdateOne) check() error {
 			return &ValidationError{Name: "path", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.path": %w`, err)}
 		}
 	}
+	if v, ok := _u.mutation.Status(); ok {
+		if err := sysoperationlog.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.status": %w`, err)}
+		}
+	}
 	if v, ok := _u.mutation.IP(); ok {
 		if err := sysoperationlog.IPValidator(v); err != nil {
 			return &ValidationError{Name: "ip", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.ip": %w`, err)}
@@ -751,6 +838,15 @@ func (_u *SysOperationLogUpdateOne) sqlSave(ctx context.Context) (_node *SysOper
 	}
 	if _u.mutation.ResultCleared() {
 		_spec.ClearField(sysoperationlog.FieldResult, field.TypeString)
+	}
+	if value, ok := _u.mutation.ErrorMsg(); ok {
+		_spec.SetField(sysoperationlog.FieldErrorMsg, field.TypeString, value)
+	}
+	if _u.mutation.ErrorMsgCleared() {
+		_spec.ClearField(sysoperationlog.FieldErrorMsg, field.TypeString)
+	}
+	if value, ok := _u.mutation.Status(); ok {
+		_spec.SetField(sysoperationlog.FieldStatus, field.TypeString, value)
 	}
 	if value, ok := _u.mutation.Duration(); ok {
 		_spec.SetField(sysoperationlog.FieldDuration, field.TypeInt64, value)

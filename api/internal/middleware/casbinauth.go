@@ -19,12 +19,17 @@ func getRoleCodesFromCtx(ctx context.Context) []string {
 // CasbinAuth returns HTTP middleware enforcing Casbin Domain RBAC.
 // RoleCodes are read from JWT claims (set by JwtAuth middleware via context),
 // then checked against Casbin policy for each role.
-// If casbin is nil (graceful degradation), all requests pass through.
-func CasbinAuth(enf *casbinapi.SyncedEnforcer) func(http.HandlerFunc) http.HandlerFunc {
+// fail-closed：disabled=false 时 enforcer 为 nil（初始化失败）一律 503 拒绝，
+// 绝不放行；仅显式 enabled=false（本地开发配置 casbinDisabled）才放行。
+func CasbinAuth(enf *casbinapi.SyncedEnforcer, disabled bool) func(http.HandlerFunc) http.HandlerFunc {
 	return func(next http.HandlerFunc) http.HandlerFunc {
 		return func(w http.ResponseWriter, r *http.Request) {
-			if enf == nil {
+			if disabled {
 				next(w, r)
+				return
+			}
+			if enf == nil {
+				writeJSON(w, http.StatusInternalServerError, errno.AuthServiceUnavailable)
 				return
 			}
 			if r.URL.Path == "" || r.URL.Path[0] != '/' {

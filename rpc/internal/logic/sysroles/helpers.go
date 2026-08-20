@@ -74,7 +74,7 @@ func currentUserAuthorized(svcCtx *svc.ServiceContext, ctx context.Context) (men
 	userId := mixins.GetCurrentUserId(ctx)
 	tenantId := mixins.GetCurrentTenantId(ctx)
 
-	user, uerr := svcCtx.DB.SysUser.ActiveQuery().
+	user, uerr := svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.IDEQ(userId)).
 		WithRoles(func(q *ent.SysRoleQuery) {
 			q.Where(sysrole.DeletedAtIsNil(), sysrole.StatusEQ(sysrole.StatusActive)).

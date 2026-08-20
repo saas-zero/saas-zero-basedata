@@ -764,36 +764,42 @@ func init() {
 	sysoperationlog.DefaultPath = sysoperationlogDescPath.Default.(string)
 	// sysoperationlog.PathValidator is a validator for the "path" field. It is called by the builders before save.
 	sysoperationlog.PathValidator = sysoperationlogDescPath.Validators[0].(func(string) error)
+	// sysoperationlogDescStatus is the schema descriptor for status field.
+	sysoperationlogDescStatus := sysoperationlogFields[7].Descriptor()
+	// sysoperationlog.DefaultStatus holds the default value on creation for the status field.
+	sysoperationlog.DefaultStatus = sysoperationlogDescStatus.Default.(string)
+	// sysoperationlog.StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	sysoperationlog.StatusValidator = sysoperationlogDescStatus.Validators[0].(func(string) error)
 	// sysoperationlogDescDuration is the schema descriptor for duration field.
-	sysoperationlogDescDuration := sysoperationlogFields[6].Descriptor()
+	sysoperationlogDescDuration := sysoperationlogFields[8].Descriptor()
 	// sysoperationlog.DefaultDuration holds the default value on creation for the duration field.
 	sysoperationlog.DefaultDuration = sysoperationlogDescDuration.Default.(int64)
 	// sysoperationlogDescIP is the schema descriptor for ip field.
-	sysoperationlogDescIP := sysoperationlogFields[7].Descriptor()
+	sysoperationlogDescIP := sysoperationlogFields[9].Descriptor()
 	// sysoperationlog.DefaultIP holds the default value on creation for the ip field.
 	sysoperationlog.DefaultIP = sysoperationlogDescIP.Default.(string)
 	// sysoperationlog.IPValidator is a validator for the "ip" field. It is called by the builders before save.
 	sysoperationlog.IPValidator = sysoperationlogDescIP.Validators[0].(func(string) error)
 	// sysoperationlogDescUserAgent is the schema descriptor for user_agent field.
-	sysoperationlogDescUserAgent := sysoperationlogFields[8].Descriptor()
+	sysoperationlogDescUserAgent := sysoperationlogFields[10].Descriptor()
 	// sysoperationlog.UserAgentValidator is a validator for the "user_agent" field. It is called by the builders before save.
 	sysoperationlog.UserAgentValidator = sysoperationlogDescUserAgent.Validators[0].(func(string) error)
 	// sysoperationlogDescOperatorID is the schema descriptor for operator_id field.
-	sysoperationlogDescOperatorID := sysoperationlogFields[9].Descriptor()
+	sysoperationlogDescOperatorID := sysoperationlogFields[11].Descriptor()
 	// sysoperationlog.DefaultOperatorID holds the default value on creation for the operator_id field.
 	sysoperationlog.DefaultOperatorID = sysoperationlogDescOperatorID.Default.(int64)
 	// sysoperationlogDescOperatorName is the schema descriptor for operator_name field.
-	sysoperationlogDescOperatorName := sysoperationlogFields[10].Descriptor()
+	sysoperationlogDescOperatorName := sysoperationlogFields[12].Descriptor()
 	// sysoperationlog.DefaultOperatorName holds the default value on creation for the operator_name field.
 	sysoperationlog.DefaultOperatorName = sysoperationlogDescOperatorName.Default.(string)
 	// sysoperationlog.OperatorNameValidator is a validator for the "operator_name" field. It is called by the builders before save.
 	sysoperationlog.OperatorNameValidator = sysoperationlogDescOperatorName.Validators[0].(func(string) error)
 	// sysoperationlogDescTenantID is the schema descriptor for tenant_id field.
-	sysoperationlogDescTenantID := sysoperationlogFields[11].Descriptor()
+	sysoperationlogDescTenantID := sysoperationlogFields[13].Descriptor()
 	// sysoperationlog.DefaultTenantID holds the default value on creation for the tenant_id field.
 	sysoperationlog.DefaultTenantID = sysoperationlogDescTenantID.Default.(int64)
 	// sysoperationlogDescCreatedAt is the schema descriptor for created_at field.
-	sysoperationlogDescCreatedAt := sysoperationlogFields[12].Descriptor()
+	sysoperationlogDescCreatedAt := sysoperationlogFields[14].Descriptor()
 	// sysoperationlog.DefaultCreatedAt holds the default value on creation for the created_at field.
 	sysoperationlog.DefaultCreatedAt = sysoperationlogDescCreatedAt.Default.(func() time.Time)
 	// sysoperationlogDescID is the schema descriptor for id field.

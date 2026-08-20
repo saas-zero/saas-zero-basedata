@@ -35,41 +35,42 @@ type ServiceContext struct {
 func NewServiceContext(c config.Config) *ServiceContext {
 	conn := zrpc.MustNewClient(c.Basedata, zrpc.WithUnaryClientInterceptor(authClientInterceptor))
 
-	// Casbin enforcer initialization with graceful degradation.
-	// If PostgreSQL or Casbin initialization fails, enforcer is nil and the
-	// CasbinAuth middleware will allow all requests (fail-open).
+	// Casbin enforcer 初始化：fail-closed。
+	// 生产环境数据库/Enforcer 初始化失败即中止启动，绝不放行 /system/* 权限校验。
 	var enf *casbinapi.SyncedEnforcer
-	db, err := sql.Open("postgres", c.CasbinPostgres.DataSource)
-	if err != nil {
-		log.Printf("warning: failed to open casbin db: %v (casbin disabled)", err)
-	} else {
+	if !c.CasbinDisabled {
+		db, err := sql.Open("postgres", c.CasbinPostgres.DataSource)
+		if err != nil {
+			log.Fatalf("fatal: failed to open casbin db: %v (fail-closed)", err)
+		}
 		enf, err = commcasbin.NewEnforcer(db, "casbin_rule")
 		if err != nil {
-			log.Printf("warning: failed to init casbin enforcer: %v (casbin disabled)", err)
+			log.Fatalf("fatal: failed to init casbin enforcer: %v (fail-closed)", err)
 		}
-	}
-	if enf != nil {
 		// Background goroutine: periodically reload Casbin policies from DB.
 		// Policies are updated by basedata-rpc's AssignApis RPC.
 		// 30s interval for faster policy propagation during development.
+		// 重载失败仅记录告警，继续使用最后一次成功加载的策略。
 		go func() {
 			ticker := time.NewTicker(30 * time.Second)
 			defer ticker.Stop()
 			for range ticker.C {
 				if err := enf.LoadPolicy(); err != nil {
-					log.Printf("casbin reload policy error: %v", err)
+					log.Printf("CASBIN ALERT: reload policy error (keeping last-known policies): %v", err)
 				}
 			}
 		}()
 	}
 
-	// Redis client initialization with graceful degradation.
-	// If Redis is unavailable, JWT validation (token existence + version check)
-	// will be skipped, falling back to JWT signature verification only.
+	// Redis 客户端初始化：fail-closed。
+	// 生产环境 Redis 不可用即中止启动，JWT 校验不得退化为仅验证签名。
 	var rds *redis.Client
-	rds, err = redis.NewClient(c.Redis)
-	if err != nil {
-		log.Printf("warning: failed to init redis: %v (redis disabled)", err)
+	var err error
+	if !c.RedisDisabled {
+		rds, err = redis.NewClient(c.Redis)
+		if err != nil {
+			log.Fatalf("fatal: failed to init redis: %v (fail-closed)", err)
+		}
 	}
 
 	return &ServiceContext{

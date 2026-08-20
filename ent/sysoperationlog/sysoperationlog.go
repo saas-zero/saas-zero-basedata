@@ -26,6 +26,10 @@ const (
 	FieldParams = "params"
 	// FieldResult holds the string denoting the result field in the database.
 	FieldResult = "result"
+	// FieldErrorMsg holds the string denoting the error_msg field in the database.
+	FieldErrorMsg = "error_msg"
+	// FieldStatus holds the string denoting the status field in the database.
+	FieldStatus = "status"
 	// FieldDuration holds the string denoting the duration field in the database.
 	FieldDuration = "duration"
 	// FieldIP holds the string denoting the ip field in the database.
@@ -53,6 +57,8 @@ var Columns = []string{
 	FieldPath,
 	FieldParams,
 	FieldResult,
+	FieldErrorMsg,
+	FieldStatus,
 	FieldDuration,
 	FieldIP,
 	FieldUserAgent,
@@ -95,6 +101,10 @@ var (
 	DefaultPath string
 	// PathValidator is a validator for the "path" field. It is called by the builders before save.
 	PathValidator func(string) error
+	// DefaultStatus holds the default value on creation for the "status" field.
+	DefaultStatus string
+	// StatusValidator is a validator for the "status" field. It is called by the builders before save.
+	StatusValidator func(string) error
 	// DefaultDuration holds the default value on creation for the "duration" field.
 	DefaultDuration int64
 	// DefaultIP holds the default value on creation for the "ip" field.
@@ -153,6 +163,16 @@ func ByParams(opts ...sql.OrderTermOption) OrderOption {
 // ByResult orders the results by the result field.
 func ByResult(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldResult, opts...).ToFunc()
+}
+
+// ByErrorMsg orders the results by the error_msg field.
+func ByErrorMsg(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldErrorMsg, opts...).ToFunc()
+}
+
+// ByStatus orders the results by the status field.
+func ByStatus(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStatus, opts...).ToFunc()
 }
 
 // ByDuration orders the results by the duration field.

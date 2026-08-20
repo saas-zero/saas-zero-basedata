@@ -343,6 +343,8 @@ var (
 		{Name: "path", Type: field.TypeString, Size: 255, Comment: "请求路径 | Request Path", Default: ""},
 		{Name: "params", Type: field.TypeString, Nullable: true, Comment: "请求参数 | Request Params"},
 		{Name: "result", Type: field.TypeString, Nullable: true, Comment: "返回结果 | Response Result"},
+		{Name: "error_msg", Type: field.TypeString, Nullable: true, Comment: "失败原因 | Error Message"},
+		{Name: "status", Type: field.TypeString, Size: 16, Comment: "执行状态 success/failure | Execute Status", Default: "success"},
 		{Name: "duration", Type: field.TypeInt64, Comment: "耗时(ms) | Duration", Default: 0},
 		{Name: "ip", Type: field.TypeString, Size: 45, Comment: "操作IP | Operator IP", Default: ""},
 		{Name: "user_agent", Type: field.TypeString, Nullable: true, Size: 500, Comment: "User-Agent | 用户代理"},
@@ -366,12 +368,12 @@ var (
 			{
 				Name:    "sysoperationlog_operator_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysOperationLogsColumns[10]},
+				Columns: []*schema.Column{SysOperationLogsColumns[12]},
 			},
 			{
 				Name:    "sysoperationlog_tenant_id",
 				Unique:  false,
-				Columns: []*schema.Column{SysOperationLogsColumns[12]},
+				Columns: []*schema.Column{SysOperationLogsColumns[14]},
 			},
 			{
 				Name:    "sysoperationlog_path",

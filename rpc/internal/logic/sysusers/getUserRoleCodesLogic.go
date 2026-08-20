@@ -6,6 +6,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
+	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -25,7 +26,8 @@ func NewGetUserRoleCodesLogic(ctx context.Context, svcCtx *svc.ServiceContext) *
 }
 
 func (l *GetUserRoleCodesLogic) GetUserRoleCodes(in *apps.IdReq) (*apps.RoleCodesResp, error) {
-	u, err := l.svcCtx.DB.SysUser.Query().
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
+	u, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.IDEQ(in.GetId())).
 		WithRoles().
 		Only(l.ctx)

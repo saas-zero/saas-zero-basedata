@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/saas-zero/saas-zero-basedata/ent"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
@@ -27,12 +29,41 @@ func NewUpdateUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Update
 }
 
 func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
+	tenantId := mixins.GetCurrentTenantId(l.ctx)
 	userId := mixins.GetCurrentUserId(l.ctx)
 	userName := mixins.GetCurrentUserName(l.ctx)
-	ctx := mixins.SetCurrentUserId(l.ctx, userId)
+	ctx := mixins.SetCurrentTenantId(l.ctx, tenantId)
+	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
-	update := l.svcCtx.DB.SysUser.UpdateOneID(in.GetId())
+	// 先按「当前租户 + 未删除」定位目标用户，防止跨租户按全局 ID 更新
+	target, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
+		Where(sysuser.IDEQ(in.GetId())).
+		Only(ctx)
+	if err != nil {
+		if ent.IsNotFound(err) {
+			return nil, errno.UserNotFound
+		}
+		return nil, err
+	}
+
+	// 关联对象租户一致性：部门和角色必须属于当前租户
+	if err := checkUserRolesInTenant(l.svcCtx, ctx, tenantId, in.GetRoleIds()); err != nil {
+		return nil, errno.New(errno.InvalidParam.Code, err.Error())
+	}
+	if in.DeptId != nil && in.GetDeptId() > 0 {
+		deptInTenant, derr := l.svcCtx.DB.SysDept.TenantQuery(tenantId).
+			Where(sysdept.IDEQ(in.GetDeptId())).
+			Exist(ctx)
+		if derr != nil {
+			return nil, derr
+		}
+		if !deptInTenant {
+			return nil, errno.New(errno.InvalidParam.Code, "部门不存在或不属于当前租户")
+		}
+	}
+
+	update := l.svcCtx.DB.SysUser.UpdateOne(target)
 	if in.Nickname != nil {
 		update.SetNickname(in.GetNickname())
 	}
@@ -53,14 +84,7 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 	}
 
 	// 记录更新前的状态，用于判断是否发生"禁用"
-	var prevStatus sysuser.Status
-	if in.Status != nil {
-		prev, err := l.svcCtx.DB.SysUser.Get(ctx, in.GetId())
-		if err != nil {
-			return nil, err
-		}
-		prevStatus = prev.Status
-	}
+	prevStatus := target.Status
 
 	result, err := update.Save(ctx)
 	if err != nil {
@@ -76,15 +100,17 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 	}
 
 	if len(in.GetRoleIds()) > 0 {
-		l.svcCtx.DB.SysUser.UpdateOneID(result.ID).
+		if err := l.svcCtx.DB.SysUser.UpdateOne(target).
 			ClearRoles().
 			AddRoleIDs(in.GetRoleIds()...).
-			Exec(ctx)
+			Exec(ctx); err != nil {
+			return nil, err
+		}
 		// 角色变更：递增 token_version 使旧 token 失效（重新登录后权限生效）
 		l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", result.ID))
 	}
 
-	u, err := l.svcCtx.DB.SysUser.Query().
+	u, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
 		Where(sysuser.IDEQ(result.ID)).
 		WithRoles().
 		Only(ctx)

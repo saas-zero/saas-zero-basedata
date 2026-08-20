@@ -8624,6 +8624,8 @@ type SysOperationLogMutation struct {
 	_path          *string
 	params         *string
 	result         *string
+	error_msg      *string
+	status         *string
 	duration       *int64
 	addduration    *int64
 	ip             *string
@@ -8984,6 +8986,91 @@ func (m *SysOperationLogMutation) ResultCleared() bool {
 func (m *SysOperationLogMutation) ResetResult() {
 	m.result = nil
 	delete(m.clearedFields, sysoperationlog.FieldResult)
+}
+
+// SetErrorMsg sets the "error_msg" field.
+func (m *SysOperationLogMutation) SetErrorMsg(s string) {
+	m.error_msg = &s
+}
+
+// ErrorMsg returns the value of the "error_msg" field in the mutation.
+func (m *SysOperationLogMutation) ErrorMsg() (r string, exists bool) {
+	v := m.error_msg
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldErrorMsg returns the old "error_msg" field's value of the SysOperationLog entity.
+// If the SysOperationLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysOperationLogMutation) OldErrorMsg(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldErrorMsg is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldErrorMsg requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldErrorMsg: %w", err)
+	}
+	return oldValue.ErrorMsg, nil
+}
+
+// ClearErrorMsg clears the value of the "error_msg" field.
+func (m *SysOperationLogMutation) ClearErrorMsg() {
+	m.error_msg = nil
+	m.clearedFields[sysoperationlog.FieldErrorMsg] = struct{}{}
+}
+
+// ErrorMsgCleared returns if the "error_msg" field was cleared in this mutation.
+func (m *SysOperationLogMutation) ErrorMsgCleared() bool {
+	_, ok := m.clearedFields[sysoperationlog.FieldErrorMsg]
+	return ok
+}
+
+// ResetErrorMsg resets all changes to the "error_msg" field.
+func (m *SysOperationLogMutation) ResetErrorMsg() {
+	m.error_msg = nil
+	delete(m.clearedFields, sysoperationlog.FieldErrorMsg)
+}
+
+// SetStatus sets the "status" field.
+func (m *SysOperationLogMutation) SetStatus(s string) {
+	m.status = &s
+}
+
+// Status returns the value of the "status" field in the mutation.
+func (m *SysOperationLogMutation) Status() (r string, exists bool) {
+	v := m.status
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStatus returns the old "status" field's value of the SysOperationLog entity.
+// If the SysOperationLog object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *SysOperationLogMutation) OldStatus(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStatus is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStatus requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStatus: %w", err)
+	}
+	return oldValue.Status, nil
+}
+
+// ResetStatus resets all changes to the "status" field.
+func (m *SysOperationLogMutation) ResetStatus() {
+	m.status = nil
 }
 
 // SetDuration sets the "duration" field.
@@ -9359,7 +9446,7 @@ func (m *SysOperationLogMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *SysOperationLogMutation) Fields() []string {
-	fields := make([]string, 0, 13)
+	fields := make([]string, 0, 15)
 	if m.module != nil {
 		fields = append(fields, sysoperationlog.FieldModule)
 	}
@@ -9377,6 +9464,12 @@ func (m *SysOperationLogMutation) Fields() []string {
 	}
 	if m.result != nil {
 		fields = append(fields, sysoperationlog.FieldResult)
+	}
+	if m.error_msg != nil {
+		fields = append(fields, sysoperationlog.FieldErrorMsg)
+	}
+	if m.status != nil {
+		fields = append(fields, sysoperationlog.FieldStatus)
 	}
 	if m.duration != nil {
 		fields = append(fields, sysoperationlog.FieldDuration)
@@ -9419,6 +9512,10 @@ func (m *SysOperationLogMutation) Field(name string) (ent.Value, bool) {
 		return m.Params()
 	case sysoperationlog.FieldResult:
 		return m.Result()
+	case sysoperationlog.FieldErrorMsg:
+		return m.ErrorMsg()
+	case sysoperationlog.FieldStatus:
+		return m.Status()
 	case sysoperationlog.FieldDuration:
 		return m.Duration()
 	case sysoperationlog.FieldIP:
@@ -9454,6 +9551,10 @@ func (m *SysOperationLogMutation) OldField(ctx context.Context, name string) (en
 		return m.OldParams(ctx)
 	case sysoperationlog.FieldResult:
 		return m.OldResult(ctx)
+	case sysoperationlog.FieldErrorMsg:
+		return m.OldErrorMsg(ctx)
+	case sysoperationlog.FieldStatus:
+		return m.OldStatus(ctx)
 	case sysoperationlog.FieldDuration:
 		return m.OldDuration(ctx)
 	case sysoperationlog.FieldIP:
@@ -9518,6 +9619,20 @@ func (m *SysOperationLogMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetResult(v)
+		return nil
+	case sysoperationlog.FieldErrorMsg:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetErrorMsg(v)
+		return nil
+	case sysoperationlog.FieldStatus:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStatus(v)
 		return nil
 	case sysoperationlog.FieldDuration:
 		v, ok := value.(int64)
@@ -9643,6 +9758,9 @@ func (m *SysOperationLogMutation) ClearedFields() []string {
 	if m.FieldCleared(sysoperationlog.FieldResult) {
 		fields = append(fields, sysoperationlog.FieldResult)
 	}
+	if m.FieldCleared(sysoperationlog.FieldErrorMsg) {
+		fields = append(fields, sysoperationlog.FieldErrorMsg)
+	}
 	if m.FieldCleared(sysoperationlog.FieldUserAgent) {
 		fields = append(fields, sysoperationlog.FieldUserAgent)
 	}
@@ -9668,6 +9786,9 @@ func (m *SysOperationLogMutation) ClearField(name string) error {
 		return nil
 	case sysoperationlog.FieldResult:
 		m.ClearResult()
+		return nil
+	case sysoperationlog.FieldErrorMsg:
+		m.ClearErrorMsg()
 		return nil
 	case sysoperationlog.FieldUserAgent:
 		m.ClearUserAgent()
@@ -9700,6 +9821,12 @@ func (m *SysOperationLogMutation) ResetField(name string) error {
 		return nil
 	case sysoperationlog.FieldResult:
 		m.ResetResult()
+		return nil
+	case sysoperationlog.FieldErrorMsg:
+		m.ResetErrorMsg()
+		return nil
+	case sysoperationlog.FieldStatus:
+		m.ResetStatus()
 		return nil
 	case sysoperationlog.FieldDuration:
 		m.ResetDuration()

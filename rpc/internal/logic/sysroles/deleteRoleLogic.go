@@ -49,6 +49,10 @@ func (l *DeleteRoleLogic) DeleteRole(in *apps.IdsReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
+	if len(roles) != len(in.GetIds()) {
+		return nil, errno.New(errno.InvalidParam.Code, "存在不存在或不属于当前租户的角色")
+	}
+
 	// 系统内置角色（is_system=true）不可删除
 	for _, r := range roles {
 		if r.IsSystem {
@@ -77,7 +81,8 @@ func (l *DeleteRoleLogic) DeleteRole(in *apps.IdsReq) (*apps.EmptyResp, error) {
 	// 该角色下所有用户 Token 失效，踢掉旧会话
 	for _, r := range roles {
 		users, err := l.svcCtx.DB.SysUser.Query().
-			Where(sysuser.HasRolesWith(sysrole.IDEQ(r.ID))).
+			Where(sysuser.TenantIDEQ(tenantId), sysuser.DeletedAtIsNil()).
+			Where(sysuser.HasRolesWith(sysrole.IDEQ(r.ID), sysrole.DeletedAtIsNil())).
 			All(ctx)
 		if err != nil {
 			continue

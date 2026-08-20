@@ -22,6 +22,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 
+
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -56,6 +57,9 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
+
+	// 环境变量覆盖：POSTGRES_DSN 优先生效（生产用），无则用 YAML 明文（本地调试）
+	c.Postgres.DataSource = envconf.String("POSTGRES_DSN", c.Postgres.DataSource)
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {

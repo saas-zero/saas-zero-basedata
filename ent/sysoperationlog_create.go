@@ -104,6 +104,34 @@ func (_c *SysOperationLogCreate) SetNillableResult(v *string) *SysOperationLogCr
 	return _c
 }
 
+// SetErrorMsg sets the "error_msg" field.
+func (_c *SysOperationLogCreate) SetErrorMsg(v string) *SysOperationLogCreate {
+	_c.mutation.SetErrorMsg(v)
+	return _c
+}
+
+// SetNillableErrorMsg sets the "error_msg" field if the given value is not nil.
+func (_c *SysOperationLogCreate) SetNillableErrorMsg(v *string) *SysOperationLogCreate {
+	if v != nil {
+		_c.SetErrorMsg(*v)
+	}
+	return _c
+}
+
+// SetStatus sets the "status" field.
+func (_c *SysOperationLogCreate) SetStatus(v string) *SysOperationLogCreate {
+	_c.mutation.SetStatus(v)
+	return _c
+}
+
+// SetNillableStatus sets the "status" field if the given value is not nil.
+func (_c *SysOperationLogCreate) SetNillableStatus(v *string) *SysOperationLogCreate {
+	if v != nil {
+		_c.SetStatus(*v)
+	}
+	return _c
+}
+
 // SetDuration sets the "duration" field.
 func (_c *SysOperationLogCreate) SetDuration(v int64) *SysOperationLogCreate {
 	_c.mutation.SetDuration(v)
@@ -261,6 +289,10 @@ func (_c *SysOperationLogCreate) defaults() error {
 		v := sysoperationlog.DefaultPath
 		_c.mutation.SetPath(v)
 	}
+	if _, ok := _c.mutation.Status(); !ok {
+		v := sysoperationlog.DefaultStatus
+		_c.mutation.SetStatus(v)
+	}
 	if _, ok := _c.mutation.Duration(); !ok {
 		v := sysoperationlog.DefaultDuration
 		_c.mutation.SetDuration(v)
@@ -323,6 +355,14 @@ func (_c *SysOperationLogCreate) check() error {
 	if v, ok := _c.mutation.Path(); ok {
 		if err := sysoperationlog.PathValidator(v); err != nil {
 			return &ValidationError{Name: "path", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.path": %w`, err)}
+		}
+	}
+	if _, ok := _c.mutation.Status(); !ok {
+		return &ValidationError{Name: "status", err: errors.New(`ent: missing required field "SysOperationLog.status"`)}
+	}
+	if v, ok := _c.mutation.Status(); ok {
+		if err := sysoperationlog.StatusValidator(v); err != nil {
+			return &ValidationError{Name: "status", err: fmt.Errorf(`ent: validator failed for field "SysOperationLog.status": %w`, err)}
 		}
 	}
 	if _, ok := _c.mutation.Duration(); !ok {
@@ -415,6 +455,14 @@ func (_c *SysOperationLogCreate) createSpec() (*SysOperationLog, *sqlgraph.Creat
 	if value, ok := _c.mutation.Result(); ok {
 		_spec.SetField(sysoperationlog.FieldResult, field.TypeString, value)
 		_node.Result = value
+	}
+	if value, ok := _c.mutation.ErrorMsg(); ok {
+		_spec.SetField(sysoperationlog.FieldErrorMsg, field.TypeString, value)
+		_node.ErrorMsg = value
+	}
+	if value, ok := _c.mutation.Status(); ok {
+		_spec.SetField(sysoperationlog.FieldStatus, field.TypeString, value)
+		_node.Status = value
 	}
 	if value, ok := _c.mutation.Duration(); ok {
 		_spec.SetField(sysoperationlog.FieldDuration, field.TypeInt64, value)

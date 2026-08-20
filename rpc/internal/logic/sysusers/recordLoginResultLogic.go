@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/saas-zero/saas-zero-basedata/ent/sysloginlog"
+	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
@@ -36,9 +37,16 @@ func NewRecordLoginResultLogic(ctx context.Context, svcCtx *svc.ServiceContext) 
 func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*apps.EmptyResp, error) {
 	now := time.Now()
 	userId := in.GetUserId()
+	tenantId := in.GetTenantId()
 
 	if userId > 0 {
-		update := l.svcCtx.DB.SysUser.UpdateOneID(userId)
+		target, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).
+			Where(sysuser.IDEQ(userId)).
+			Only(l.ctx)
+		if err != nil {
+			return nil, err
+		}
+		update := l.svcCtx.DB.SysUser.UpdateOne(target)
 		if in.GetSuccess() {
 			// 成功：清零错误计数、解除锁定、记录最近登录 IP/时间
 			update.SetLoginErrorCount(0).
@@ -47,11 +55,7 @@ func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*ap
 				SetLoginAt(now)
 		} else {
 			// 失败：读取当前错误次数，累加后判断是否需要锁定
-			u, err := l.svcCtx.DB.SysUser.Get(l.ctx, userId)
-			if err != nil {
-				return nil, err
-			}
-			newCount := u.LoginErrorCount + 1
+			newCount := target.LoginErrorCount + 1
 			update.SetLoginErrorCount(newCount)
 			if newCount >= maxLoginErrors {
 				update.SetLockoutUntil(now.Add(lockoutDuration))
@@ -78,7 +82,7 @@ func (l *RecordLoginResultLogic) RecordLoginResult(in *apps.LoginRecordReq) (*ap
 		SetStatus(status).
 		SetMessage(in.GetMessage()).
 		SetLoginTime(now).
-		SetTenantID(in.GetTenantId()).
+		SetTenantID(tenantId).
 		Save(l.ctx); err != nil {
 		// 日志写入失败不应阻断登录流程，仅记录错误
 		logx.WithContext(l.ctx).Errorf("record login log error: %v", err)

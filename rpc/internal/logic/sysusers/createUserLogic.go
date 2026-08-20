@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/saas-zero/saas-zero-common/pkg/id"
 
+	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysuser"
 	"github.com/saas-zero/saas-zero-basedata/rpc/apps"
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
@@ -37,6 +38,10 @@ func (l *CreateUserLogic) CreateUser(in *apps.UserReq) (*apps.UserResp, error) {
 	ctx = mixins.SetCurrentUserId(ctx, userId)
 	ctx = mixins.SetCurrentUserName(ctx, userName)
 
+	if err := checkUserRolesInTenant(l.svcCtx, ctx, tenantId, in.GetRoleIds()); err != nil {
+		return nil, errno.New(errno.InvalidParam.Code, err.Error())
+	}
+
 	hash, err := bcrypt.GenerateFromPassword([]byte(in.GetPassword()), bcrypt.DefaultCost)
 	if err != nil {
 		return nil, err
@@ -62,6 +67,15 @@ func (l *CreateUserLogic) CreateUser(in *apps.UserReq) (*apps.UserResp, error) {
 		SetStatus(sysuser.Status(in.GetStatus()))
 
 	if in.GetDeptId() > 0 {
+		deptInTenant, derr := l.svcCtx.DB.SysDept.TenantQuery(tenantId).
+			Where(sysdept.IDEQ(in.GetDeptId())).
+			Exist(ctx)
+		if derr != nil {
+			return nil, derr
+		}
+		if !deptInTenant {
+			return nil, errno.New(errno.InvalidParam.Code, "部门不存在或不属于当前租户")
+		}
 		create.SetDeptID(in.GetDeptId())
 	}
 	if in.GetRemark() != "" {
@@ -74,9 +88,11 @@ func (l *CreateUserLogic) CreateUser(in *apps.UserReq) (*apps.UserResp, error) {
 	}
 
 	if len(in.GetRoleIds()) > 0 {
-		l.svcCtx.DB.SysUser.UpdateOneID(result.ID).
+		if err := l.svcCtx.DB.SysUser.UpdateOneID(result.ID).
 			AddRoleIDs(in.GetRoleIds()...).
-			Exec(ctx)
+			Exec(ctx); err != nil {
+			return nil, err
+		}
 	}
 
 	return &apps.UserResp{

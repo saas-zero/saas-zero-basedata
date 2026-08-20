@@ -36,28 +36,15 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 	casbinDb, err := sql.Open("postgres", c.Postgres.DataSource)
 	if err != nil {
-		log.Printf("warning: failed opening casbin db: %v (casbin disabled)", err)
-		return &ServiceContext{
-			Config: c,
-			DB:     client,
-		}
+		log.Fatalf("failed opening casbin db: %v (fail-closed)", err)
 	}
 	enf, err := commcasbin.NewEnforcer(casbinDb, "casbin_rule")
 	if err != nil {
-		log.Printf("warning: failed initializing casbin: %v (casbin disabled)", err)
-		return &ServiceContext{
-			Config: c,
-			DB:     client,
-		}
+		log.Fatalf("failed initializing casbin: %v (fail-closed)", err)
 	}
 	rds, err := redis.NewClient(c.CacheRedis)
 	if err != nil {
-		log.Printf("warning: failed initializing redis: %v (redis disabled)", err)
-		return &ServiceContext{
-			Config:   c,
-			DB:       client,
-			Enforcer: enf,
-		}
+		log.Fatalf("failed initializing redis: %v (fail-closed)", err)
 	}
 	return &ServiceContext{
 		Config:   c,

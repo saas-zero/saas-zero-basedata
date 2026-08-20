@@ -2,11 +2,12 @@ package sysuserslogic
 
 import (
 	"context"
+	stdsql "database/sql"
 	"testing"
 
 	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
 	"github.com/saas-zero/saas-zero-basedata/ent"
-	"github.com/saas-zero/saas-zero-basedata/ent/enttest"
 	"github.com/saas-zero/saas-zero-basedata/ent/migrate"
 	"github.com/saas-zero/saas-zero-basedata/ent/syspackage"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysrole"
@@ -19,7 +20,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"google.golang.org/protobuf/proto"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "modernc.org/sqlite"
 )
 
 // testCtx returns a context with test user/tenant info injected.
@@ -69,10 +70,14 @@ func seedTestData(t *testing.T, client *ent.Client) int64 {
 // seeded with a package + tenant so FK constraints are satisfied.
 func newTestClient(t *testing.T) (*ent.Client, int64) {
 	t.Helper()
-	client := enttest.Open(t, dialect.SQLite,
-		"file:ent?mode=memory&cache=shared&_fk=1",
-		enttest.WithMigrateOptions(migrate.WithForeignKeys(true)),
-	)
+	db, err := stdsql.Open("sqlite", "file:ent?mode=memory&cache=shared&_pragma=foreign_keys(1)")
+	if err != nil {
+		t.Fatalf("open sqlite: %v", err)
+	}
+	client := ent.NewClient(ent.Driver(entsql.OpenDB(dialect.SQLite, db)))
+	if err := client.Schema.Create(context.Background(), migrate.WithForeignKeys(true)); err != nil {
+		t.Fatalf("migrate sqlite: %v", err)
+	}
 	tenantID := seedTestData(t, client)
 	return client, tenantID
 }

@@ -84,6 +84,16 @@ func Result(v string) predicate.SysOperationLog {
 	return predicate.SysOperationLog(sql.FieldEQ(FieldResult, v))
 }
 
+// ErrorMsg applies equality check predicate on the "error_msg" field. It's identical to ErrorMsgEQ.
+func ErrorMsg(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldErrorMsg, v))
+}
+
+// Status applies equality check predicate on the "status" field. It's identical to StatusEQ.
+func Status(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldStatus, v))
+}
+
 // Duration applies equality check predicate on the "duration" field. It's identical to DurationEQ.
 func Duration(v int64) predicate.SysOperationLog {
 	return predicate.SysOperationLog(sql.FieldEQ(FieldDuration, v))
@@ -527,6 +537,146 @@ func ResultEqualFold(v string) predicate.SysOperationLog {
 // ResultContainsFold applies the ContainsFold predicate on the "result" field.
 func ResultContainsFold(v string) predicate.SysOperationLog {
 	return predicate.SysOperationLog(sql.FieldContainsFold(FieldResult, v))
+}
+
+// ErrorMsgEQ applies the EQ predicate on the "error_msg" field.
+func ErrorMsgEQ(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldErrorMsg, v))
+}
+
+// ErrorMsgNEQ applies the NEQ predicate on the "error_msg" field.
+func ErrorMsgNEQ(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNEQ(FieldErrorMsg, v))
+}
+
+// ErrorMsgIn applies the In predicate on the "error_msg" field.
+func ErrorMsgIn(vs ...string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldIn(FieldErrorMsg, vs...))
+}
+
+// ErrorMsgNotIn applies the NotIn predicate on the "error_msg" field.
+func ErrorMsgNotIn(vs ...string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNotIn(FieldErrorMsg, vs...))
+}
+
+// ErrorMsgGT applies the GT predicate on the "error_msg" field.
+func ErrorMsgGT(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGT(FieldErrorMsg, v))
+}
+
+// ErrorMsgGTE applies the GTE predicate on the "error_msg" field.
+func ErrorMsgGTE(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGTE(FieldErrorMsg, v))
+}
+
+// ErrorMsgLT applies the LT predicate on the "error_msg" field.
+func ErrorMsgLT(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLT(FieldErrorMsg, v))
+}
+
+// ErrorMsgLTE applies the LTE predicate on the "error_msg" field.
+func ErrorMsgLTE(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLTE(FieldErrorMsg, v))
+}
+
+// ErrorMsgContains applies the Contains predicate on the "error_msg" field.
+func ErrorMsgContains(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldContains(FieldErrorMsg, v))
+}
+
+// ErrorMsgHasPrefix applies the HasPrefix predicate on the "error_msg" field.
+func ErrorMsgHasPrefix(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldHasPrefix(FieldErrorMsg, v))
+}
+
+// ErrorMsgHasSuffix applies the HasSuffix predicate on the "error_msg" field.
+func ErrorMsgHasSuffix(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldHasSuffix(FieldErrorMsg, v))
+}
+
+// ErrorMsgIsNil applies the IsNil predicate on the "error_msg" field.
+func ErrorMsgIsNil() predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldIsNull(FieldErrorMsg))
+}
+
+// ErrorMsgNotNil applies the NotNil predicate on the "error_msg" field.
+func ErrorMsgNotNil() predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNotNull(FieldErrorMsg))
+}
+
+// ErrorMsgEqualFold applies the EqualFold predicate on the "error_msg" field.
+func ErrorMsgEqualFold(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEqualFold(FieldErrorMsg, v))
+}
+
+// ErrorMsgContainsFold applies the ContainsFold predicate on the "error_msg" field.
+func ErrorMsgContainsFold(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldContainsFold(FieldErrorMsg, v))
+}
+
+// StatusEQ applies the EQ predicate on the "status" field.
+func StatusEQ(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEQ(FieldStatus, v))
+}
+
+// StatusNEQ applies the NEQ predicate on the "status" field.
+func StatusNEQ(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNEQ(FieldStatus, v))
+}
+
+// StatusIn applies the In predicate on the "status" field.
+func StatusIn(vs ...string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldIn(FieldStatus, vs...))
+}
+
+// StatusNotIn applies the NotIn predicate on the "status" field.
+func StatusNotIn(vs ...string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldNotIn(FieldStatus, vs...))
+}
+
+// StatusGT applies the GT predicate on the "status" field.
+func StatusGT(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGT(FieldStatus, v))
+}
+
+// StatusGTE applies the GTE predicate on the "status" field.
+func StatusGTE(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldGTE(FieldStatus, v))
+}
+
+// StatusLT applies the LT predicate on the "status" field.
+func StatusLT(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLT(FieldStatus, v))
+}
+
+// StatusLTE applies the LTE predicate on the "status" field.
+func StatusLTE(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldLTE(FieldStatus, v))
+}
+
+// StatusContains applies the Contains predicate on the "status" field.
+func StatusContains(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldContains(FieldStatus, v))
+}
+
+// StatusHasPrefix applies the HasPrefix predicate on the "status" field.
+func StatusHasPrefix(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldHasPrefix(FieldStatus, v))
+}
+
+// StatusHasSuffix applies the HasSuffix predicate on the "status" field.
+func StatusHasSuffix(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldHasSuffix(FieldStatus, v))
+}
+
+// StatusEqualFold applies the EqualFold predicate on the "status" field.
+func StatusEqualFold(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldEqualFold(FieldStatus, v))
+}
+
+// StatusContainsFold applies the ContainsFold predicate on the "status" field.
+func StatusContainsFold(v string) predicate.SysOperationLog {
+	return predicate.SysOperationLog(sql.FieldContainsFold(FieldStatus, v))
 }
 
 // DurationEQ applies the EQ predicate on the "duration" field.

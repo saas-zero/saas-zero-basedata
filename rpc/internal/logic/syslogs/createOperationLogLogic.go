@@ -24,12 +24,13 @@ func NewCreateOperationLogLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 }
 
 // CreateOperationLog 由 basedata-api 的操作日志中间件调用，写入一条操作审计日志。
-// proto 的 requestMethod/requestUrl/requestParam/responseData/operatorIp 映射到
-// schema 的 method/path/params/result/ip；schema 无 status/errorMsg 列，故忽略。
+// proto 的 requestMethod/requestUrl/requestParam/responseData/status/errorMsg/operatorIp
+// 映射到 schema 的 method/path/params/result/status/error_msg/ip。
 func (l *CreateOperationLogLogic) CreateOperationLog(in *apps.OperationLog) (*apps.EmptyResp, error) {
 	result := in.GetResponseData()
-	if in.GetErrorMsg() != "" {
-		result = in.GetErrorMsg()
+	status := in.GetStatus()
+	if status == "" {
+		status = "success"
 	}
 	_, err := l.svcCtx.DB.SysOperationLog.Create().
 		SetModule(in.GetModule()).
@@ -38,6 +39,8 @@ func (l *CreateOperationLogLogic) CreateOperationLog(in *apps.OperationLog) (*ap
 		SetPath(in.GetRequestUrl()).
 		SetParams(in.GetRequestParam()).
 		SetResult(result).
+		SetErrorMsg(in.GetErrorMsg()).
+		SetStatus(status).
 		SetDuration(in.GetDuration()).
 		SetIP(in.GetOperatorIp()).
 		SetOperatorID(in.GetOperatorId()).
