@@ -32,7 +32,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	// WithDropIndex: 删除 schema 中已不存在的索引（如旧的字段级唯一索引），
 	// 确保条件唯一索引迁移后旧索引不会残留导致唯一约束仍生效。
 	if err := client.Schema.Create(context.Background(), schema.WithDropIndex(true)); err != nil {
-		log.Printf("warning: failed creating schema resources: %v (service will retry on next restart)", err)
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+	if err := SeedSystemDicts(context.Background(), client); err != nil {
+		log.Fatalf("failed seeding system dictionaries: %v", err)
 	}
 	casbinDb, err := sql.Open("postgres", c.Postgres.DataSource)
 	if err != nil {

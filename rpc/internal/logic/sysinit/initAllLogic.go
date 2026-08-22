@@ -116,12 +116,17 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	}
 	defer tx.Rollback()
 
-	// 1. 清除旧的通配 API（seed 时代遗留，如 /system/user/*），避免与精确接口冲突
+	// 1. 初始化系统默认字典。系统字典使用 tenant_id=0，重复初始化只补齐缺失项。
+	if err := svc.SeedSystemDictsTx(ctx, tx); err != nil {
+		return nil, err
+	}
+
+	// 2. 清除旧的通配 API（seed 时代遗留，如 /system/user/*），避免与精确接口冲突
 	if _, err := tx.SysApi.Delete().Where(sysapi.APIPathContains("*")).Exec(ctx); err != nil {
 		return nil, err
 	}
 
-	// 2. 创建目录 + 具体接口（幂等：已存在的跳过），并收集 /system/* 接口用于 admin 策略
+	// 3. 创建目录 + 具体接口（幂等：已存在的跳过），并收集 /system/* 接口用于 admin 策略
 	apiIds := make([]int64, 0, 80)
 	adminPolicies := make([]struct{ path, method, apiId string }, 0, 60)
 	for _, g := range seedApiGroups {
@@ -169,7 +174,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		}
 	}
 
-	// 2. Create or fetch Menus (keyed by name + parent_id；button 可能重名，如多个"分配菜单")
+	// 3. Create or fetch Menus (keyed by name + parent_id；button 可能重名，如多个"分配菜单")
 	menuIdxToId := make(map[int]int64)
 	menuIds := make([]int64, 0, len(seedMenus))
 	for i, m := range seedMenus {
@@ -209,7 +214,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		menuIds = append(menuIds, menu.ID)
 	}
 
-	// 3. Create or fetch Package (code "standard")
+	// 4. Create or fetch Package (code "standard")
 	pkg, err := tx.SysPackage.Query().Where(syspackage.CodeEQ("standard")).First(ctx)
 	if ent.IsNotFound(err) {
 		pkg, err = tx.SysPackage.Create().
@@ -235,7 +240,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 4. Create or fetch Tenant (code "default")
+	// 5. Create or fetch Tenant (code "default")
 	tenant, err := tx.SysTenant.Query().Where(systenant.CodeEQ("default")).First(ctx)
 	if ent.IsNotFound(err) {
 		tenant, err = tx.SysTenant.Create().
@@ -254,7 +259,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 	// Update context with actual tenant ID
 	ctx = mixins.SetCurrentTenantId(ctx, tenant.ID)
 
-	// 5. Create or fetch Role (code "admin")，并确保其拥有全部菜单权限
+	// 6. Create or fetch Role (code "admin")，并确保其拥有全部菜单权限
 	role, err := tx.SysRole.Query().Where(sysrole.CodeEQ("admin")).First(ctx)
 	if ent.IsNotFound(err) {
 		role, err = tx.SysRole.Create().
@@ -275,7 +280,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 6. Create or fetch Department (name "默认部门")
+	// 7. Create or fetch Department (name "默认部门")
 	dept, err := tx.SysDept.Query().Where(sysdept.NameEQ("默认部门")).First(ctx)
 	if ent.IsNotFound(err) {
 		dept, err = tx.SysDept.Create().
@@ -290,7 +295,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 7. Create or fetch User (username "admin")
+	// 8. Create or fetch User (username "admin")
 	_, err = tx.SysUser.Query().Where(sysuser.UsernameEQ("admin")).First(ctx)
 	if ent.IsNotFound(err) {
 		hash, err := bcrypt.GenerateFromPassword([]byte("admin123"), bcrypt.DefaultCost)
@@ -316,7 +321,7 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		return nil, err
 	}
 
-	// 8. Casbin policies: clear old ones for admin, then re-add for all /system/* APIs
+	// 9. Casbin policies: clear old ones for admin, then re-add for all /system/* APIs
 	dom := id.ToString(tenant.ID)
 	if _, err := l.svcCtx.Enforcer.RemoveFilteredPolicy(0, "admin", dom); err != nil {
 		logx.Errorf("initAll: failed to clear casbin policies: %v", err)
