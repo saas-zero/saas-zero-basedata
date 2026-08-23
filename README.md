@@ -9,7 +9,7 @@
 | gRPC RPC 端口 | `:18084`（内部服务间调用） |
 | 数据库 | PostgreSQL（ent ORM 自动迁移） |
 | HTTP 入口 | `api/systemapis.go` |
-| RPC 入口 | `rpc/basedataservice.go` |
+| RPC 入口 | `rpc/basedataService.go` |
 
 ## 两个进程
 
@@ -31,7 +31,7 @@ gRPC 内部服务，直接操作 PostgreSQL。包含所有业务 Logic。
 | `rpc/internal/logic/syslogs/` | 日志查询 |
 | `rpc/internal/logic/sysinit/` | 系统初始化（事务） |
 
-`rpc/basedataservice.go` 中通过 gRPC 拦截器从 metadata 提取用户信息注入 context：
+`rpc/basedataService.go` 中通过 gRPC 拦截器从 metadata 提取用户信息注入 context：
 
 ```go
 func authInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
@@ -72,7 +72,7 @@ API 服务启动后每 30 秒调用 `enf.LoadPolicy()` 从 `casbin_rule` 表重�
 
 ## 数据库表
 
-12 张表由 **ent 自动迁移**创建（`serviceContext.go` 中 `client.Schema.Create()`）：
+11 张业务表由 **ent 自动迁移**创建（`serviceContext.go` 中 `client.Schema.Create()`）；`casbin_rule` 由 Casbin PostgreSQL adapter 自动创建（非 ent 管理）：
 
 | 表 | Mixin | 说明 |
 |---|---|---|
@@ -85,8 +85,8 @@ API 服务启动后每 30 秒调用 `enf.LoadPolicy()` 从 `casbin_rule` 表重�
 | `sys_dicts` | Base+Tenant(Optional)+Created+Updated+Deleted+Status+Remark | 字典（继承） |
 | `sys_dict_datas` | Base+Tenant(Optional)+Created+Updated+Deleted+Status+Remark | 字典数据（继承） |
 | `sys_packages` | Base+Created+Updated+Deleted+Status+Sort+Remark | 套餐 |
-| `sys_login_logs` | Base | 登录日志（login_time） |
-| `sys_operation_logs` | Base | 操作日志（created_at 操作时间） |
+| `sys_login_logs` | Base；显式 `tenant_id` | 登录日志（login_time，按租户查询） |
+| `sys_operation_logs` | Base；显式 `tenant_id` | 操作日志（created_at，按租户查询） |
 | `casbin_rule` | Casbin 管理（非 ent） | Casbin 策略 |
 
 > 软删除表的唯一约束均为条件唯一索引（`WHERE deleted_at IS NULL`），迁移启用 `schema.WithDropIndex(true)`。
@@ -125,7 +125,7 @@ goctl rpc protoc basedata_service.proto --go_out=. --go-grpc_out=. --zrpc_out=. 
 
 ```bash
 cd rpc
-go run basedataservice.go -f etc/basedataservice.yaml
+go run basedataService.go -f etc/basedataService.yaml
 ```
 
 ## 注意事项
