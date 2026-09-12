@@ -2,7 +2,6 @@ package systenantslogic
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
 
@@ -150,8 +149,9 @@ func (l *UpdateTenantLogic) syncAdminRoleToPackage(ctx context.Context, tenantId
 		Where(sysuser.HasRolesWith(sysrole.IDEQ(role.ID))).
 		All(ctx)
 	if err == nil {
-		for _, u := range users {
-			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+		// 换套餐后 admin 权限已变，旧会话必须失效（递增失败不能当成成功）
+		if err := svc.BumpUsersTokenVersion(l.svcCtx.Redis, users); err != nil {
+			return err
 		}
 	}
 	return nil

@@ -2,7 +2,6 @@ package sysuserslogic
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
 	"github.com/saas-zero/saas-zero-basedata/ent/sysdept"
@@ -11,6 +10,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/redis"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -92,11 +92,13 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 	}
 
 	// 禁用用户（active → inactive）时递增 token_version，使其所有旧 token 立即失效，
-	// 被禁用的用户无法继续访问系统。
+	// 被禁用的用户无法继续访问系统。递增失败必须报错，否则禁用不生效。
 	if in.Status != nil &&
 		prevStatus == sysuser.StatusActive &&
 		sysuser.Status(in.GetStatus()) == sysuser.StatusInactive {
-		l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", in.GetId()))
+		if err := redis.BumpTokenVersion(l.svcCtx.Redis, in.GetId()); err != nil {
+			return nil, err
+		}
 	}
 
 	if len(in.GetRoleIds()) > 0 {
@@ -107,7 +109,9 @@ func (l *UpdateUserLogic) UpdateUser(in *apps.UserReq) (*apps.UserResp, error) {
 			return nil, err
 		}
 		// 角色变更：递增 token_version 使旧 token 失效（重新登录后权限生效）
-		l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", result.ID))
+		if err := redis.BumpTokenVersion(l.svcCtx.Redis, result.ID); err != nil {
+			return nil, err
+		}
 	}
 
 	u, err := l.svcCtx.DB.SysUser.TenantQuery(tenantId).

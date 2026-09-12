@@ -137,6 +137,43 @@ func TestCasbinAuth_Disabled_PassThrough(t *testing.T) {
 	}
 }
 
+// TestCasbinAuth_SelfScopedReadExempt 验证"只读 + 自带隔离"的接口不受策略限制：
+// 即使 enforcer 为 nil（fail-closed 会拒绝其他路径），这两个路径仍放行。
+func TestCasbinAuth_SelfScopedReadExempt(t *testing.T) {
+	for _, path := range []string{"/system/api/mine", "/system/dictData/byDictKey"} {
+		mw := CasbinAuth(nil, false)
+		called := false
+		next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			called = true
+		})
+		rec := httptest.NewRecorder()
+		mw(next).ServeHTTP(rec, httptest.NewRequest(http.MethodGet, path, nil))
+		if !called {
+			t.Fatalf("%s must bypass casbin policy check", path)
+		}
+	}
+}
+
+// TestCasbinAuth_DictWriteStillProtected 验证只有 byDictKey 查询被放行，
+// 字典写接口仍必须经过策略校验。
+func TestCasbinAuth_DictWriteStillProtected(t *testing.T) {
+	for _, path := range []string{
+		"/system/dictData/create",
+		"/system/dictData/list",
+		"/system/dict/create",
+	} {
+		mw := CasbinAuth(nil, false)
+		next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			t.Fatalf("%s must not bypass casbin", path)
+		})
+		rec := httptest.NewRecorder()
+		mw(next).ServeHTTP(rec, httptest.NewRequest(http.MethodPost, path, nil))
+		if rec.Code != http.StatusInternalServerError {
+			t.Fatalf("%s expected fail-closed 500, got %d", path, rec.Code)
+		}
+	}
+}
+
 func contains(s, sub string) bool {
 	for i := 0; i+len(sub) <= len(s); i++ {
 		if s[i:i+len(sub)] == sub {

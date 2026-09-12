@@ -17,9 +17,11 @@ import (
 )
 
 type ServiceContext struct {
-	Config   config.Config
-	DB       *ent.Client
-	Redis    *redis.Client
+	Config config.Config
+	DB     *ent.Client
+	// Redis 在 RPC 侧只用于递增 token_version（会话失效）。
+	// 声明为窄接口便于测试注入失败场景，生产由 *redis.Client 实现。
+	Redis    redis.TokenVersionStore
 	Enforcer *casbinapi.SyncedEnforcer
 }
 
@@ -28,7 +30,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	if err != nil {
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
-	client = client.Debug()
+	// Debug 会打印全部 SQL 及绑定参数（含密码哈希、手机号等敏感值），
+	// 仅允许本地排障通过配置显式开启，生产必须保持关闭。
+	if c.Postgres.Debug {
+		client = client.Debug()
+	}
 	// WithDropIndex: 删除 schema 中已不存在的索引（如旧的字段级唯一索引），
 	// 确保条件唯一索引迁移后旧索引不会残留导致唯一约束仍生效。
 	if err := client.Schema.Create(context.Background(), schema.WithDropIndex(true)); err != nil {

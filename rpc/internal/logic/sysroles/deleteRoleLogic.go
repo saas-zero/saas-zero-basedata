@@ -87,8 +87,8 @@ func (l *DeleteRoleLogic) DeleteRole(in *apps.IdsReq) (*apps.EmptyResp, error) {
 		if err != nil {
 			continue
 		}
-		for _, u := range users {
-			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+		if err := svc.BumpUsersTokenVersion(l.svcCtx.Redis, users); err != nil {
+			return nil, err
 		}
 	}
 
