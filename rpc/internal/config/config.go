@@ -7,6 +7,8 @@ import (
 
 type PostgresConfig struct {
 	DataSource string
+	// Debug 开启后 ent 打印全部 SQL 及参数（含敏感值），仅限本地排障。
+	Debug bool `json:",optional"`
 }
 
 type Config struct {

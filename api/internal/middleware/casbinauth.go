@@ -40,9 +40,13 @@ func CasbinAuth(enf *casbinapi.SyncedEnforcer, disabled bool) func(http.HandlerF
 				next(w, r)
 				return
 			}
-			// /system/api/mine 只返回"当前登录用户自己拥有的 API"（自带租户/user 隔离），
-			// 且它是"分配 API"弹窗的数据源，不应受角色 Casbin 策略限制（新角色还没策略时也能打开）。
-			if r.URL.Path == "/system/api/mine" {
+			// 以下接口只读、且自带租户/用户隔离，不参与角色策略校验（JWT 中间件仍要求登录）：
+			//   - /system/api/mine：只返回"当前登录用户自己拥有的 API"，是"分配 API"弹窗数据源，
+			//     新角色还没有策略时也必须能打开。
+			//   - /system/dictData/byDictKey：返回系统默认字典（tenant_id=0）+ 当前租户字典项，
+			//     是全站下拉选项与状态标签的数据源；若受策略限制，未授权角色会看到原始枚举值。
+			switch r.URL.Path {
+			case "/system/api/mine", "/system/dictData/byDictKey":
 				next(w, r)
 				return
 			}

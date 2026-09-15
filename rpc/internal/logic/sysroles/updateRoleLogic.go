@@ -105,8 +105,9 @@ func (l *UpdateRoleLogic) UpdateRole(in *apps.RoleReq) (*apps.RoleResp, error) {
 			Where(sysuser.HasRolesWith(sysrole.IDEQ(result.ID), sysrole.DeletedAtIsNil())).
 			All(ctx)
 		if err == nil {
-			for _, u := range users {
-				l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+			// 角色被禁用后，其用户的旧 token 仍携带该角色，必须强制失效
+			if err := svc.BumpUsersTokenVersion(l.svcCtx.Redis, users); err != nil {
+				return nil, err
 			}
 		}
 	}

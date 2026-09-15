@@ -15,3 +15,5 @@ CacheRedis:
 
 Postgres:
   DataSource: host=192.168.201.188 port=5432 user=postgres password=AM38xymTdFree4Fh dbname=saas_zero_kun sslmode=disable
+  # Debug: 打印全部 SQL 及参数（含密码哈希等敏感值），仅本地排障时改为 true
+  Debug: false

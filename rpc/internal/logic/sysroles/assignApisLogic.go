@@ -96,8 +96,9 @@ func (l *AssignApisLogic) AssignApis(in *apps.RoleReq) (*apps.EmptyResp, error) 
 		Where(sysuser.HasRolesWith(sysrole.CodeEQ(roleCode), sysrole.DeletedAtIsNil())).
 		All(l.ctx)
 	if err == nil {
-		for _, u := range users {
-			l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", u.ID))
+		// API 权限变更后，旧 token 对应的策略已不一致，必须踢掉旧会话
+		if err := svc.BumpUsersTokenVersion(l.svcCtx.Redis, users); err != nil {
+			return nil, err
 		}
 	}
 

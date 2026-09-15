@@ -2,7 +2,7 @@ package sysuserslogic
 
 import (
 	"context"
-	"fmt"
+
 	"github.com/zeromicro/go-zero/core/logx"
 
 	"github.com/saas-zero/saas-zero-basedata/ent"
@@ -11,6 +11,7 @@ import (
 	"github.com/saas-zero/saas-zero-basedata/rpc/internal/svc"
 	"github.com/saas-zero/saas-zero-common/pkg/ent/mixins"
 	"github.com/saas-zero/saas-zero-common/pkg/errno"
+	"github.com/saas-zero/saas-zero-common/pkg/redis"
 )
 
 type AssignRolesLogic struct {
@@ -58,6 +59,9 @@ func (l *AssignRolesLogic) AssignRoles(in *apps.UserReq) (*apps.EmptyResp, error
 	if err != nil {
 		return nil, err
 	}
-	l.svcCtx.Redis.Incr(fmt.Sprintf("token_version:%d", in.GetId()))
+	// 角色变更后旧 token 里的 roleCodes 已过期，必须递增 token_version 强制重新登录。
+	if err := redis.BumpTokenVersion(l.svcCtx.Redis, in.GetId()); err != nil {
+		return nil, err
+	}
 	return &apps.EmptyResp{Code: int32(errno.Success.Code), Msg: errno.Success.Msg}, nil
 }
