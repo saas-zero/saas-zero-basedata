@@ -68,6 +68,9 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		{menuType: "directory", name: "日志管理", parentIdx: -1, path: "/log", icon: "FileText", sort: 6},
 		{menuType: "menu", name: "登录日志", parentIdx: 11, component: "log/login-log/index", path: "/log/login-log", icon: "Login", sort: 1},
 		{menuType: "menu", name: "操作日志", parentIdx: 11, component: "log/operation-log/index", path: "/log/operation-log", icon: "SwapRight", sort: 2},
+		{menuType: "directory", name: "任务管理", parentIdx: -1, path: "/job", icon: "Schedule", sort: 7},
+		{menuType: "menu", name: "定时任务", parentIdx: 13, component: "job/index", path: "/job/list", icon: "Schedule", sort: 1},
+		{menuType: "menu", name: "任务日志", parentIdx: 13, component: "job/log/index", path: "/job/log", icon: "FileSearch", sort: 2},
 		{menuType: "button", name: "用户管理", parentIdx: 2, path: "system:user:manage", sort: 1},
 		{menuType: "button", name: "新增用户", parentIdx: 2, path: "system:user:create", sort: 2},
 		{menuType: "button", name: "修改用户", parentIdx: 2, path: "system:user:update", sort: 3},
@@ -108,6 +111,14 @@ func (l *InitAllLogic) InitAll(_ *apps.EmptyReq) (*apps.EmptyResp, error) {
 		{menuType: "button", name: "修改API", parentIdx: 10, path: "system:api:update", sort: 3},
 		{menuType: "button", name: "删除API", parentIdx: 10, path: "system:api:delete", sort: 4},
 		{menuType: "button", name: "日志查看", parentIdx: 12, path: "system:log:view", sort: 1},
+		{menuType: "button", name: "任务管理", parentIdx: 13, path: "system:job:manage", sort: 1},
+		{menuType: "button", name: "新增任务", parentIdx: 13, path: "system:job:create", sort: 2},
+		{menuType: "button", name: "修改任务", parentIdx: 13, path: "system:job:update", sort: 3},
+		{menuType: "button", name: "删除任务", parentIdx: 13, path: "system:job:delete", sort: 4},
+		{menuType: "button", name: "启动任务", parentIdx: 13, path: "system:job:start", sort: 5},
+		{menuType: "button", name: "暂停任务", parentIdx: 13, path: "system:job:pause", sort: 6},
+		{menuType: "button", name: "立即执行", parentIdx: 13, path: "system:job:run", sort: 7},
+		{menuType: "button", name: "任务日志", parentIdx: 14, path: "system:job:log", sort: 1},
 	}
 
 	tx, err := l.svcCtx.DB.Tx(ctx)

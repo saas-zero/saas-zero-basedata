@@ -138,4 +138,20 @@ var seedApiGroups = []seedApiGroup{
 			{name: "操作日志", path: "/system/log/operationLog/list", method: "get"},
 		},
 	},
+	{
+		name: "任务管理",
+		path: "/system/job",
+		apis: []seedApiItem{
+			{name: "新增任务", path: "/system/job/create", method: "post"},
+			{name: "更新任务", path: "/system/job/update", method: "post"},
+			{name: "删除任务", path: "/system/job/delete", method: "post"},
+			{name: "任务列表", path: "/system/job/list", method: "get"},
+			{name: "任务详情", path: "/system/job/detail", method: "get"},
+			{name: "启动任务", path: "/system/job/start", method: "post"},
+			{name: "暂停任务", path: "/system/job/pause", method: "post"},
+			{name: "立即执行", path: "/system/job/runOnce", method: "post"},
+			{name: "任务日志", path: "/system/job/log/list", method: "get"},
+			{name: "清理日志", path: "/system/job/log/clean", method: "post"},
+		},
+	},
 }

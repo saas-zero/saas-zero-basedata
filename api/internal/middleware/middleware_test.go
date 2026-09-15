@@ -5,7 +5,40 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	casbinapi "github.com/casbin/casbin/v2"
+	"github.com/casbin/casbin/v2/model"
 )
+
+// 与 common/pkg/casbin 的 Domain RBAC 模型一致（modelText 未导出，测试内重建）。
+const testDomainRBACModel = `
+[request_definition]
+r = sub, dom, obj, act
+
+[policy_definition]
+p = sub, dom, obj, act, ept
+
+[policy_effect]
+e = some(where (p.eft == allow))
+
+[matchers]
+m = r.sub == p.sub && r.dom == p.dom && keyMatch(r.obj, p.obj) && regexMatch(r.act, p.act)
+`
+
+// newTestEnforcer 返回一个无任何策略的 enforcer（等价于角色未授权）。
+func newTestEnforcer(t *testing.T) *casbinapi.SyncedEnforcer {
+	t.Helper()
+	m, err := model.NewModelFromString(testDomainRBACModel)
+	if err != nil {
+		t.Fatalf("load model: %v", err)
+	}
+	// 不传 adapter（传 typed-nil 会触发 casbin 接口断言 panic），等价于零策略。
+	e, err := casbinapi.NewSyncedEnforcer(m)
+	if err != nil {
+		t.Fatalf("new enforcer: %v", err)
+	}
+	return e
+}
 
 // TestOperationLog_MaskSensitive 验证登录/改密等敏感字段被脱敏。
 func TestOperationLog_MaskSensitive(t *testing.T) {
@@ -138,10 +171,11 @@ func TestCasbinAuth_Disabled_PassThrough(t *testing.T) {
 }
 
 // TestCasbinAuth_SelfScopedReadExempt 验证"只读 + 自带隔离"的接口不受策略限制：
-// 即使 enforcer 为 nil（fail-closed 会拒绝其他路径），这两个路径仍放行。
+// enforcer 无任何策略时，这两个路径仍放行，其他路径 403。
 func TestCasbinAuth_SelfScopedReadExempt(t *testing.T) {
+	e := newTestEnforcer(t)
 	for _, path := range []string{"/system/api/mine", "/system/dictData/byDictKey"} {
-		mw := CasbinAuth(nil, false)
+		mw := CasbinAuth(e, false)
 		called := false
 		next := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			called = true
@@ -149,8 +183,17 @@ func TestCasbinAuth_SelfScopedReadExempt(t *testing.T) {
 		rec := httptest.NewRecorder()
 		mw(next).ServeHTTP(rec, httptest.NewRequest(http.MethodGet, path, nil))
 		if !called {
-			t.Fatalf("%s must bypass casbin policy check", path)
+			t.Fatalf("%s must bypass casbin policy check, got %d", path, rec.Code)
 		}
+	}
+	// 非豁免路径仍须策略命中
+	mw := CasbinAuth(e, false)
+	rec := httptest.NewRecorder()
+	mw(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Fatal("protected path must not reach next")
+	})).ServeHTTP(rec, httptest.NewRequest(http.MethodGet, "/system/user/list", nil))
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("expected 403 for protected path, got %d", rec.Code)
 	}
 }
 
